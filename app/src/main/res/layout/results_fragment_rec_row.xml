@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_margin="5dp"
+    android:padding="5dp"
+    android:background="@drawable/button_shape_dark">
+
+    <ImageView
+        android:id="@+id/row_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/row_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Happy-Bar and lounge cusine estate"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/row_address_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="georgi sofiiski 13"
+        android:layout_marginRight="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/row_eta_tv"/>
+
+    <TextView
+        android:id="@+id/row_eta_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12min"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/row_distance_tv"/>
+
+    <TextView
+        android:id="@+id/row_distance_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2.1km"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:id="@+id/row_open_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open"
+        android:layout_above="@+id/row_eta_tv"
+        android:layout_alignParentRight="true" />
+
+    <TextView
+        android:id="@+id/row_type_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="bar"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/row_open_tv"/>
+
+
+        <RatingBar
+            android:id="@+id/row_rating_rb"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="0.5"
+            android:progressTint="#ffffffab"
+            android:secondaryProgressTint="#ffffffab"
+            android:layout_alignBottom="@+id/row_rating_tv"
+            android:layout_alignParentLeft="true"
+            android:progressBackgroundTint="@color/transparentWhite" />
+
+        <TextView
+            android:id="@+id/row_rating_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2.3"
+            android:textSize="15sp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/row_rating_rb" />
+
+
+</RelativeLayout>

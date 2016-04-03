@@ -21,13 +21,6 @@
             android:hint="@string/enter_city_hint"
             android:textAlignment="center"/>
 
-        <Button
-            android:id="@+id/find_my_location_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_shape_dark"
-            android:text="@string/button_find_my_location"/>
-
 
     </LinearLayout>
 

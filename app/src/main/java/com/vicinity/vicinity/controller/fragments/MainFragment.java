@@ -1,7 +1,7 @@
 package com.vicinity.vicinity.controller.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -11,21 +11,48 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.vicinity.vicinity.utilities.location.FetchAddressIntentService;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.utilities.Constants;
 import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
+import com.vicinity.vicinity.utilities.location.FetchAddressIntentService;
 import com.vicinity.vicinity.utilities.location.LocationDetectionHelper;
 
 public class MainFragment extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks{
+
+    /*
+    The activity, in which the current fragment is created
+    */
+    private MainFragmentListener mListener;
+    private GoogleApiClient mGoogleApiClient;
+
+    private AddressResultReceiver mResultReceiver;
+
+    private EditText addressField;
+
+    private ImageView restaurant;
+    private ImageView bar;
+    private ImageView cafe;
+    private ImageView hotel;
+    private ImageView casino;
+    private ImageView delivery;
+    private ImageView gym;
+    private ImageView pool;
+    private ImageView movies;
+
+    private String receivedAddress;
+
+    @Override
+    public void onAttach(Activity context) {
+        Log.e("Fragment", "entering onAttach");
+        super.onAttach(context);
+        Log.e("Fragment", "super.onAttach finished");
+        mListener = (MainFragmentListener) context;
+        Log.e("Fragment", "mListener initialized");
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -52,43 +79,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
                 receivedAddress = resultData.getString(Constants.RESULT_DATA_KEY);
 
                 Log.e("service", "received address is" + receivedAddress);
+                mListener.setReadableAddress(receivedAddress);
                 addressField.setHint(receivedAddress.replace("\n", " "));
             }
         }
     }
 
-    /*
-        The activity, in which the current fragment is created
-     */
-    private MainFragmentListener mListener;
-    private LocationRequester requesterActivity;
-    private GoogleApiClient mGoogleApiClient;
-
-    private AddressResultReceiver mResultReceiver;
-
-    private EditText addressField;
-    private Button findLocationButton;
-
-    private ImageView restaurant;
-    private ImageView bar;
-    private ImageView cafe;
-    private ImageView hotel;
-    private ImageView casino;
-    private ImageView delivery;
-    private ImageView gym;
-    private ImageView pool;
-    private ImageView movies;
-
-    private String receivedAddress;
 
     public MainFragment() {
         // Required empty public constructor
-    }
-
-    public MainFragment(Context context){
-        this();
-        mListener = (MainFragmentListener) context;
-        requesterActivity = (LocationRequester) context;
     }
 
     @Override
@@ -104,16 +103,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
 
         mResultReceiver = new AddressResultReceiver(new Handler());
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .build();
-
-
         addressField = (EditText) layout.findViewById(R.id.city_input);
-        findLocationButton = (Button) layout.findViewById(R.id.find_my_location_button);
 
         restaurant = (ImageView) layout.findViewById(R.id.restaurant_image_view);
         bar = (ImageView) layout.findViewById(R.id.bar_image_view);
@@ -125,12 +115,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
         pool = (ImageView) layout.findViewById(R.id.pool_image_view);
         movies = (ImageView) layout.findViewById(R.id.movie_image_view);
 
-        findLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LocationDetectionHelper.getInstance((LocationRequester) mListener).getLocation((LocationRequester) mListener);
-            }
-        });
 
         restaurant.setOnClickListener(this);
         bar.setOnClickListener(this);
@@ -150,73 +134,68 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        LocationDetectionHelper.getInstance((LocationRequester) mListener).getLocation((LocationRequester) mListener);
 
-//        PlaceAutocompleteFragment paf = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.main_place_autocomplete);
-//
-//        AutocompleteFilter filter = new AutocompleteFilter.Builder()
-//                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
-//                .build();
-//
-//        paf.setFilter(filter);
-//
-//        paf.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-//            @Override
-//            public void onPlaceSelected(Place place) {
-//                selectedAddress = place.getAddress();
-//            }
-//
-//            @Override
-//            public void onError(Status status) {
-//
-//            }
-//        });
-    }
+        mGoogleApiClient = mListener.getGoogleApiClient();
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+        if (mListener.getReadableAddress() != null && !mListener.getReadableAddress().isEmpty()){
+            addressField.setHint(mListener.getReadableAddress());
+        }
+        else {
+            addressField.setHint("Detecting current location...");
+        }
 
     }
 
+    /**
+     * Handles the Place Type clicks and initiates the parent activity to load
+     * a ResultsFragment presenting a CardView with the results of the search based
+     * on the location and type selected by the user
+     * @param v the clicked View
+     */
     @Override
     public void onClick(View v) {
-
         switch (v.getId()){
             case R.id.restaurant_image_view:
-                //TODO: Restaurant....
+                mListener.startResultsFragment(Constants.TYPE_RESTAURANT);
                 break;
             case R.id.bar_image_view:
-                //TODO: bar....
+                mListener.startResultsFragment(Constants.TYPE_BAR);
                 break;
             case R.id.cafe_image_view:
-                //TODO: cafe....
+                mListener.startResultsFragment(Constants.TYPE_CAFE);
                 break;
             case R.id.hotel_image_view:
-                //TODO: hotel....
+                mListener.startResultsFragment(Constants.TYPE_HOTEL);
                 break;
             case R.id.casino_image_view:
-                //TODO: casino....
+                mListener.startResultsFragment(Constants.TYPE_CASINO);
                 break;
             case R.id.delivery_image_view:
-                //TODO: delivery....
+                mListener.startResultsFragment(Constants.TYPE_DELIVERY);
                 break;
             case R.id.fitness_image_view:
-                //TODO: fitness....
+                mListener.startResultsFragment(Constants.TYPE_FITNESS);
                 break;
             case R.id.pool_image_view:
-                //TODO: pool....
+                mListener.startResultsFragment(Constants.TYPE_POOL);
                 break;
             case R.id.movie_image_view:
-                //TODO: movie....
+                mListener.startResultsFragment(Constants.TYPE_MOVIE);
                 break;
         }
     }
 
+    /**
+     * Gets the location from the parent activity and starts IntentService to
+     * retrieve the Address formatted by the default Locale of the device
+     */
     public void setAddress() {
-        // TODO: Obtain the address by the location passed
-
+        if (!mListener.getReadableAddress().isEmpty()){
+            addressField.setHint(mListener.getReadableAddress());
+            return;
+        }
         if (mGoogleApiClient.isConnected()) {
-            // TODO: Start the IntentService here:
             Intent intent = new Intent(getActivity(), FetchAddressIntentService.class);
             Log.e("service", "Intent ...1");
             intent.putExtra(Constants.RECEIVER, mResultReceiver);
@@ -226,21 +205,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
             getActivity().startService(intent);
         }
         else {
-            Log.e("service", "new apiClient innstantiated and .connect() called");
+            Log.e("service", "new apiClient instantiated and .connect() called");
             mGoogleApiClient.connect();
         }
-
-
-
-
     }
 
 
     // TODO: Get device location or user input for a location
         // TODO: Check if user has inputted a city, if not - get location
         // TODO: Call location manager
-        // TODO: Add permissions
-        // TODO: Set up first NETWORK, then GPS provider to retrieve Longitude and Latitude
         // TODO: Create a Location object, pass it the retrieved coordinates for location or City if chosen
 
 
@@ -257,6 +230,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
      */
     public interface MainFragmentListener {
         Location getCurrentLocation();
+        GoogleApiClient getGoogleApiClient();
+        void startResultsFragment(String queryType);
+        void setReadableAddress(String address);
+        String getReadableAddress();
     }
 
 }

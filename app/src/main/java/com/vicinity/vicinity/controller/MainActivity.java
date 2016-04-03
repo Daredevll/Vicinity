@@ -1,7 +1,6 @@
 package com.vicinity.vicinity.controller;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.location.Location;
@@ -15,21 +14,37 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.controllersupport.AppearanceManager;
-import com.vicinity.vicinity.controller.fragments.MainFragment.*;
 import com.vicinity.vicinity.controller.fragments.MainFragment;
+import com.vicinity.vicinity.controller.fragments.MainFragment.MainFragmentListener;
+import com.vicinity.vicinity.controller.fragments.ResultsFragment;
 import com.vicinity.vicinity.utilities.DummyModelClass;
-import com.vicinity.vicinity.utilities.location.CustomLocationListener.*;
+import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainFragmentListener, LocationRequester {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainFragmentListener, LocationRequester, GoogleApiClient.ConnectionCallbacks, ResultsFragment.ResultsFragmentListener{
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.e("service", "apiClient connected in MainActivity");
+        mainFragment.setAddress();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
 
     Location currentLocation;
+    String readableAddress;
+    String queryType;
+
 
     DrawerLayout navLayout;
     LinearLayout navDrawer;
@@ -49,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private GoogleApiClient client;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +79,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerElements.add(drawerHome);
         drawerElements.add(drawerExit);
 
-        mainFragment = new MainFragment(this);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.main_content_view, mainFragment);
-        ft.commit();
+        mainFragment = new MainFragment();
+        Log.e("Fragment", "main frag inited");
+        replaceFragment(mainFragment, true);
 
+        Log.e("Fragment", "replaceFragment() finished");
 
         drawerHome.setOnClickListener(this);
         drawerExit.setOnClickListener(this);
@@ -85,19 +100,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        client = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .build();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
 
+    /**
+     * Method to replace the current fragment with a new one, passed to the method
+     * Purpose of this method is to isolate the parent View holding the fragment, to avoid mistakes
+     * @param newFragment
+     */
+    private void replaceFragment(Fragment newFragment, boolean addToBackStack){
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.main_content_view, newFragment);
+        if (addToBackStack){
+            ft.addToBackStack(null);
+        }
+        ft.commit();
     }
 
 
-    /* Overrides the back button press action to forbid the user to go back to the Intro Activity after entering */
-    @Override
-    public void onBackPressed() {
-
-    }
+//    /* Overrides the back button press action to forbid the user to go back to the Intro Activity after entering */
+//    @Override
+//    public void onBackPressed() {
+//
+//    }
 
     private void setDrawerElementActive(TextView view, int colorSelected, int colorDefault) {
         for (TextView tv : drawerElements) {
@@ -138,5 +169,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public Location getCurrentLocation() {
         return currentLocation;
+    }
+
+    @Override
+    public String getQueryType() {
+        return this.queryType;
+    }
+
+    @Override
+    public GoogleApiClient getGoogleApiClient() {
+        return this.client;
+    }
+
+    @Override
+    public void startResultsFragment(String queryType) {
+        this.queryType = queryType;
+        ResultsFragment rf = new ResultsFragment();
+        replaceFragment(rf, true);
+    }
+
+    @Override
+    public void setReadableAddress(String address) {
+        this.readableAddress = address;
+    }
+
+    @Override
+    public String getReadableAddress() {
+        if (this.readableAddress == null){
+            return "";
+        }
+        return this.readableAddress;
     }
 }
