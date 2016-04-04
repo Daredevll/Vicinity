@@ -48,13 +48,14 @@ public class FetchAddressIntentService extends IntentService {
         Log.e("service", "location obtained");
         List<Address> addresses = null;
         try {
+            // TODO: Check whether the "Timed out" issue is ours of Google's problem
             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             Log.e("service", "addresses got from location");
 
 
         } catch (IOException|IllegalArgumentException e) {
             Log.e("ADDRESS", e.getMessage());
-            errorMessage = e.getMessage();
+            e.printStackTrace();
         }
 
         if (addresses == null || addresses.isEmpty()){

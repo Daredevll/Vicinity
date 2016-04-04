@@ -11,7 +11,7 @@ import com.vicinity.vicinity.R;
 /**
  * Created by Jovch on 28-Mar-16.
  */
-public class CustomViewHolder extends RecyclerView.ViewHolder {
+public class ResultsViewHolder extends RecyclerView.ViewHolder {
 
     private ImageView pic;
     private TextView name;
@@ -24,7 +24,7 @@ public class CustomViewHolder extends RecyclerView.ViewHolder {
     private TextView ratingText;
 
 
-    public CustomViewHolder(View itemView) {
+    public ResultsViewHolder(View itemView) {
         super(itemView);
 
         pic = (ImageView) itemView.findViewById(R.id.row_img);

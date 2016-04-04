@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -18,17 +19,32 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.controllersupport.AppearanceManager;
+import com.vicinity.vicinity.controller.fragments.DetailsFragment;
 import com.vicinity.vicinity.controller.fragments.MainFragment;
 import com.vicinity.vicinity.controller.fragments.MainFragment.MainFragmentListener;
 import com.vicinity.vicinity.controller.fragments.ResultsFragment;
+import com.vicinity.vicinity.utilities.Constants;
 import com.vicinity.vicinity.utilities.DummyModelClass;
+import com.vicinity.vicinity.utilities.QueryProcessor;
+import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
 import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
 
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainFragmentListener, LocationRequester, GoogleApiClient.ConnectionCallbacks, ResultsFragment.ResultsFragmentListener{
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainFragmentListener, LocationRequester,
+        GoogleApiClient.ConnectionCallbacks, ResultsFragment.ResultsAndDetailsFragmentListener {
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -45,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String readableAddress;
     String queryType;
 
+    CustomPlace currentPlaceDetails;
 
     DrawerLayout navLayout;
     LinearLayout navDrawer;
@@ -104,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         client = new GoogleApiClient.Builder(this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
                 .addConnectionCallbacks(this)
                 .build();
 
@@ -176,6 +194,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return this.queryType;
     }
 
+    /**
+     * Initiates the DetailsFragment, called when clicked on a certain row from ResultsFragment.
+     * Calls getPlaceById from google API to retrieve website, phone and photos and initiates
+     * the DetailsFragment when on callBack with Place result.
+     */
+    @Override
+    public void startDetailsFragment(final QueryProcessor.CustomPlace place) {
+        new PlaceDetailAsyncFetcher().execute(place);
+    }
+
     @Override
     public GoogleApiClient getGoogleApiClient() {
         return this.client;
@@ -199,5 +227,109 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return "";
         }
         return this.readableAddress;
+    }
+
+
+    @Override
+    public CustomPlace getCurrentDetailPlace() {
+        return this.currentPlaceDetails;
+    }
+
+
+    private class PlaceDetailAsyncFetcher extends AsyncTask<CustomPlace, Void, CustomPlace>{
+
+        @Override
+        protected CustomPlace doInBackground(CustomPlace... params) {
+            String urlLink = "https://maps.googleapis.com/maps/api/place/details/json?placeid=PLACE_ID&key=BROWSER_KEY";
+            CustomPlace cp = params[0];
+            // TODO: Fetch the place details by ID
+
+            //PLACE'S DETAILS FIELDS:
+
+            String localPhoneNumber;
+            String internationalPhoneNumber;
+            String website;
+            String utcOffset;
+
+            // REVIEW'S FIELDS:
+
+            double  reviewRating;
+            String reviewAuthorName;
+            String reviewLanguage;
+            String reviewProfilePhotoUrl;
+            String reviewComment;
+            long   reviewTime;
+
+            ArrayList<CustomPlace.Review> reviewsList = new ArrayList<>();
+
+
+
+            URL url = null;
+            HttpURLConnection connection = null;
+            Scanner sc = null;
+            StringBuffer sb = null;
+            JSONObject root = null;
+            JSONObject resultObject = null;
+
+            try{
+                url = new URL(urlLink.replace("PLACE_ID", cp.getPlaceId()).replace("BROWSER_KEY", Constants.BROWSER_API_KEY));
+                connection = (HttpURLConnection) url.openConnection();
+                sc = new Scanner(connection.getInputStream());
+                sb = new StringBuffer();
+
+                while (sc.hasNextLine()){
+                    sb.append(sc.nextLine());
+                }
+
+                root = new JSONObject(sb.toString());
+                resultObject = root.getJSONObject("result");
+                Log.e("DETAILSLOG", "Root Json Fetched");
+
+                localPhoneNumber = resultObject.getString("formatted_phone_number");
+                internationalPhoneNumber = resultObject.getString("international_phone_number");
+                website = resultObject.getString("website");
+                utcOffset = resultObject.getString("utc_offset");
+
+                JSONArray reviewsArr = resultObject.getJSONArray("reviews");
+
+                for (int idx = 0; idx < reviewsArr.length(); idx++){
+                    JSONObject singleRev = reviewsArr.getJSONObject(idx);
+
+                    reviewAuthorName = singleRev.getString("author_name");
+                    reviewLanguage = singleRev.getString("language");
+                    reviewProfilePhotoUrl = singleRev.getString("profile_photo_url");
+                    reviewRating = singleRev.getDouble("rating");
+                    reviewComment = singleRev.getString("text");
+                    reviewTime = singleRev.getLong("time");
+
+                    CustomPlace.Review r = cp.new Review(reviewAuthorName, reviewRating, reviewTime);
+
+                    r.setLanguage(reviewLanguage);
+                    r.setComment(reviewComment);
+                    r.setProfilePhotoUrl(reviewProfilePhotoUrl);
+                    reviewsList.add(r);
+                }
+
+
+                cp.addDetails(localPhoneNumber, internationalPhoneNumber, website, utcOffset, reviewsList);
+                Log.e("DETAILSLOG", "cp updated successfully");
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return cp;
+        }
+
+        @Override
+        protected void onPostExecute(CustomPlace inputPlace) {
+            currentPlaceDetails = inputPlace;
+            replaceFragment(new DetailsFragment(), true);
+        }
     }
 }

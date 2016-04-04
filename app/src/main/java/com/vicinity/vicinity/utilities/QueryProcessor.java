@@ -4,6 +4,8 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.location.places.Place;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,13 +17,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 /**
  * Created by Jovch on 28-Mar-16.
  *
  * A class to process the raw queries and returning an ArrayList<Object> generated with the query result
- * All the classes/activities/fragments which make queries to this class must implement <:@link>QueryInteractor</:@link> interface
+ * All the classes/activities/fragments which make queries to this class must implement <:@link>PlacesListRequester</:@link> interface
  * because the methods in this class work in a <code>Callback</code> manner
  */
 public class QueryProcessor {
@@ -34,13 +37,13 @@ public class QueryProcessor {
     // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=hotel&key=AIzaSyDHvkAJQni2X0Qdv6n9JYNEz-l7W6t5-WU
 
 
-    QueryInteractor customer;
+    PlacesListRequester listCustomer;
     private Location customerLocation;
     ArrayList<CustomPlace> retrievedPlaces;
 
     // TODO: make a request with the given Location and Type criteria
     // TODO: Fetch the response into a JSONObject
-    // TODO: Fill the list with objects, generated while decoding the JSON, optionally call customer.update(retrievedPlaces) with every iteration for a smoother effect, but no sorting
+    // TODO: Fill the list with objects, generated while decoding the JSON, optionally call listCustomer.update(retrievedPlaces) with every iteration for a smoother effect, but no sorting
 
     private static QueryProcessor instance;
 
@@ -52,8 +55,9 @@ public class QueryProcessor {
     }
 
 
-    public void processQuery(QueryInteractor customer, Location location, String type){
-        this.customer = customer;
+
+    public void fillResultsList(PlacesListRequester customer, Location location, String type){
+        this.listCustomer = customer;
         this.customerLocation = location;
         retrievedPlaces = new ArrayList<CustomPlace>();
         String fullURI;
@@ -68,34 +72,120 @@ public class QueryProcessor {
 
 
         Log.e("URL", "sending request as: " + fullURI); // fullURI is OK!
-        new AsyncJsonFetcher().execute(fullURI);
+        new AsyncResultsFiller().execute(fullURI);
 
     }
 
     void updateCustomer(){
-        Log.e("URL", "update customer called");
-        customer.update(retrievedPlaces);
+        Log.e("URL", "update listCustomer called");
+        listCustomer.update(retrievedPlaces);
     }
-
-
-
-
 
 
     public class CustomPlace{
 
+        public class Review{
+
+            double rating;
+            String authorName;
+            String language;
+            String profilePhotoUrl;
+            String comment;
+            long time;
+
+            public Review(String authorName, double rating, long time){
+                this.authorName = authorName;
+                this.rating = rating;
+                this.time = time;
+            }
+
+            public void setLanguage(String language) {
+                this.language = language;
+            }
+
+            public void setProfilePhotoUrl(String profilePhotoUrl) {
+                this.profilePhotoUrl = profilePhotoUrl;
+            }
+
+            public void setComment(String comment) {
+                this.comment = comment;
+            }
+
+            public double getRating() {
+                return rating;
+            }
+
+            public String getAuthorName() {
+                return authorName;
+            }
+
+            public String getLanguage() {
+                return language;
+            }
+
+            public String getProfilePhotoUrl() {
+                return profilePhotoUrl;
+            }
+
+            public String getComment() {
+                return comment;
+            }
+
+            public long getTime() {
+                return time;
+            }
+        }
+
+        ArrayList<Review> reviews;
+
         double longitude;
         double latitude;
+
+        Place realPlace;
 
         String icon;
         String id;
         String name;
-        String place_id;
+        String placeId;
         String reference;
         String[] types;
         String vicinity;
         String distance;
         String estimateTime;
+
+        String localPhoneNumber;
+        String internationalPhoneNumber;
+        String website;
+        String utcOffset;
+
+
+        // Optional:
+
+        float rating;
+        boolean openNow;
+
+        public CustomPlace(double longitude, double latitude, String icon, String id, String name, String place_id, String reference, String[] types, String vicinity) {
+            this.longitude = longitude;
+            this.latitude = latitude;
+            this.icon = icon;
+            this.id = id;
+            this.name = name;
+            this.placeId = place_id;
+            this.reference = reference;
+            this.types = types;
+            this.vicinity = vicinity;
+        }
+
+        public void addDetails(String localPhone, String interPhone, String web, String utcOffset, List<Review> reviews){
+            this.localPhoneNumber = localPhone;
+            this.internationalPhoneNumber = interPhone;
+            this.website = web;
+            this.utcOffset = utcOffset;
+
+            for (Review r: reviews){
+                addReview(r);
+            }
+        }
 
         public void setEstimateTime(String estimateTime) {
             this.estimateTime = estimateTime;
@@ -111,21 +201,15 @@ public class QueryProcessor {
         }
 
 
-        // Optional:
+        void addReview(Review review){
+            if (reviews == null){
+                reviews = new ArrayList<Review>();
+            }
+            reviews.add(review);
+        }
 
-        float rating;
-        boolean openNow;
-
-        public CustomPlace(double longitude, double latitude, String icon, String id, String name, String place_id, String reference, String[] types, String vicinity) {
-            this.longitude = longitude;
-            this.latitude = latitude;
-            this.icon = icon;
-            this.id = id;
-            this.name = name;
-            this.place_id = place_id;
-            this.reference = reference;
-            this.types = types;
-            this.vicinity = vicinity;
+        public ArrayList<Review> getReviews(){
+            return this.reviews;
         }
 
         void addRating(float rating){
@@ -156,8 +240,8 @@ public class QueryProcessor {
             return name;
         }
 
-        public String getPlace_id() {
-            return place_id;
+        public String getPlaceId() {
+            return placeId;
         }
 
         public String getReference() {
@@ -183,9 +267,33 @@ public class QueryProcessor {
         public String getEstimateTime() {
             return this.estimateTime;
         }
+
+        public Place getRealPlace() {
+            return realPlace;
+        }
+
+        public void setRealPlace(Place realPlace) {
+            this.realPlace = realPlace;
+        }
+
+        public String getLocalPhoneNumber() {
+            return localPhoneNumber;
+        }
+
+        public String getInternationalPhoneNumber() {
+            return internationalPhoneNumber;
+        }
+
+        public String getWebsite() {
+            return website;
+        }
+
+        public String getUtcOffset() {
+            return utcOffset;
+        }
     }
 
-    class AsyncJsonFetcher extends AsyncTask<String, CustomPlace, ArrayList<CustomPlace>>{
+    class AsyncResultsFiller extends AsyncTask<String, CustomPlace, ArrayList<CustomPlace>>{
 
         @Override
         protected ArrayList<CustomPlace> doInBackground(String... params) {
@@ -292,12 +400,12 @@ public class QueryProcessor {
                     // Adds the newly constructed place to temp list
                     workingList.add(cp);
 
-                    // Adds the place directly to the list to be returned and calls customer.update with the new list
+                    // Adds the place directly to the list to be returned and calls listCustomer.update with the new list
                     publishProgress(cp);
 
 
                     // TODO: Create CustomPlace object with fetched params
-                    // TODO: call customer.update here / executed on the UI Thread! /
+                    // TODO: call listCustomer.update here / executed on the UI Thread! /
                 }
 
             } catch (MalformedURLException e) {
@@ -371,7 +479,7 @@ public class QueryProcessor {
         }
     }
 
-    public interface QueryInteractor{
+    public interface PlacesListRequester {
         void update(ArrayList<CustomPlace> places);
     }
 }

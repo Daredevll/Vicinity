@@ -1,13 +1,221 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.vicinity.vicinity.controller.fragments.DetailsFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
+
+    <ImageView
+        android:id="@+id/details_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/default_photo_detail"
+        android:adjustViewBounds="true"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentTop="true"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignBottom="@+id/details_photo"
+        android:background="@drawable/black_gradient">
+
+        <TextView
+            android:id="@+id/details_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Happy-Bar"
+            android:textSize="35sp"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignTop="@+id/details_social_layout"
+        android:layout_alignLeft="@+id/details_social_layout"
+        android:layout_alignRight="@+id/details_social_layout"
+        android:background="@drawable/black_gradient"
+        android:scaleY="-1">
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/details_social_layout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:gravity="right"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/details_rating_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4.2"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            />
+
+
+        <RatingBar
+            android:id="@+id/details_rating_rb"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="0.5"
+            android:rating="3.5"
+            android:scaleX="0.75"
+            android:scaleY="0.75"
+            />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/details_fav_img"
+            android:src="@drawable/ic_favorite_border_white_48dp"
+            android:scaleX="0.75"
+            android:scaleY="0.75"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"/>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/details_share_img"
+            android:src="@drawable/ic_share_white_48dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:scaleX="0.75"
+            android:scaleY="0.75"/>
+            <!--android:background="@drawable/button_shape_dark"/>-->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/details_streetview_img"
+            android:src="@drawable/ic_streetview_white_48dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:scaleX="0.75"
+            android:scaleY="0.75"/>
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/details_photo"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/black_gradient"
+        android:scaleY="-1">
+    </RelativeLayout>
+
     <TextView
+        android:id="@+id/details_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="botevgradsko shose 11"
+        android:textSize="15sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/details_working_time"
+        android:layout_below="@+id/details_photo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/details_ETA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2.1km 13min"
+        android:textSize="15sp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/details_address"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:id="@+id/details_working_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="17:00 - 22:00"
+        android:textSize="15sp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/details_address"/>
+
+    <TextView
+        android:id="@+id/details_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open"
+        android:textSize="15sp"
+        android:layout_marginRight="10dp"
+        android:layout_alignBottom="@+id/details_ETA"
+        android:layout_alignParentRight="true" />
+
+    <FrameLayout
+        android:id="@+id/details_map_reviews_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_below="@id/details_ETA"
+        android:layout_above="@+id/details_interact_layout"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
-</FrameLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/details_interact_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:padding="5dp">
+
+        <Button
+            android:id="@+id/details_website_url"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="website"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/button_shape_dark"/>
+
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="Dial"
+            android:background="@drawable/button_shape_dark"
+            android:id="@+id/details_dial_button" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="reserve"
+            android:background="@drawable/button_shape_dark"
+            android:id="@+id/details_reserve_button" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -13,17 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.vicinity.vicinity.R;
-import com.vicinity.vicinity.controller.controllersupport.recycler.CustomRecyclerAdapter;
+import com.vicinity.vicinity.controller.controllersupport.recycler.ResultsRecyclerAdapter;
 import com.vicinity.vicinity.utilities.QueryProcessor;
 import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
-import com.vicinity.vicinity.utilities.QueryProcessor.QueryInteractor;
 
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ResultsFragment extends Fragment implements QueryInteractor {
+public class ResultsFragment extends Fragment implements QueryProcessor.PlacesListRequester {
 
     public ResultsFragment() {
         // Required empty public constructor
@@ -32,10 +31,10 @@ public class ResultsFragment extends Fragment implements QueryInteractor {
     @Override
     public void onAttach(Activity context) {
         super.onAttach(context);
-        rListener = (ResultsFragmentListener) context;
+        rListener = (ResultsAndDetailsFragmentListener) context;
     }
 
-    ResultsFragmentListener rListener;
+    ResultsAndDetailsFragmentListener rListener;
 
     RecyclerView recView;
     RecyclerView.Adapter recAdapter;
@@ -50,18 +49,18 @@ public class ResultsFragment extends Fragment implements QueryInteractor {
 
 
         // TODO: Create a RecyclerView
-        // TODO: Create a CustomRecyclerAdapter
+        // TODO: Create a ResultsRecyclerAdapter
         // TODO: Create a RecyclerView.ViewHolder / use Place objects /
 
         placesList = new ArrayList<CustomPlace>();
         recView = (RecyclerView) rootView.findViewById(R.id.recycler_view_results_fragment);
-        recAdapter = new CustomRecyclerAdapter(getActivity(), placesList);
+        recAdapter = new ResultsRecyclerAdapter(getActivity(), placesList);
         recView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recView.setAdapter(recAdapter);
 
 
         // Initiates a query to Google, which dynamically callbacks to fill the recAdapter list with elements
-        QueryProcessor.getInstance().processQuery(this, rListener.getCurrentLocation(), rListener.getQueryType());
+        QueryProcessor.getInstance().fillResultsList(this, rListener.getCurrentLocation(), rListener.getQueryType());
 
 
         // TODO: Make a query to Google with the params passed from the previous fragment
@@ -82,9 +81,11 @@ public class ResultsFragment extends Fragment implements QueryInteractor {
     }
 
 
-    public interface ResultsFragmentListener{
+    public interface ResultsAndDetailsFragmentListener {
         Location getCurrentLocation();
         String getQueryType();
+        void startDetailsFragment(CustomPlace place);
+        CustomPlace getCurrentDetailPlace();
     }
 
 }

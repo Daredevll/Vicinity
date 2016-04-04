@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.example.mymap.permission.MAPS_RECEIVE" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +15,7 @@
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDHvkAJQni2X0Qdv6n9JYNEz-l7W6t5-WU" />
+            android:value="AIzaSyC0Y8kXYwz7rIyE5CstbZt9Zq4bDjj7mAg" />
 
         <activity android:name=".controller.IntroActivity">
         </activity>

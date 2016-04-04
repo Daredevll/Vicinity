@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/button_shape_dark"
+    android:padding="5dp">
+
+    <ImageView
+        android:id="@+id/review_row_avatar"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_person_white_48dp"/>
+
+    <TextView
+        android:id="@+id/review_row_author_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/review_row_avatar"
+        android:layout_toLeftOf="@+id/review_row_ratingbar"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/review_comment_text"
+        android:textAlignment="gravity"
+        android:gravity="center_vertical|left"
+        android:text="John Doe"
+        android:textSize="15sp"
+        android:textStyle="bold"/>
+
+    <RatingBar
+        android:id="@+id/review_row_ratingbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.RatingBar.Small"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:isIndicator="true"/>
+
+    <TextView
+        android:id="@+id/review_comment_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="It was very fun going out there lorem ipsum, dipsum, pipsum..."
+        android:layout_alignBottom="@+id/review_comment_time"
+        android:layout_below="@+id/review_row_ratingbar"
+        android:layout_toRightOf="@+id/review_row_avatar"/>
+
+    <TextView
+        android:id="@+id/review_comment_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:text="12.04.16\n23:11"
+        android:textAlignment="center"
+        android:layout_alignLeft="@+id/review_row_avatar"
+        android:layout_alignRight="@+id/review_row_avatar"
+        android:layout_below="@+id/review_row_avatar"/>
+
+</RelativeLayout>
