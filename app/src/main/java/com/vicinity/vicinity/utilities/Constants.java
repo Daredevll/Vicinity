@@ -29,4 +29,13 @@ public final class Constants {
     public static final String TYPE_POOL = "spa";                               // TODO: find pools...
     public static final String TYPE_MOVIE = "movie_theater";
 
+    public static final String GET_LOGIN_REQUEST_URL = "";
+    public static final String POST_RESGISTER_REQUEST_URL = "";
+    public static final String POST_RESERVATION_REQUEST_URL = "http://vicinity-vicinity.rhcloud.com/Custumer";
+    public static final String GET_RESERVATION_REQUEST_URL = "http://vicinity-vicinity.rhcloud.com/Custumer";
+    public static final String POST_RESERVATION_ANSWER_URL = "http://vicinity-vicinity.rhcloud.com/Business";
+    public static final String GET_RESERVATION_ANSWER_URL = "";
+
+
+
 }
