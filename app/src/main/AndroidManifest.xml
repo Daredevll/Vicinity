@@ -3,9 +3,10 @@
     package="com.vicinity.vicinity">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.example.mymap.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,11 +18,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC0Y8kXYwz7rIyE5CstbZt9Zq4bDjj7mAg" />
 
-        <activity android:name=".controller.IntroActivity">
-        </activity>
+        <activity android:name=".controller.IntroActivity" />
+
         <service
             android:name=".utilities.location.FetchAddressIntentService"
-            android:exported="false"/>
+            android:exported="false" />
+
         <activity android:name=".controller.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,12 +31,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.MainActivity"></activity>
-        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <activity android:name=".controller.MainActivity" />
+        <!--
+             ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <service
+            android:name=".utilities.services.AnswerListenerService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".controller.NotificationActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:taskAffinity="" />
+
+        <service
+            android:name=".utilities.services.ReservationListenerService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".controller.RegBusinessActivity"></activity>
     </application>
 
 </manifest>

@@ -6,10 +6,9 @@ import android.content.SharedPreferences;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.vicinity.vicinity.R;
+import com.vicinity.vicinity.utilities.exceptions.PrefsFieldNotFoundException;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Jovch on 25-Mar-16.
@@ -48,20 +47,6 @@ public class DummyModelClass {
             editor.putString("GOOG_NAME", user.getGoogleName());
             editor.putString("GOOG_EMAIL", user.getGoogleEmail());
 
-            Set<String> set = new HashSet<>();
-
-            if (user instanceof Personal){
-                set.addAll(((Personal) user).lastVisitedPlaces);
-                editor.putStringSet("LAST_VISITED", set);
-                set.clear();
-                set.addAll(((Personal) user).favouritePlaces);
-                editor.putStringSet("FAV_PLACES", set);
-            }
-            else if (user instanceof Business){
-                set.addAll(((Business) user).getOwnedPlaces());
-                editor.putStringSet("BUSINESS_OWNED", set);
-                editor.putBoolean("IS_ACTIVE", ((Business) user).isActive());
-            }
             editor.commit();
             return true;
         }
@@ -87,6 +72,15 @@ public class DummyModelClass {
             SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
             String defaultValue = "defVal";
             return sPref.getString("GOOG_NAME", defaultValue);
+        }
+
+        public String getLoggedUserId(Context context) throws PrefsFieldNotFoundException {
+            SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
+            String value = sPref.getString("ACC_ID", "defVal");
+            if (value.equals("defVal")){
+                throw new PrefsFieldNotFoundException("The field 'ACC_ID' in prefs is empty or not existent");
+            }
+            return value;
         }
 
         public String getLoggedEmail(Context context){
@@ -119,7 +113,7 @@ public class DummyModelClass {
 
         public void setGoogleSignInAccount(Context context, GoogleSignInAccount acc){
             this.googleSignInAccount = acc;
-            saveToPrefs(new Personal(acc), context);
+            saveToPrefs(new User(acc), context);
             setPrefsLogged(context, true);
         }
 
@@ -132,9 +126,25 @@ public class DummyModelClass {
             this.googleSignInAccount = null;
             setPrefsLogged(context, false);
         }
+
+        public void setLoggedUserTypeBusiness(Context context, boolean businessAccount) {
+            SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sPref.edit();
+            editor.putString(Constants.PREFS_USER_TYPE, businessAccount ? "true" : "false");
+            editor.commit();
+        }
+
+        public boolean isLoggedUserTypeBusiness(Context context) {
+            SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
+            String result = sPref.getString(Constants.PREFS_USER_TYPE, "defVal");
+            if (result.equalsIgnoreCase("defVal")){
+                throw new PrefsFieldNotFoundException("The account type in prefs is empty or not existent");
+            }
+            return result.equalsIgnoreCase("true")?true:false;
+        }
     }
 
-    public static abstract class User{
+    public static class User{
 
         public User(GoogleSignInAccount account) {
             this.googleAccTokenId = account.getIdToken();
@@ -147,6 +157,7 @@ public class DummyModelClass {
         final String googleAccId;
         final String googleName;
         String googleEmail;
+        boolean isBusiness;
 
         public String getGoogleEmail() {
             return googleEmail;
@@ -164,26 +175,17 @@ public class DummyModelClass {
             return googleName;
         }
 
+        public boolean isBusiness(){
+            return isBusiness;
+        }
+
 
     }
 
     public static class Personal extends User{
-        private ArrayList<String> lastVisitedPlaces;
-        private ArrayList<String> favouritePlaces;
-
-
-        public ArrayList<String> getFavouritePlaces() {
-            return favouritePlaces;
-        }
-
-        public ArrayList<String> getLastVisitedPlaces() {
-            return lastVisitedPlaces;
-        }
 
         public Personal(GoogleSignInAccount account) {
             super(account);
-            lastVisitedPlaces = new ArrayList<>();
-            favouritePlaces = new ArrayList<>();
         }
 
     }

@@ -4,6 +4,9 @@ package com.vicinity.vicinity.utilities;
  * Created by Jovch on 27-Mar-16.
  */
 public final class Constants {
+    public static final String S_PREFS_NOTIFICATION_JSON_ARRAY = "uasd8uasdjas89dja89sdjasda89";
+
+
     public static final String BROWSER_API_KEY = "AIzaSyCnNU--KrYAW2QARuei9p1mIDExPQwPcs4";
 
     public static final int SUCCESS_RESULT = 0;
@@ -29,13 +32,23 @@ public final class Constants {
     public static final String TYPE_POOL = "spa";                               // TODO: find pools...
     public static final String TYPE_MOVIE = "movie_theater";
 
-    public static final String GET_LOGIN_REQUEST_URL = "";
-    public static final String POST_RESGISTER_REQUEST_URL = "";
+    public static final int STATUS_CODE_SUCCESS = 200;
+    public static final int STATUS_CODE_NOT_FOUND = 404;
+
+    public static final String GET_LOGIN_REQUEST_URL = "http://vicinity-vicinity.rhcloud.com/LogIn?id=USER_ID";
+
     public static final String POST_RESERVATION_REQUEST_URL = "http://vicinity-vicinity.rhcloud.com/Custumer";
-    public static final String GET_RESERVATION_REQUEST_URL = "http://vicinity-vicinity.rhcloud.com/Custumer";
+    public static final String GET_RESERVATION_ANSWER_URL = "http://vicinity-vicinity.rhcloud.com/Custumer?id=CUSTOMER_ID";
+
     public static final String POST_RESERVATION_ANSWER_URL = "http://vicinity-vicinity.rhcloud.com/Business";
-    public static final String GET_RESERVATION_ANSWER_URL = "";
+    public static final String GET_RESERVATION_REQUEST_URL = "http://vicinity-vicinity.rhcloud.com/Custumer?id=PLACE_ID";
+
+    public static final String POST_REGISTER_NEW_BUSINESS_URL = "http://vicinity-vicinity.rhcloud.com/LogIn";
+    public static final String POST_CONFIRMATION_CODE_URL = "http://vicinity-vicinity.rhcloud.com/SMSServlet";
+
+    public static final String ANSWER_LISTENER_EXTRA_ID = "ANSWER_LISTENER_SERVICE_EXTRA_ID";
+    public static final String RESERVATION_LISTENER_EXTRA_ID = "RESERVATION_LISTENER_SERVICE_EXTRA_ID";
 
 
-
+    public static final String PREFS_USER_TYPE = "SHARED_PREFS_USER_TYPE_FIELD";
 }

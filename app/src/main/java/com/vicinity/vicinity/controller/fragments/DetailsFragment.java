@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.fragments.ResultsFragment.ResultsAndDetailsFragmentListener;
+import com.vicinity.vicinity.utilities.DummyModelClass;
 import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
 
 /**
@@ -53,6 +54,8 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
     ImageView photo; // TODO: this one must be HorizontalScrollView, loading the images
     TextView name;
     Button website;
+    Button dial;
+    Button reserve;
     TextView address;
     TextView distanceAndEta;
     TextView workingTime;
@@ -93,6 +96,8 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
         distanceAndEta = (TextView) root.findViewById(R.id.details_ETA);
         workingTime = (TextView) root.findViewById(R.id.details_working_time);
         openNow = (TextView) root.findViewById(R.id.details_open);
+        reserve = (Button) root.findViewById(R.id.details_reserve_button);
+        dial = (Button) root.findViewById(R.id.details_dial_button);
 
         ratingNumber.setText(String.valueOf(currentPlace.getRating()));
         ratingBar.setRating(currentPlace.getRating());
@@ -111,7 +116,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        Button dial = (Button) root.findViewById(R.id.details_dial_button);
+
 
         dial.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,11 +126,23 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
+        reserve.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: Open dialogue to create reservation...
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.addToBackStack(null);
+
+                ReservationRequestDialog rrd = ReservationRequestDialog.newInstance(DummyModelClass.LoginManager.getInstance()
+                                .getLoggedUserId(getActivity()),
+                                    dListener.getCurrentDetailPlace().getPlaceId(),
+                                    dListener.getCurrentDetailPlace().getName());
+
+                rrd.show(ft, "RESERVEDIALOG");
 
 
-        // TODO: Create two fragments: Map and Reviews
-
-        // TODO: Fetch the reviews and put them into RecyclerView in ReviewsFragment
+            }
+        });
 
         // TODO: Add gesture to switch between Map/Reviews
 

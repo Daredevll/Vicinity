@@ -20,10 +20,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.controllersupport.AppearanceManager;
+import com.vicinity.vicinity.utilities.Constants;
 import com.vicinity.vicinity.utilities.DummyModelClass;
+import com.vicinity.vicinity.utilities.ServerCommManager;
+
+import org.json.JSONObject;
 
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ServerCommManager.RequestSenderContext {
 
 
     private static final int RC_SIGN_IN = 123;
@@ -35,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     LinearLayout userWelcomeBox;
     TextView userWelcomeText;
     RelativeLayout rootView;
+    JSONObject loginResponse;
 
 
     @Override
@@ -106,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (result.isSuccess()){
             GoogleSignInAccount acc = result.getSignInAccount();
             DummyModelClass.LoginManager.getInstance().setGoogleSignInAccount(this, acc);
-            switchBoxes(true);
+            ServerCommManager.getInstance().onLoginUser(this, acc.getId());
         }
         else {
             Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
@@ -126,7 +131,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
      */
     private void switchBoxes(boolean loggedIn){
         if (loggedIn){
-            userWelcomeText.setText("Welcome " + DummyModelClass.LoginManager.getInstance().getLoggedUsername(this));
+            userWelcomeText.setText("Welcome back " + DummyModelClass.LoginManager.getInstance().getLoggedUsername(this));
             userWelcomeBox.setVisibility(View.VISIBLE);
             signIn.setVisibility(View.INVISIBLE);
         }
@@ -150,5 +155,33 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onConnectionSuspended(int i) {
         Log.e("service", mGoogleApiClient.isConnected() ? "api connected in login" : "api not connected in login");
+    }
+
+
+    @Override
+    public void toastMsg(String msg) {
+        // TODO: Check if implementation here needed
+    }
+
+    @Override
+    public void handleLoginResponse(int statusCode, boolean isBusiness) {
+        if (statusCode == Constants.STATUS_CODE_NOT_FOUND){
+            userWelcomeText.setText("Welcome " + DummyModelClass.LoginManager.getInstance().getLoggedUsername(this));
+            DummyModelClass.LoginManager.getInstance().setLoggedUserTypeBusiness(this, false);
+        }
+        else {
+            DummyModelClass.LoginManager.getInstance().setLoggedUserTypeBusiness(this, isBusiness);
+        }
+        switchBoxes(true);
+    }
+
+    @Override
+    public void receiveReservationRequest(JSONObject reservation) {
+
+    }
+
+    @Override
+    public void receiveReservationAnswer(JSONObject answer) {
+
     }
 }

@@ -31,6 +31,8 @@ import com.vicinity.vicinity.utilities.DummyModelClass;
 import com.vicinity.vicinity.utilities.QueryProcessor;
 import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
 import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
+import com.vicinity.vicinity.utilities.services.AnswerListenerService;
+import com.vicinity.vicinity.utilities.services.ReservationListenerService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String readableAddress;
     String queryType;
 
+    String loggedUserId;
+    boolean loggedUserTypeBusiness;
+
     CustomPlace currentPlaceDetails;
 
     DrawerLayout navLayout;
@@ -71,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     MainFragment mainFragment;
 
-    TextView drawerHome, drawerExit;
+    TextView drawerHome, drawerExit, drawerRegBusiness;
 
     ArrayList<TextView> drawerElements;
     Fragment containerFragment;
@@ -87,14 +92,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        loggedUserId = DummyModelClass.LoginManager.getInstance().getLoggedUserId(this);
+        loggedUserTypeBusiness = DummyModelClass.LoginManager.getInstance().isLoggedUserTypeBusiness(this);
+
+        Intent serviceIntent;
+        if (loggedUserTypeBusiness){
+            serviceIntent = new Intent(this, ReservationListenerService.class);
+        }
+        else {
+            serviceIntent = new Intent(this, AnswerListenerService.class);
+        }
+
+        serviceIntent.putExtra(Constants.ANSWER_LISTENER_EXTRA_ID, loggedUserId);
+        startService(serviceIntent);
+
         navLayout = (DrawerLayout) findViewById(R.id.root_layout);
         navDrawer = (LinearLayout) findViewById(R.id.nav_drawer);
         navLayout.setBackgroundResource(AppearanceManager.getBackgroundID());
         drawerElements = new ArrayList<>();
         drawerHome = (TextView) findViewById(R.id.nav_go_home);
         drawerExit = (TextView) findViewById(R.id.nav_exit);
+        drawerRegBusiness = (TextView) findViewById(R.id.nav_register_business);
         drawerElements.add(drawerHome);
         drawerElements.add(drawerExit);
+
+        DrawerLayout.DrawerListener dListener = new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if (currentPlaceDetails != null){
+                    drawerRegBusiness.setVisibility(View.VISIBLE);
+                }
+                else {
+                    drawerRegBusiness.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        };
+
+        navLayout.addDrawerListener(dListener);
 
         mainFragment = new MainFragment();
         Log.e("Fragment", "main frag inited");
@@ -104,8 +153,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         drawerHome.setOnClickListener(this);
         drawerExit.setOnClickListener(this);
+        drawerRegBusiness.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), RegBusinessActivity.class);
+                intent.putExtra("PLACE_ID", currentPlaceDetails.getPlaceId());
+                intent.putExtra("ACC_ID", DummyModelClass.LoginManager.getInstance().getLoggedUserId(getApplicationContext()));
+                intent.putExtra("PLACE_LOC_PHONE", currentPlaceDetails.getLocalPhoneNumber());
+                startActivity(intent);
+            }
+        });
+
 
         ((TextView) findViewById(R.id.nav_logged_user_name)).setText(DummyModelClass.LoginManager.getInstance().getLoggedUsername(this));
+
         ((TextView) findViewById(R.id.nav_logged_user_email)).setText(DummyModelClass.LoginManager.getInstance().getLoggedEmail(this));
 
         signOut = (Button) findViewById(R.id.nav_sign_out);

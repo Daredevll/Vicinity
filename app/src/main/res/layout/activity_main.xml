@@ -98,6 +98,19 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 />
+
+            <TextView
+                android:id="@+id/nav_register_business"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape_light"
+                android:text="Register Business"
+                android:gravity="center"
+                android:textStyle="bold"
+                />
+
         </LinearLayout>
 
     </LinearLayout>

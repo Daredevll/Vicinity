@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/notification_row"
+    android:padding="5dp"
+    android:background="@drawable/button_shape_dark"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/notification_row_place_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="35sp"
+        android:text="Happy-Bar"
+        android:textAlignment="gravity"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/notification_row_date_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12.04.16 21:30"
+        android:textSize="15sp"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/notification_row_people"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3 persons"
+        android:textSize="15sp"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/notification_row_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reservation Confirmed"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/notification_row_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your table is set and ready, we're expecting You!"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:id="@+id/notification_row_button_holder">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Dismiss"
+            android:background="@drawable/button_shape_dark"
+            android:id="@+id/notification_row_button_dismiss" />
+
+        <Space
+            android:id="@+id/notification_row_interbutton_space"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Answer"
+            android:id="@+id/notification_row_button_answer"
+            android:background="@drawable/button_shape_dark"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+</LinearLayout>
