@@ -1,36 +1,25 @@
 package model;
 
-public class ProcessedOrder {
+public class ProcessedOrder extends Order{
 	
-	private String cutumerId;
-	private String restaurantId;
-	private String comment;
 	private boolean isConfirmed;
-	
-	public ProcessedOrder(String cutumerId, String restaurantId, String comment, boolean isConfirmed) {
-		super();
-		this.cutumerId = cutumerId;
-		this.restaurantId = restaurantId;
-		this.comment = comment;
+
+	public ProcessedOrder(String cutumerId,
+			String restaurantId,
+			String comment,
+			int peopleCount,
+			String hour,
+			String date,
+			boolean isConfirmed,
+			String restaurantName) {
+		super(cutumerId, restaurantId, comment, peopleCount, hour, date, restaurantName);
+		
 		this.isConfirmed = isConfirmed;
-	}
-
-	public String getCutumerId() {
-		return cutumerId;
-	}
-
-	public String getRestaurantId() {
-		return restaurantId;
-	}
-
-	public String getComment() {
-		return comment;
+		
 	}
 
 	public boolean isConfirmed() {
 		return isConfirmed;
 	}
-	
-	
 	
 }
