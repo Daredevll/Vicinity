@@ -3,7 +3,6 @@ package com.vicinity.vicinity.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -11,13 +10,6 @@ import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.utilities.exceptions.PrefsFieldNotFoundException;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OptionalDataException;
-import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 
 /**
@@ -32,6 +24,7 @@ public class DummyModelClass {
         private GoogleApiClient googleApiClient;
         private GoogleSignInAccount googleSignInAccount;
         private boolean userLoggedIn;
+        ArrayList<ShortPlace> currentBusinessOwnedPlaces;
 
         public static LoginManager getInstance() {
             if (instance == null) {
@@ -161,74 +154,15 @@ public class DummyModelClass {
         /**
          * Saves in a file the owned places of the current Business Account
          *
-         * @param context
          * @param placesOwned
          */
-        public void setBusinessUserOwnedPlaces(Context context, ArrayList<ShortPlace> placesOwned) {
-            ArrayList<ShortPlace> carryArray;
-
-            File f = new File(Environment.getExternalStorageDirectory() + "/vicinityBusinessOwned");
-            if (!f.exists()) {
-                try {
-                    f.createNewFile();
-                    carryArray = new ArrayList<ShortPlace>();
-                    FileOutputStream fos = new FileOutputStream(f);
-                    ObjectOutputStream oos = new ObjectOutputStream(fos);
-                    oos.writeObject(carryArray);
-                    fos.close();
-                    oos.close();
-                    Log.e("File", "New Places file created, empty list written to new file.");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            try {
-                FileInputStream fis = new FileInputStream(f);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                carryArray = (ArrayList<ShortPlace>) ois.readObject();
-                Log.e("Request", "Places arl Cache loaded from file");
-
-                ois.close();
-                fis.close();
-
-                carryArray.addAll(placesOwned);
-
-                FileOutputStream fos = new FileOutputStream(f);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(carryArray);
-                Log.e("Request", "Notifs arl cache saved to file");
-
-                fos.close();
-                oos.close();
-            } catch (Exception e) {
-
-            }
+        public void setBusinessUserOwnedPlaces(ArrayList<ShortPlace> placesOwned) {
+            currentBusinessOwnedPlaces = placesOwned;
         }
 
 
-        public ArrayList<ShortPlace> getBusinessUserOwnedPlaces(Context context) {
-            ArrayList<ShortPlace> carryArray = null;
-            File f = new File(Environment.getExternalStorageDirectory() + "/vicinityBusinessOwned");
-
-            try {
-                FileInputStream fis = new FileInputStream(f);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                carryArray = (ArrayList<ShortPlace>) ois.readObject();
-                Log.e("Request", "Places arl Cache loaded from file");
-
-                ois.close();
-                fis.close();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (OptionalDataException e) {
-                e.printStackTrace();
-            } catch (StreamCorruptedException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return carryArray;
+        public ArrayList<ShortPlace> getBusinessUserOwnedPlaces() {
+           return this.currentBusinessOwnedPlaces;
         }
 
         public static class User {

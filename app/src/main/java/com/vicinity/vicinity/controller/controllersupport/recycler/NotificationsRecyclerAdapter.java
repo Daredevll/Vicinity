@@ -1,6 +1,7 @@
 package com.vicinity.vicinity.controller.controllersupport.recycler;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,11 @@ import android.view.ViewGroup;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.utilities.CustomNotificationElement;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -45,6 +51,25 @@ public class NotificationsRecyclerAdapter extends RecyclerView.Adapter<Notificat
             @Override
             public void onClick(View v) {
                 notifications.remove(element);
+                final File f =  new File(Environment.getExternalStorageDirectory() + "/vicinityNotifsCacheClient");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            FileOutputStream fos = new FileOutputStream(f);
+                            ObjectOutputStream oos = new ObjectOutputStream(fos);
+                            oos.writeObject(notifications);
+
+                            fos.close();
+                            oos.close();
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
                 notifyDataSetChanged();
             }
         });

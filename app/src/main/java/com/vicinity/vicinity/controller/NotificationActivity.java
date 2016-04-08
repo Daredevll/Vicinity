@@ -19,8 +19,10 @@ import com.vicinity.vicinity.utilities.DummyModelClass;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 
@@ -31,6 +33,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
     Button dismissButton;
     TextView listEmpty;
     ArrayList<CustomNotificationElement> notificationsList;
+    File f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +66,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
     private ArrayList<CustomNotificationElement> loadCachedNotifications(){
 
         ArrayList<CustomNotificationElement> list = new ArrayList<CustomNotificationElement>();
-        File f;
+
 
         if (DummyModelClass.LoginManager.getInstance().isLoggedUserTypeBusiness(this)){
             f = new File(Environment.getExternalStorageDirectory() + "/vicinityNotifsCacheBusiness");
@@ -71,7 +74,6 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         else {
             f = new File(Environment.getExternalStorageDirectory() + "/vicinityNotifsCacheClient");
         }
-
 
         if (!f.exists()){
             return list;
@@ -81,6 +83,9 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
             FileInputStream fis = new FileInputStream(f);
             ObjectInputStream ois = new ObjectInputStream(fis);
             list = (ArrayList<CustomNotificationElement>) ois.readObject();
+
+            fis.close();
+            ois.close();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -106,9 +111,32 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         // TODO: Trigger onPostAnswer with new data..
     }
 
+    public void removeNotification(CustomNotificationElement notifToRemove){
+        notificationsList.remove(notifToRemove);
+        adapter.notifyDataSetChanged();
+        saveToFile(notificationsList);
+    }
 
+    private void saveToFile(final ArrayList<CustomNotificationElement> listToSave){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FileOutputStream fos = new FileOutputStream(f);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(listToSave);
 
+                    fos.close();
+                    oos.close();
 
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
+    }
 
 }

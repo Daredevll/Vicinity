@@ -53,14 +53,18 @@ public class ReservationListenerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //TODO: I'm trying to receive a Place_ID from the intent, but I'm setting an Account_ID before I start it. Make a query here to get A - All owned places, B - Current owned at location
-        String placeId = intent.getStringExtra(Constants.RESERVATION_LISTENER_EXTRA_PLACE_ID);
-        initiate(placeId);
+        String placeIds = intent.getStringExtra(Constants.RESERVATION_LISTENER_EXTRA_PLACE_ID);
+        initiate(placeIds);
 
         return START_REDELIVER_INTENT;
     }
 
 
-    private void initiate(final String placeId){
+    // TODO: Override equals() in CustomNotificationElement so it doesn't stack
+    // TODO: Remove Notifications from list on dismiss/confirm/decline
+
+
+    private void initiate(final String placeIds){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -72,7 +76,7 @@ public class ReservationListenerService extends Service {
                         e.printStackTrace();
                     }
                     Log.e("Request", "Sending Reservations Getting Request");
-                    respondBody = onGetReservationRequest(placeId);
+                    respondBody = onGetReservationRequest(placeIds);
                     if (respondBody != null){
                         addToNotificationJsonCache(respondBody);
                         createNotification();
@@ -97,7 +101,8 @@ public class ReservationListenerService extends Service {
                         .setSmallIcon(R.drawable.ic_event_note_white_48dp)
                                 // TODO: Set the content title to "Reservation Approved/Declined" based on isConfirmed return
                         .setContentTitle("Reservation Received!")
-                        .setContentText("A customer made sent a reservation request!");
+                        .setContentText("A customer made sent a reservation request!")
+                        .setAutoCancel(true);
 // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, NotificationActivity.class);
 
@@ -221,8 +226,7 @@ public class ReservationListenerService extends Service {
         CustomNotificationElement notification = null;
 
         try{
-//            url = new URL(Constants.GET_RESERVATION_REQUEST_URL.replace("PLACE_ID", placeId));
-            url = new URL(Constants.GET_RESERVATION_REQUEST_URL.replace("PLACE_ID", "ChIJu3s-WcGEqkARw3L9VoBY7GE")); //TODO: Remove this after debug, its hardcoded to Happy
+            url = new URL(Constants.GET_RESERVATION_REQUEST_URL.replace("PLACE_ID", placeId));
 
 
             con = (HttpURLConnection) url.openConnection();

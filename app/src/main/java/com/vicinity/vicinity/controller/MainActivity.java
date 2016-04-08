@@ -1,12 +1,12 @@
 package com.vicinity.vicinity.controller;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -30,6 +30,7 @@ import com.vicinity.vicinity.utilities.Constants;
 import com.vicinity.vicinity.utilities.DummyModelClass;
 import com.vicinity.vicinity.utilities.QueryProcessor;
 import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
+import com.vicinity.vicinity.utilities.ShortPlace;
 import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
 import com.vicinity.vicinity.utilities.services.AnswerListenerService;
 import com.vicinity.vicinity.utilities.services.ReservationListenerService;
@@ -100,7 +101,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent serviceIntent;
         if (loggedUserTypeBusiness){
             serviceIntent = new Intent(this, ReservationListenerService.class);
-            serviceIntent.putExtra(Constants.RESERVATION_LISTENER_EXTRA_PLACE_ID, loggedUserId);
+            StringBuffer placesIds = new StringBuffer();
+            for (ShortPlace p: DummyModelClass.LoginManager.getInstance().getBusinessUserOwnedPlaces()){
+                placesIds.append(p.getId() + ",");
+            }
+            String ids = placesIds.substring(0, placesIds.length()-1);
+            serviceIntent.putExtra(Constants.RESERVATION_LISTENER_EXTRA_PLACE_ID, ids);
         }
         else {
             serviceIntent = new Intent(this, AnswerListenerService.class);

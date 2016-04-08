@@ -14,12 +14,9 @@
         android:layout_height="wrap_content"
         android:text="Number of SMS sent:"
         android:id="@+id/textView"
-        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/start"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="25dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="28dp" />
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:id="@+id/smsSent"
@@ -48,4 +45,22 @@
 
 
         </HorizontalScrollView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="stop/start"
+        android:id="@+id/start"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Service is: "
+        android:id="@+id/monitor"
+        android:layout_alignTop="@+id/start"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

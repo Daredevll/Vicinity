@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.vicinity.vicinity.R;
+import com.vicinity.vicinity.controller.NotificationActivity;
 import com.vicinity.vicinity.utilities.CustomNotificationElement;
 import com.vicinity.vicinity.utilities.ServerCommManager;
 
@@ -28,6 +29,10 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
     private static String time;
     private static String date;
     private static String placeName;
+    static CustomNotificationElement cne;
+
+
+
 
 
     // VIEWS AND CONTAINERS:
@@ -38,6 +43,8 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
 
    public static ReservationAnswerDialog newInstance(CustomNotificationElement n){
         ReservationAnswerDialog dialog = new ReservationAnswerDialog();
+
+       cne = n;
 
         Bundle args = new Bundle();
         args.putString("customer_id", n.getCustomerId());
@@ -176,6 +183,7 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
                 @Override
                 public void onClick(View v) {
                     ServerCommManager.getInstance().onPostReservationAnswer(customerId, restaurantId, peopleCount, placeCom, time, date, isConfirm, placeName);
+                    ((NotificationActivity) getActivity()).removeNotification(cne);
                     dismiss();
                     parentFr.dismiss();
                 }

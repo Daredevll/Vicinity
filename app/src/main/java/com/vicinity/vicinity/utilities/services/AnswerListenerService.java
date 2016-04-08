@@ -87,7 +87,8 @@ public class AnswerListenerService extends Service {
                         .setSmallIcon(R.drawable.ic_event_note_white_48dp)
                                 // TODO: Set the content title to "Reservation Approved/Declined" based on isConfirmed return
                         .setContentTitle("Reservation Answer!")
-                        .setContentText("A business has answered to your reservation request");
+                        .setContentText("A business has answered to your reservation request")
+                        .setAutoCancel(true);
 // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, NotificationActivity.class);
 

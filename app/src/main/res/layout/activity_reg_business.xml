@@ -25,7 +25,7 @@
         android:textStyle="bold"
         android:visibility="invisible"
         android:textAlignment="center"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:text="We have gathered all the information necessary to proceed with registering the place you were just exploring and to link it to your account. By clicking 'REGISTER' you confirm that you are the owner or a legal representative of the business that the selected place represents and agree with this application's Terms of Service."/>
 
     <TextView
@@ -38,8 +38,7 @@
         android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="16dp"
-        android:text="Your application was sent successfully. An SMS with auto-generated verification code will be sent on the phone number, registered with the selected business. To verify your connection to the selected business you must input the received code in the field below and click 'SEND CODE'. The pending application would stay open a limited period of time. When that period expires you would no longer be able to use the received code. If you have not received an SMS within 12 hours, please try registering the business again.
-        Thank you for chosing 'Vicinity'"/>
+        android:text="Your application was sent successfully. An SMS with auto-generated verification code will be sent on the phone number, registered with the selected business. To verify your connection to the selected business you must input the received code in the field below and click 'SEND CODE'. The pending application would stay open a limited period of time. When that period expires you would no longer be able to use the received code. If you have not received an SMS within 12 hours, please try registering the business again. Thank you for chosing 'Vicinity'\Note that after clicking 'SEND CODE"/>
 
     <EditText
         android:id="@+id/business_reg_input_code"
@@ -59,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/business_reg_terms"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="140dp"
         android:text="agree and continue"
         android:layout_centerHorizontal="true"/>
 
@@ -70,7 +69,7 @@
     android:layout_below="@+id/business_reg_input_code"
     android:layout_centerHorizontal="true"
     android:layout_marginTop="10dp"
-    android:text="register"
+    android:text="send"
     android:background="@drawable/button_shape_dark"/>
 
     <Button

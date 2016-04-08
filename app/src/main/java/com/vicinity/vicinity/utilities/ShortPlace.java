@@ -1,9 +1,13 @@
 package com.vicinity.vicinity.utilities;
 
+import java.io.Serializable;
+
 /**
  * Created by Jovch on 08-Apr-16.
+ *
  */
-public class ShortPlace {
+public class ShortPlace implements Serializable{
+
     private String id;
     private String name;
     private String address;
@@ -28,5 +32,6 @@ public class ShortPlace {
     public String getAddress() {
         return address;
     }
+
 
 }

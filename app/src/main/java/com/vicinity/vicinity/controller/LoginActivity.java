@@ -85,6 +85,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         switchBoxes(DummyModelClass.LoginManager.getInstance().isUserLoggedIn(this));
 
+        if (DummyModelClass.LoginManager.getInstance().isUserLoggedIn(this)){
+            ServerCommManager.getInstance().onLoginUser(this, DummyModelClass.LoginManager.getInstance().getLoggedUserId(this));
+        }
+
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         else {
             DummyModelClass.LoginManager.getInstance().setLoggedUserTypeBusiness(this, isBusiness);
             if (isBusiness){
-                DummyModelClass.LoginManager.getInstance().setBusinessUserOwnedPlaces(this, placesOwned);
+                DummyModelClass.LoginManager.getInstance().setBusinessUserOwnedPlaces(placesOwned);
             }
         }
         switchBoxes(true);

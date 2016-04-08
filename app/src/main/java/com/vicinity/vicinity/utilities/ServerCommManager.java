@@ -112,8 +112,6 @@ public class ServerCommManager {
                     url = new URL(Constants.POST_REGISTER_NEW_BUSINESS_URL);
                     con = (HttpURLConnection) url.openConnection();
 
-                    con.setRequestMethod("POST");
-                    con.setDoInput(true);
                     con.setDoOutput(true);
                     con.setChunkedStreamingMode(0);
 
@@ -323,7 +321,6 @@ public class ServerCommManager {
                         context.handleLoginResponse(Constants.STATUS_CODE_NOT_FOUND, false, null);
                     }
                     else {
-                        // TODO: Fetch owned places
                         if (responseJson.getBoolean("is_business")){
                             ArrayList<ShortPlace> placesOwned = new ArrayList<ShortPlace>();
                             JSONArray placesArr = responseJson.getJSONArray("places_owned");
