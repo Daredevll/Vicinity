@@ -26,6 +26,8 @@ public class RegBusinessActivity extends AppCompatActivity {
     String placeId;
     String accId;
     String placeLocPhone;
+    String placeName;
+    String placeAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,8 @@ public class RegBusinessActivity extends AppCompatActivity {
         placeId = getIntent().getStringExtra("PLACE_ID");
         accId = getIntent().getStringExtra("ACC_ID");
         placeLocPhone = getIntent().getStringExtra("PLACE_LOC_PHONE");
+        placeName = getIntent().getStringExtra("PLACE_NAME");
+        placeAddress = getIntent().getStringExtra("PLACE_ADDRESS");
 
         buttonSend = (Button) findViewById(R.id.business_reg_send_button);
         buttonSendCode = (Button) findViewById(R.id.business_reg_send_code_button);
@@ -51,7 +55,7 @@ public class RegBusinessActivity extends AppCompatActivity {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ServerCommManager.getInstance().onPostRegisterBusiness(accId, placeId, placeLocPhone);
+                ServerCommManager.getInstance().onPostRegisterBusiness(accId, placeId, placeLocPhone, placeName, placeAddress);
                 Log.e("Request", "Place business Registration method invoked");
                 setVisibilities(false);
             }

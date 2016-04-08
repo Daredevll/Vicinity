@@ -1,7 +1,7 @@
 package com.vicinity.vicinity.controller.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;

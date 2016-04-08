@@ -2,12 +2,22 @@ package com.vicinity.vicinity.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.utilities.exceptions.PrefsFieldNotFoundException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 
 /**
@@ -15,7 +25,7 @@ import java.util.ArrayList;
  */
 public class DummyModelClass {
 
-    public static class LoginManager{
+    public static class LoginManager {
 
         private static LoginManager instance;
 
@@ -23,22 +33,23 @@ public class DummyModelClass {
         private GoogleSignInAccount googleSignInAccount;
         private boolean userLoggedIn;
 
-        public static LoginManager getInstance(){
-            if (instance == null){
+        public static LoginManager getInstance() {
+            if (instance == null) {
                 instance = new LoginManager();
             }
             return instance;
         }
 
-        private LoginManager(){
+        private LoginManager() {
 
         }
 
         /**
          * Logs user to shared prefs
+         *
          * @return
          */
-        public boolean saveToPrefs(User user, Context context){
+        public boolean saveToPrefs(User user, Context context) {
             SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sPref.edit();
 
@@ -51,7 +62,7 @@ public class DummyModelClass {
             return true;
         }
 
-        private void setPrefsLogged(Context context, boolean loggedIn){
+        private void setPrefsLogged(Context context, boolean loggedIn) {
             SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sPref.edit();
             editor.putBoolean("USER_LOGGED", loggedIn);
@@ -59,16 +70,16 @@ public class DummyModelClass {
         }
 
 
-        public boolean checkLogged(Context context){
+        public boolean checkLogged(Context context) {
             SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
             String defaultValue = "defVal";
-            if (sPref.getString("ACC_ID", defaultValue).equals(defaultValue)){
+            if (sPref.getString("ACC_ID", defaultValue).equals(defaultValue)) {
                 return false;
             }
             return true;
         }
 
-        public String getLoggedUsername(Context context){
+        public String getLoggedUsername(Context context) {
             SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
             String defaultValue = "defVal";
             return sPref.getString("GOOG_NAME", defaultValue);
@@ -77,19 +88,19 @@ public class DummyModelClass {
         public String getLoggedUserId(Context context) throws PrefsFieldNotFoundException {
             SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
             String value = sPref.getString("ACC_ID", "defVal");
-            if (value.equals("defVal")){
+            if (value.equals("defVal")) {
                 throw new PrefsFieldNotFoundException("The field 'ACC_ID' in prefs is empty or not existent");
             }
             return value;
         }
 
-        public String getLoggedEmail(Context context){
+        public String getLoggedEmail(Context context) {
             SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
             String defaultValue = "defVal";
             return sPref.getString("GOOG_EMAIL", defaultValue);
         }
 
-        public boolean clearSharedPrefs(Context context){
+        public boolean clearSharedPrefs(Context context) {
             SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sPref.edit();
             editor.clear();
@@ -97,7 +108,7 @@ public class DummyModelClass {
             return true;
         }
 
-        public boolean isUserLoggedIn(Context context){
+        public boolean isUserLoggedIn(Context context) {
             SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
             boolean defVal = false;
             return sPref.getBoolean("USER_LOGGED", defVal);
@@ -107,17 +118,17 @@ public class DummyModelClass {
             this.googleApiClient = mGoogleApiClient;
         }
 
-        public GoogleApiClient getGoogleApiClient(){
+        public GoogleApiClient getGoogleApiClient() {
             return this.googleApiClient;
         }
 
-        public void setGoogleSignInAccount(Context context, GoogleSignInAccount acc){
+        public void setGoogleSignInAccount(Context context, GoogleSignInAccount acc) {
             this.googleSignInAccount = acc;
             saveToPrefs(new User(acc), context);
             setPrefsLogged(context, true);
         }
 
-        public GoogleSignInAccount getSignedInAccount(){
+        public GoogleSignInAccount getSignedInAccount() {
             return this.googleSignInAccount;
         }
 
@@ -125,6 +136,10 @@ public class DummyModelClass {
             clearSharedPrefs(context);
             this.googleSignInAccount = null;
             setPrefsLogged(context, false);
+            File f = new File(Environment.getExternalStorageDirectory() + "/vicinityBusinessOwned");
+            if (f.exists()){
+                f.delete();
+            }
         }
 
         public void setLoggedUserTypeBusiness(Context context, boolean businessAccount) {
@@ -137,78 +152,151 @@ public class DummyModelClass {
         public boolean isLoggedUserTypeBusiness(Context context) {
             SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
             String result = sPref.getString(Constants.PREFS_USER_TYPE, "defVal");
-            if (result.equalsIgnoreCase("defVal")){
+            if (result.equalsIgnoreCase("defVal")) {
                 throw new PrefsFieldNotFoundException("The account type in prefs is empty or not existent");
             }
-            return result.equalsIgnoreCase("true")?true:false;
-        }
-    }
-
-    public static class User{
-
-        public User(GoogleSignInAccount account) {
-            this.googleAccTokenId = account.getIdToken();
-            this.googleAccId = account.getId();
-            this.googleName = account.getDisplayName();
-            this.googleEmail = account.getEmail();
+            return result.equalsIgnoreCase("true") ? true : false;
         }
 
-        final String googleAccTokenId;
-        final String googleAccId;
-        final String googleName;
-        String googleEmail;
-        boolean isBusiness;
+        /**
+         * Saves in a file the owned places of the current Business Account
+         *
+         * @param context
+         * @param placesOwned
+         */
+        public void setBusinessUserOwnedPlaces(Context context, ArrayList<ShortPlace> placesOwned) {
+            ArrayList<ShortPlace> carryArray;
 
-        public String getGoogleEmail() {
-            return googleEmail;
+            File f = new File(Environment.getExternalStorageDirectory() + "/vicinityBusinessOwned");
+            if (!f.exists()) {
+                try {
+                    f.createNewFile();
+                    carryArray = new ArrayList<ShortPlace>();
+                    FileOutputStream fos = new FileOutputStream(f);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(carryArray);
+                    fos.close();
+                    oos.close();
+                    Log.e("File", "New Places file created, empty list written to new file.");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try {
+                FileInputStream fis = new FileInputStream(f);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                carryArray = (ArrayList<ShortPlace>) ois.readObject();
+                Log.e("Request", "Places arl Cache loaded from file");
+
+                ois.close();
+                fis.close();
+
+                carryArray.addAll(placesOwned);
+
+                FileOutputStream fos = new FileOutputStream(f);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(carryArray);
+                Log.e("Request", "Notifs arl cache saved to file");
+
+                fos.close();
+                oos.close();
+            } catch (Exception e) {
+
+            }
         }
 
-        public String getGoogleAccTokenId() {
-            return googleAccTokenId;
+
+        public ArrayList<ShortPlace> getBusinessUserOwnedPlaces(Context context) {
+            ArrayList<ShortPlace> carryArray = null;
+            File f = new File(Environment.getExternalStorageDirectory() + "/vicinityBusinessOwned");
+
+            try {
+                FileInputStream fis = new FileInputStream(f);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                carryArray = (ArrayList<ShortPlace>) ois.readObject();
+                Log.e("Request", "Places arl Cache loaded from file");
+
+                ois.close();
+                fis.close();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (OptionalDataException e) {
+                e.printStackTrace();
+            } catch (StreamCorruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return carryArray;
         }
 
-        public String getGoogleAccId() {
-            return googleAccId;
+        public static class User {
+
+            public User(GoogleSignInAccount account) {
+                this.googleAccTokenId = account.getIdToken();
+                this.googleAccId = account.getId();
+                this.googleName = account.getDisplayName();
+                this.googleEmail = account.getEmail();
+            }
+
+            final String googleAccTokenId;
+            final String googleAccId;
+            final String googleName;
+            String googleEmail;
+            boolean isBusiness;
+
+            public String getGoogleEmail() {
+                return googleEmail;
+            }
+
+            public String getGoogleAccTokenId() {
+                return googleAccTokenId;
+            }
+
+            public String getGoogleAccId() {
+                return googleAccId;
+            }
+
+            public String getGoogleName() {
+                return googleName;
+            }
+
+            public boolean isBusiness() {
+                return isBusiness;
+            }
+
+
         }
 
-        public String getGoogleName() {
-            return googleName;
+        public static class Personal extends User {
+
+            public Personal(GoogleSignInAccount account) {
+                super(account);
+            }
+
         }
 
-        public boolean isBusiness(){
-            return isBusiness;
-        }
+        public static class Business extends User {
 
+            private ArrayList<String> ownedPlaces;
+            private boolean active;
 
-    }
-
-    public static class Personal extends User{
-
-        public Personal(GoogleSignInAccount account) {
-            super(account);
-        }
-
-    }
-
-    public static class Business extends User{
-
-        private ArrayList<String> ownedPlaces;
-        private boolean active;
-
-        public Business(GoogleSignInAccount account, boolean active) {
-            super(account);
+            public Business(GoogleSignInAccount account, boolean active) {
+                super(account);
 //            ownedPlaces = GetOwnedPlacesFromGoogle(account); //TODO: Figure out how to retreive claimed businesses by user ID from Google
-            this.active = active;
-            ownedPlaces = new ArrayList<>();
-        }
+                this.active = active;
+                ownedPlaces = new ArrayList<>();
+            }
 
-        public ArrayList<String> getOwnedPlaces() {
-            return ownedPlaces;
-        }
+            public ArrayList<String> getOwnedPlaces() {
+                return ownedPlaces;
+            }
 
-        public boolean isActive() {
-            return active;
-        }
+            public boolean isActive() {
+                return active;
+            }
 
+        }
     }
 }

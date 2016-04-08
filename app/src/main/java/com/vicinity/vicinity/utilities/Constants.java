@@ -41,13 +41,13 @@ public final class Constants {
     public static final String GET_RESERVATION_ANSWER_URL = "http://vicinity-vicinity.rhcloud.com/Custumer?id=CUSTOMER_ID";
 
     public static final String POST_RESERVATION_ANSWER_URL = "http://vicinity-vicinity.rhcloud.com/Business";
-    public static final String GET_RESERVATION_REQUEST_URL = "http://vicinity-vicinity.rhcloud.com/Custumer?id=PLACE_ID";
+    public static final String GET_RESERVATION_REQUEST_URL = "http://vicinity-vicinity.rhcloud.com/Business?id=PLACE_ID";
 
     public static final String POST_REGISTER_NEW_BUSINESS_URL = "http://vicinity-vicinity.rhcloud.com/LogIn";
     public static final String POST_CONFIRMATION_CODE_URL = "http://vicinity-vicinity.rhcloud.com/SMSServlet";
 
-    public static final String ANSWER_LISTENER_EXTRA_ID = "ANSWER_LISTENER_SERVICE_EXTRA_ID";
-    public static final String RESERVATION_LISTENER_EXTRA_ID = "RESERVATION_LISTENER_SERVICE_EXTRA_ID";
+    public static final String ANSWER_LISTENER_EXTRA_USER_ID = "ANSWER_LISTENER_SERVICE_EXTRA_ID";
+    public static final String RESERVATION_LISTENER_EXTRA_PLACE_ID = "RESERVATION_LISTENER_SERVICE_EXTRA_ID";
 
 
     public static final String PREFS_USER_TYPE = "SHARED_PREFS_USER_TYPE_FIELD";

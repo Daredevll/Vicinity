@@ -2,13 +2,11 @@ package com.vicinity.vicinity.controller.fragments;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +15,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -110,9 +109,10 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 String url = currentPlace.getWebsite();
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
+                Toast.makeText(getActivity(), url, Toast.LENGTH_SHORT).show();
+//                Intent i = new Intent(Intent.ACTION_VIEW);
+//                i.setData(Uri.parse(url));
+//                startActivity(i);
             }
         });
 
@@ -129,7 +129,6 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
         reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Open dialogue to create reservation...
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
 
@@ -159,7 +158,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
     private void switchFragments() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         if (reviewsActive) {
-            MapFragment mf = MapFragment.newInstance();
+            SupportMapFragment mf = SupportMapFragment.newInstance();
             ft.replace(R.id.details_map_reviews_frame, mf);
             mf.getMapAsync(this);
         } else {

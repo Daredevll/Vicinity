@@ -54,6 +54,9 @@ public class NotificationsRecyclerAdapter extends RecyclerView.Adapter<Notificat
             holder.getAnswer().setVisibility(View.GONE);
         }
         else {
+            holder.getDismiss().setVisibility(View.GONE);
+            holder.getButtonSpace().setVisibility(View.GONE);
+            holder.getConfirm().setVisibility(View.INVISIBLE);
             holder.getAnswer().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -51,7 +51,7 @@ public class AnswerListenerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String instanceId = intent.getStringExtra(Constants.ANSWER_LISTENER_EXTRA_ID);
+        String instanceId = intent.getStringExtra(Constants.ANSWER_LISTENER_EXTRA_USER_ID);
         initiate(instanceId);
         return START_REDELIVER_INTENT;
     }
@@ -128,7 +128,7 @@ public class AnswerListenerService extends Service {
     private void addToNotificationJsonCache(String respondBody){
         ArrayList<CustomNotificationElement> notifs;
 
-        File f = new File(getExternalFilesDir(Environment.DIRECTORY_NOTIFICATIONS) + "vicinityNotifsCache");
+        File f = new File(Environment.getExternalStorageDirectory() + "/vicinityNotifsCacheClient");
         if (!f.exists()){
             try {
                 f.createNewFile();

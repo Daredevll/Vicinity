@@ -79,7 +79,7 @@
             <TextView
                 android:id="@+id/nav_go_home"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:textSize="40sp"
                 android:background="@drawable/button_shape_light"
                 android:text="HOME"
@@ -90,7 +90,7 @@
             <TextView
                 android:id="@+id/nav_exit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:textSize="40sp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_shape_light"
@@ -102,11 +102,35 @@
             <TextView
                 android:id="@+id/nav_register_business"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:textSize="30sp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_shape_light"
-                android:text="Register Business"
+                android:text="CLAIM PLACE"
+                android:gravity="center"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/nav_my_places"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textSize="30sp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape_light"
+                android:text="MY PLACES"
+                android:gravity="center"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/nav_verify_place"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textSize="30sp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape_light"
+                android:text="VERIFY PLACE"
                 android:gravity="center"
                 android:textStyle="bold"
                 />

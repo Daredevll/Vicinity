@@ -1,10 +1,12 @@
 package com.vicinity.vicinity.utilities;
 
+import java.io.Serializable;
+
 /**
  * Created by Jovch on 06-Apr-16.
  * CustomNotificationElement class for easier creation and manipulation of inter-user Communication
  */
-public class CustomNotificationElement {
+public class CustomNotificationElement implements Serializable{
 
 
     private String customerId;

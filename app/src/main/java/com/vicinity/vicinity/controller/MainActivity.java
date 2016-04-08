@@ -1,7 +1,7 @@
 package com.vicinity.vicinity.controller;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String loggedUserId;
     boolean loggedUserTypeBusiness;
 
+    ArrayList<CustomPlace> currentSearchResults;
     CustomPlace currentPlaceDetails;
 
     DrawerLayout navLayout;
@@ -94,16 +95,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         loggedUserId = DummyModelClass.LoginManager.getInstance().getLoggedUserId(this);
         loggedUserTypeBusiness = DummyModelClass.LoginManager.getInstance().isLoggedUserTypeBusiness(this);
+        currentSearchResults = new ArrayList<CustomPlace>();
 
         Intent serviceIntent;
         if (loggedUserTypeBusiness){
             serviceIntent = new Intent(this, ReservationListenerService.class);
+            serviceIntent.putExtra(Constants.RESERVATION_LISTENER_EXTRA_PLACE_ID, loggedUserId);
         }
         else {
             serviceIntent = new Intent(this, AnswerListenerService.class);
+            serviceIntent.putExtra(Constants.ANSWER_LISTENER_EXTRA_USER_ID, loggedUserId);
         }
-
-        serviceIntent.putExtra(Constants.ANSWER_LISTENER_EXTRA_ID, loggedUserId);
         startService(serviceIntent);
 
         navLayout = (DrawerLayout) findViewById(R.id.root_layout);
@@ -160,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("PLACE_ID", currentPlaceDetails.getPlaceId());
                 intent.putExtra("ACC_ID", DummyModelClass.LoginManager.getInstance().getLoggedUserId(getApplicationContext()));
                 intent.putExtra("PLACE_LOC_PHONE", currentPlaceDetails.getLocalPhoneNumber());
+                intent.putExtra("PLACE_NAME", currentPlaceDetails.getName());
+                intent.putExtra("PLACE_ADDRESS", currentPlaceDetails.getVicinity());
                 startActivity(intent);
             }
         });
@@ -194,9 +198,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param newFragment
      */
     private void replaceFragment(Fragment newFragment, boolean addToBackStack){
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_content_view, newFragment);
-        if (addToBackStack){
+        if (true){
             ft.addToBackStack(null);
         }
         ft.commit();
@@ -296,6 +300,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return this.currentPlaceDetails;
     }
 
+    @Override
+    public void setCurrentSearchResults(ArrayList<CustomPlace> currentResults) {
+        this.currentSearchResults = currentResults;
+    }
+
+    @Override
+    public ArrayList<CustomPlace> getCurrentSearchResults() {
+        return this.currentSearchResults;
+    }
+
 
     private class PlaceDetailAsyncFetcher extends AsyncTask<CustomPlace, Void, CustomPlace>{
 
@@ -392,5 +406,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             currentPlaceDetails = inputPlace;
             replaceFragment(new DetailsFragment(), true);
         }
+    }
+
+    /*
+        Implements logic to prohibit the "backing" from the main fragment of the main activity and also clears the saved
+        searches if went back to main fragment
+     */
+    @Override
+    public void onBackPressed() {
+
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 1) {
+
+        } else {
+            if (count == 2) {
+                currentSearchResults.clear();
+            }
+            getSupportFragmentManager().popBackStack();
+        }
+
     }
 }

@@ -2,6 +2,8 @@ package com.vicinity.secretarysms;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,10 +16,18 @@ import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
+    TextView log;
+    TextView count;
+
+    public static int counter = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        log = (TextView) findViewById(R.id.text_log);
+        count = (TextView) findViewById(R.id.smsSent);
 
 
         new Thread(new Runnable() {
@@ -85,7 +95,10 @@ public class MainActivity extends AppCompatActivity {
 
         String text = "Hello, your place-activation code is: " + code;
 
-        // TODO: Send dat damn sms...
+        SmsManager sManager = SmsManager.getDefault();
+        sManager.sendTextMessage(number, null, text, null, null);
+        count.setText(String.valueOf(++counter));
+        log.setText(log.getText() + "\nSMS Sent to:    " + number);
 
     }
 

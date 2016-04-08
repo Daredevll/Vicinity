@@ -299,7 +299,7 @@ public class QueryProcessor {
         protected ArrayList<CustomPlace> doInBackground(String... params) {
 
 
-            Log.e("URL", "Async doInBackground started...");
+            Log.e("URL", "AsyncResultsFiller doInBackground started...");
             URL url = null;
             HttpURLConnection connection = null;
             Scanner sc = null;

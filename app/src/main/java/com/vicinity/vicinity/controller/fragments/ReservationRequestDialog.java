@@ -2,7 +2,7 @@ package com.vicinity.vicinity.controller.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,9 +33,6 @@ public class ReservationRequestDialog extends DialogFragment{
     String placeName;
     int people;
     String comment;
-    String date;
-    String time;
-
 
     Button timePick, datePick;
     Button cancel;
@@ -50,7 +47,7 @@ public class ReservationRequestDialog extends DialogFragment{
     static ReservationRequestDialog newInstance(String customerId, String placeId, String placeName) {
         ReservationRequestDialog f = new ReservationRequestDialog();
 
-        // Supplying customer_id and place_id
+        // Supplying customer_id, place_id and place_name
         Bundle args = new Bundle();
         args.putString("customer_id", customerId);
         args.putString("place_id", placeId);
@@ -79,16 +76,16 @@ public class ReservationRequestDialog extends DialogFragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v  = inflater.inflate(R.layout.new_reservation_dialogue, container, false);
+        View v  = inflater.inflate(R.layout.dialog_new_reservation, container, false);
 
-        timePick = (Button) v.findViewById(R.id.time_set_button);
-        datePick = (Button) v.findViewById(R.id.set_date_button);
-        dateTv = (TextView) v.findViewById(R.id.dialog_date_tv);
-        timeTv = (TextView) v.findViewById(R.id.dialog_time_tv);
-        proceed = (Button) v.findViewById(R.id.dialog_proceed);
-        cancel = (Button) v.findViewById(R.id.dialog_cancel);
-        peoplePick = (EditText) v.findViewById(R.id.people_number);
-        commentEdit = (EditText) v.findViewById(R.id.dialog_comment);
+        timePick = (Button) v.findViewById(R.id.dialog_reserve_set_time_button);
+        datePick = (Button) v.findViewById(R.id.dialog_reserve_set_date_button);
+        dateTv = (TextView) v.findViewById(R.id.dialog_reserve_date_tv);
+        timeTv = (TextView) v.findViewById(R.id.dialog_reserve_time_tv);
+        proceed = (Button) v.findViewById(R.id.dialog_reserve_proceed);
+        cancel = (Button) v.findViewById(R.id.dialog_reserve_cancel);
+        peoplePick = (EditText) v.findViewById(R.id.dialog_reserve_people_number);
+        commentEdit = (EditText) v.findViewById(R.id.dialog_reserve_comment);
 
 
         timePick.setOnClickListener(new View.OnClickListener() {

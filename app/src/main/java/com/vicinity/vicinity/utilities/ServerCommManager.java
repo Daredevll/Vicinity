@@ -3,6 +3,7 @@ package com.vicinity.vicinity.utilities;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -53,15 +55,11 @@ public class ServerCommManager {
                     url = new URL(Constants.POST_CONFIRMATION_CODE_URL);
                     con = (HttpURLConnection) url.openConnection();
 
-                    con.setRequestMethod("POST");
-                    con.setDoInput(true);
                     con.setDoOutput(true);
-                    con.setChunkedStreamingMode(0);
 
                     con.getOutputStream().write(jsonString.getBytes());
 
-                    con.connect();
-
+                    con.getInputStream();
 
                     Log.e("Request", "Sending Generated Code From User successfully");
 
@@ -92,7 +90,7 @@ public class ServerCommManager {
      * @param placeId
      * @param placeLocalPhone
      */
-    public void onPostRegisterBusiness(final String accId, final String placeId, final String placeLocalPhone){
+    public void onPostRegisterBusiness(final String accId, final String placeId, final String placeLocalPhone, final String placeName, final String placeAddress){
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -105,6 +103,8 @@ public class ServerCommManager {
                     outgoing.put("user_id_goog", accId);
                     outgoing.put("place_id_goog", placeId);
                     outgoing.put("place_phone_loc", placeLocalPhone);
+                    outgoing.put("place_name", placeName);
+                    outgoing.put("place_address", placeAddress);
 
                     jsonString = outgoing.toString();
 
@@ -119,7 +119,7 @@ public class ServerCommManager {
 
                     con.getOutputStream().write(jsonString.getBytes());
 
-                    con.connect();
+                    con.getInputStream();
                     Log.e("Request", "Request for registering new business sent successfully");
 
                 } catch (JSONException e) {
@@ -141,7 +141,9 @@ public class ServerCommManager {
      * This method is invoked only when the Business replies to a notification message with a
      * new Reservation Request from a Customer.
      */
-    public void onPostReservationAnswer(final RequestSenderContext context, final String customerId, final String placeId, final String comment, final boolean confirmed) {
+    public void onPostReservationAnswer(final String customerId, final String placeId, final int peopleCount, final String comment,
+                                        final String time, final String date, final boolean confirmed, final String placeName) {
+
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -151,11 +153,16 @@ public class ServerCommManager {
                 HttpURLConnection con = null;
 
                 try {
+
                     JSONObject outgoing = new JSONObject();
                     outgoing.put("customer_id", customerId);
                     outgoing.put("restaurant_id", placeId);
+                    outgoing.put("people_count", peopleCount);
                     outgoing.put("comment", comment);
+                    outgoing.put("time", time);
+                    outgoing.put("date", date);
                     outgoing.put("isConfirmed", confirmed);
+                    outgoing.put("restaurant_name", placeName);
 
                     jsonString = outgoing.toString();
 
@@ -163,14 +170,13 @@ public class ServerCommManager {
                     url = new URL(Constants.POST_RESERVATION_ANSWER_URL);
                     con = (HttpURLConnection) url.openConnection();
 
-                    con.setRequestMethod("POST");
-                    con.setDoInput(true);
                     con.setDoOutput(true);
                     con.setChunkedStreamingMode(0);
 
                     con.getOutputStream().write(jsonString.getBytes());
 
-                    con.connect();
+                    Log.e("Request", "CODE ON ANSWER POST: " + con.getResponseCode());
+                    con.getInputStream();
 
                     Log.e("Request", "Answer to reservation sent successfully");
 
@@ -231,14 +237,13 @@ public class ServerCommManager {
                     url = new URL(Constants.POST_RESERVATION_REQUEST_URL);
                     con = (HttpURLConnection) url.openConnection();
 
-                    con.setRequestMethod("POST");
-                    con.setDoInput(true);
                     con.setDoOutput(true);
                     con.setChunkedStreamingMode(0);
 
                     con.getOutputStream().write(jsonString.getBytes());
 
-                    con.connect();
+                    con.getInputStream();
+
 
                     Log.e("Request", "Request for new reservation sent successfully");
 
@@ -296,6 +301,7 @@ public class ServerCommManager {
                     Log.e("Request", "Request for login check sent successfully, response code is: " + con.getResponseCode());
 
                     response = new JSONObject(sb.toString());
+                    Log.e("Response", "LoginResponse Json: " + sb.toString());
 
 
                 } catch (JSONException e) {
@@ -314,10 +320,25 @@ public class ServerCommManager {
             protected void onPostExecute(JSONObject responseJson) {
                 try {
                     if (responseJson == null){
-                        context.handleLoginResponse(Constants.STATUS_CODE_NOT_FOUND, false);
+                        context.handleLoginResponse(Constants.STATUS_CODE_NOT_FOUND, false, null);
                     }
                     else {
-                        context.handleLoginResponse(Constants.STATUS_CODE_SUCCESS, responseJson.getBoolean("is_business"));
+                        // TODO: Fetch owned places
+                        if (responseJson.getBoolean("is_business")){
+                            ArrayList<ShortPlace> placesOwned = new ArrayList<ShortPlace>();
+                            JSONArray placesArr = responseJson.getJSONArray("places_owned");
+                            for (int x = 0; x < placesArr.length(); x++){
+                                String id = placesArr.getJSONObject(x).getString("place_id");
+                                String name = placesArr.getJSONObject(x).getString("place_name");
+                                String addr = placesArr.getJSONObject(x).getString("place_address");
+
+                                placesOwned.add(new ShortPlace(id, name, addr));
+                            }
+                            context.handleLoginResponse(Constants.STATUS_CODE_SUCCESS, true, placesOwned);
+                        }
+                        else {
+                            context.handleLoginResponse(Constants.STATUS_CODE_SUCCESS, false, null);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -336,11 +357,7 @@ public class ServerCommManager {
      *
      */
     public interface RequestSenderContext{
-        void toastMsg(String msg);
-        void handleLoginResponse(int statusCode, boolean isBusiness);
-        // TODO: The next two methods should be implemented by the service that listens for messages on the server and maybe should be replaced by broadcastReceivers
-        void receiveReservationRequest(JSONObject reservation);
-        void receiveReservationAnswer(JSONObject answer);
+        void handleLoginResponse(int statusCode, boolean isBusiness, ArrayList<ShortPlace> ownedPlaces);
     }
 
 }

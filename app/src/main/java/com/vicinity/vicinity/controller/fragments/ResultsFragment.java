@@ -2,7 +2,7 @@ package com.vicinity.vicinity.controller.fragments;
 
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -58,10 +58,19 @@ public class ResultsFragment extends Fragment implements QueryProcessor.PlacesLi
         recView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recView.setAdapter(recAdapter);
 
-
-        // Initiates a query to Google, which dynamically callbacks to fill the recAdapter list with elements
-        QueryProcessor.getInstance().fillResultsList(this, rListener.getCurrentLocation(), rListener.getQueryType());
-
+        /*
+            This if-else checks if there's already loaded list of places and if so, it instantiates the adapter
+            with it, without making new request. This
+         */
+        if (rListener.getCurrentSearchResults() == null || rListener.getCurrentSearchResults().isEmpty()) {
+            // Initiates a query to Google, which dynamically callbacks to fill the recAdapter list with elements
+            QueryProcessor.getInstance().fillResultsList(this, rListener.getCurrentLocation(), rListener.getQueryType());
+            rListener.setCurrentSearchResults(placesList);
+        }
+        else {
+            placesList.addAll(rListener.getCurrentSearchResults());
+            recAdapter.notifyDataSetChanged();
+        }
 
         // TODO: Make a query to Google with the params passed from the previous fragment
         // TODO: Process the returned result and inflate it to a RecyclerView
@@ -86,6 +95,10 @@ public class ResultsFragment extends Fragment implements QueryProcessor.PlacesLi
         String getQueryType();
         void startDetailsFragment(CustomPlace place);
         CustomPlace getCurrentDetailPlace();
+        void setCurrentSearchResults(ArrayList<CustomPlace> currentResults);
+        ArrayList<CustomPlace> getCurrentSearchResults();
     }
+
+
 
 }

@@ -52,8 +52,9 @@ public class ReservationListenerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String instanceId = intent.getStringExtra(Constants.RESERVATION_LISTENER_EXTRA_ID);
-        initiate(instanceId);
+        //TODO: I'm trying to receive a Place_ID from the intent, but I'm setting an Account_ID before I start it. Make a query here to get A - All owned places, B - Current owned at location
+        String placeId = intent.getStringExtra(Constants.RESERVATION_LISTENER_EXTRA_PLACE_ID);
+        initiate(placeId);
 
         return START_REDELIVER_INTENT;
     }
@@ -65,15 +66,19 @@ public class ReservationListenerService extends Service {
             public void run() {
                 String respondBody;
                 while (true){
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Log.e("Request", "Sending Reservations Getting Request");
                     respondBody = onGetReservationRequest(placeId);
                     if (respondBody != null){
                         addToNotificationJsonCache(respondBody);
                         createNotification();
                     }
-                    try {
-                        Thread.sleep(60000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    else {
+                        Log.e("Request", "No Reservations pending for this business");
                     }
                 }
             }
@@ -91,8 +96,8 @@ public class ReservationListenerService extends Service {
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_event_note_white_48dp)
                                 // TODO: Set the content title to "Reservation Approved/Declined" based on isConfirmed return
-                        .setContentTitle("Reservation Answer!")
-                        .setContentText("A business has answered to your reservation request");
+                        .setContentTitle("Reservation Received!")
+                        .setContentText("A customer made sent a reservation request!");
 // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, NotificationActivity.class);
 
@@ -129,10 +134,17 @@ public class ReservationListenerService extends Service {
     private void addToNotificationJsonCache(String respondBody){
         ArrayList<CustomNotificationElement> notifs;
 
-        File f = new File(getExternalFilesDir(Environment.DIRECTORY_NOTIFICATIONS) + "vicinityNotifsCacheBusiness");
+        File f = new File(Environment.getExternalStorageDirectory() + "/vicinityNotifsCacheBusiness");
         if (!f.exists()){
             try {
                 f.createNewFile();
+                notifs = new ArrayList<CustomNotificationElement>();
+                FileOutputStream fos = new FileOutputStream(f);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(notifs);
+                fos.close();
+                oos.close();
+                Log.e("File", "New file created, empty list written to new file.");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -140,15 +152,13 @@ public class ReservationListenerService extends Service {
 
         try {
             FileInputStream fis = new FileInputStream(f);
-            if (fis.read() != -1){
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                notifs = (ArrayList<CustomNotificationElement>) ois.readObject();
-                Log.e("Request", "Notifs arl Cache loaded from file");
-                ois.close();
-            }
-            else {
-                notifs = new ArrayList<CustomNotificationElement>();
-            }
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            notifs = (ArrayList<CustomNotificationElement>) ois.readObject();
+            Log.e("Request", "Notifs arl Cache loaded from file");
+
+            ois.close();
+            fis.close();
+
 
             JSONArray notifsArray = new JSONArray(respondBody);
 
@@ -171,11 +181,10 @@ public class ReservationListenerService extends Service {
                 comment = singleNotif.getString("comment");
                 time = singleNotif.getString("time");
                 date = singleNotif.getString("date");
-                isConfirmed = singleNotif.getBoolean("isConfirmed");
                 isAnswer = false;
                 placeName = singleNotif.getString("restaurant_name");
 
-                notifs.add(new CustomNotificationElement(custId, restId, ppl, comment, time, date, isConfirmed, isAnswer, placeName));
+                notifs.add(new CustomNotificationElement(custId, restId, ppl, comment, time, date, false, isAnswer, placeName));
             }
 
             FileOutputStream fos = new FileOutputStream(f);
@@ -183,7 +192,6 @@ public class ReservationListenerService extends Service {
             oos.writeObject(notifs);
             Log.e("Request", "Notifs arl cache saved to file");
 
-            fis.close();
             fos.close();
             oos.close();
 
@@ -213,18 +221,23 @@ public class ReservationListenerService extends Service {
         CustomNotificationElement notification = null;
 
         try{
-            url = new URL(Constants.GET_RESERVATION_REQUEST_URL.replace("PLACE_ID", placeId));
+//            url = new URL(Constants.GET_RESERVATION_REQUEST_URL.replace("PLACE_ID", placeId));
+            url = new URL(Constants.GET_RESERVATION_REQUEST_URL.replace("PLACE_ID", "ChIJu3s-WcGEqkARw3L9VoBY7GE")); //TODO: Remove this after debug, its hardcoded to Happy
+
+
             con = (HttpURLConnection) url.openConnection();
 
-            sc = new Scanner(con.getInputStream());
-            sb = new StringBuffer();
-            while (sc.hasNextLine()){
-                sb.append(sc.nextLine());
-            }
-            Log.e("Request", "Request for reservation answer sent successfully");
+            Log.e("Request", "Request for new reservations sent from inGetReservationRequest()");
 
             if (con.getResponseCode() == Constants.STATUS_CODE_NOT_FOUND){
+                Log.e("Request", "Status code is 404");
                 return null;
+            }
+
+            sb = new StringBuffer();
+            sc = new Scanner(con.getInputStream());
+            while (sc.hasNextLine()){
+                sb.append(sc.nextLine());
             }
 
         } catch (MalformedURLException e) {

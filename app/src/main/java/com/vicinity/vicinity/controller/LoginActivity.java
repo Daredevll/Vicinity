@@ -23,8 +23,11 @@ import com.vicinity.vicinity.controller.controllersupport.AppearanceManager;
 import com.vicinity.vicinity.utilities.Constants;
 import com.vicinity.vicinity.utilities.DummyModelClass;
 import com.vicinity.vicinity.utilities.ServerCommManager;
+import com.vicinity.vicinity.utilities.ShortPlace;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ServerCommManager.RequestSenderContext {
@@ -158,30 +161,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    @Override
-    public void toastMsg(String msg) {
-        // TODO: Check if implementation here needed
-    }
 
     @Override
-    public void handleLoginResponse(int statusCode, boolean isBusiness) {
+    public void handleLoginResponse(int statusCode, boolean isBusiness, ArrayList<ShortPlace> placesOwned) {
         if (statusCode == Constants.STATUS_CODE_NOT_FOUND){
             userWelcomeText.setText("Welcome " + DummyModelClass.LoginManager.getInstance().getLoggedUsername(this));
             DummyModelClass.LoginManager.getInstance().setLoggedUserTypeBusiness(this, false);
         }
         else {
             DummyModelClass.LoginManager.getInstance().setLoggedUserTypeBusiness(this, isBusiness);
+            if (isBusiness){
+                DummyModelClass.LoginManager.getInstance().setBusinessUserOwnedPlaces(this, placesOwned);
+            }
         }
         switchBoxes(true);
     }
 
-    @Override
-    public void receiveReservationRequest(JSONObject reservation) {
-
-    }
-
-    @Override
-    public void receiveReservationAnswer(JSONObject answer) {
-
-    }
 }

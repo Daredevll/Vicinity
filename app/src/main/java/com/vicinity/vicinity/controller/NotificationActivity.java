@@ -2,6 +2,7 @@ package com.vicinity.vicinity.controller;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.controllersupport.recycler.NotificationsRecyclerAdapter;
+import com.vicinity.vicinity.controller.fragments.ReservationAnswerDialog;
 import com.vicinity.vicinity.utilities.CustomNotificationElement;
 import com.vicinity.vicinity.utilities.DummyModelClass;
 
@@ -64,11 +66,10 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         File f;
 
         if (DummyModelClass.LoginManager.getInstance().isLoggedUserTypeBusiness(this)){
-            f = new File(Environment.getExternalStorageDirectory() + Environment.DIRECTORY_NOTIFICATIONS + "vicinityNotifsCacheBusiness");
-
+            f = new File(Environment.getExternalStorageDirectory() + "/vicinityNotifsCacheBusiness");
         }
         else {
-            f = new File(Environment.getExternalStorageDirectory() + Environment.DIRECTORY_NOTIFICATIONS + "vicinityNotifsCache");
+            f = new File(Environment.getExternalStorageDirectory() + "/vicinityNotifsCacheClient");
         }
 
 
@@ -95,6 +96,19 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
     @Override
     public void triggerAnswer(CustomNotificationElement notificationToBeAnswered) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.addToBackStack(null);
 
+        ReservationAnswerDialog rad = ReservationAnswerDialog.newInstance(notificationToBeAnswered);
+        rad.show(ft, "RESERVEDIALOG");
+
+        // TODO: "Are you sure?" popup.
+        // TODO: Trigger onPostAnswer with new data..
     }
+
+
+
+
+
+
 }
