@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.fragments.ResultsFragment.ResultsAndDetailsFragmentListener;
 import com.vicinity.vicinity.utilities.DummyModelClass;
+import com.vicinity.vicinity.utilities.GooglePictureDownloader;
 import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
 
 /**
@@ -37,7 +39,7 @@ import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
  * {@link ResultsAndDetailsFragmentListener} interface
  * to handle interaction events.
  */
-public class DetailsFragment extends Fragment implements OnMapReadyCallback {
+public class DetailsFragment extends Fragment implements OnMapReadyCallback, GooglePictureDownloader.IDownloadImageListener {
 
     private boolean reviewsActive;
     private ResultsAndDetailsFragmentListener dListener;
@@ -116,7 +118,10 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-
+        GooglePictureDownloader pictureDownloader = new GooglePictureDownloader(this);
+//        for(String photoReference : currentPlace.getPhotoReferences){
+//            pictureDownloader.downloadImage(photoReference);
+//        }
 
         dial.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,5 +201,10 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback {
         googleMap.animateCamera(zoom);
         googleMap.setTrafficEnabled(true);
         this.map = googleMap;
+    }
+
+    @Override
+    public void onImageDownloaded(Bitmap image) {
+        //TODO set the bitmap to the view
     }
 }
