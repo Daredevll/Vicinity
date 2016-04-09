@@ -79,6 +79,7 @@ public class ReservationListenerService extends Service {
                     respondBody = onGetReservationRequest(placeIds);
                     if (respondBody != null){
                         addToNotificationJsonCache(respondBody);
+                        Log.e("DEBUG", "response with array of notifications: " + respondBody);
                         createNotification();
                     }
                     else {

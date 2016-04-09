@@ -51,4 +51,5 @@ public final class Constants {
 
 
     public static final String PREFS_USER_TYPE = "SHARED_PREFS_USER_TYPE_FIELD";
+    public static final String REGISTER_BUSINESS_ACTIVITY_VERIFY_BOOLEAN_EXTRA = "register business activity goes directly to verify or not";
 }

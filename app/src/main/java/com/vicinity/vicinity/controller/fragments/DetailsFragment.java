@@ -2,8 +2,10 @@ package com.vicinity.vicinity.controller.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -13,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +36,8 @@ import com.vicinity.vicinity.utilities.DummyModelClass;
 import com.vicinity.vicinity.utilities.GooglePictureDownloader;
 import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -44,6 +50,8 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
     private ResultsAndDetailsFragmentListener dListener;
     private GoogleMap map;
 
+    public boolean spin;
+
 
     // Containers and views:
 
@@ -52,7 +60,6 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
     ImageView addToFav;
     ImageView share;
     ImageView streetView;
-    ImageView photo; // TODO: this one must be HorizontalScrollView, loading the images
     TextView name;
     Button website;
     Button dial;
@@ -61,6 +68,13 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
     TextView distanceAndEta;
     TextView workingTime;
     TextView openNow;
+
+    LinearLayout photoWall;
+    HorizontalScrollView wallScroller;
+
+    CustomPlace currentPlace;
+
+    GooglePictureDownloader pictureDownloader;
 
     FrameLayout fragmentHolder;
 
@@ -83,14 +97,13 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
         View root = inflater.inflate(R.layout.fragment_details, container, false);
         reviewsActive = true;
 
-        final CustomPlace currentPlace = dListener.getCurrentDetailPlace();
+        currentPlace = dListener.getCurrentDetailPlace();
 
         ratingNumber = (TextView) root.findViewById(R.id.details_rating_tv);
         ratingBar = (RatingBar) root.findViewById(R.id.details_rating_rb);
         addToFav = (ImageView) root.findViewById(R.id.details_fav_img);
         share = (ImageView) root.findViewById(R.id.details_share_img);
         streetView = (ImageView) root.findViewById(R.id.details_streetview_img);
-        photo = (ImageView) root.findViewById(R.id.details_photo);
         name = (TextView) root.findViewById(R.id.details_name);
         website = (Button) root.findViewById(R.id.details_website_url);
         address = (TextView) root.findViewById(R.id.details_address);
@@ -99,6 +112,24 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
         openNow = (TextView) root.findViewById(R.id.details_open);
         reserve = (Button) root.findViewById(R.id.details_reserve_button);
         dial = (Button) root.findViewById(R.id.details_dial_button);
+        photoWall = (LinearLayout) root.findViewById(R.id.details_photo_holder);
+        wallScroller = (HorizontalScrollView) root.findViewById(R.id.details_photo_scroll_view);
+
+        if (currentPlace.getPhotosRefs() != null){
+            hangPhotos(currentPlace.getPhotosRefs());
+            if (currentPlace.getPhotosRefs().size() > 1) {
+                spin = true;
+                startImageRoller();
+            }
+        }
+        else {
+            ImageView imgV = new ImageView(getContext());
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            imgV.setAdjustViewBounds(true);
+            imgV.setLayoutParams(lp);
+            imgV.setImageResource(R.drawable.default_photo_detail);
+            photoWall.addView(imgV);
+        }
 
         ratingNumber.setText(String.valueOf(currentPlace.getRating()));
         ratingBar.setRating(currentPlace.getRating());
@@ -110,18 +141,18 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
         website.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (currentPlace.getWebsite() == null || currentPlace.getWebsite().isEmpty()){
+                    Toast.makeText(getActivity(), currentPlace.getName() + " has not set its Website yet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String url = currentPlace.getWebsite();
-                Toast.makeText(getActivity(), url, Toast.LENGTH_SHORT).show();
-//                Intent i = new Intent(Intent.ACTION_VIEW);
-//                i.setData(Uri.parse(url));
-//                startActivity(i);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
             }
         });
 
-        GooglePictureDownloader pictureDownloader = new GooglePictureDownloader(this);
-//        for(String photoReference : currentPlace.getPhotoReferences){
-//            pictureDownloader.downloadImage(photoReference);
-//        }
+
 
         dial.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,6 +184,18 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
         return root;
     }
 
+    private void hangPhotos(ArrayList<String> photosRefs) {
+        ArrayList<ImageView> frames = new ArrayList<>();
+        for (String photoRef: photosRefs){
+            ImageView imgV = new ImageView(getContext());
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            imgV.setAdjustViewBounds(true);
+            imgV.setLayoutParams(lp);
+            photoWall.addView(imgV);
+            frames.add(imgV);
+        }
+        GooglePictureDownloader.getInstance().fillFramesWithPhotos(getActivity(), frames, photosRefs);
+    }
 
     @Override
     public void onDetach() {
@@ -204,6 +247,33 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
 
     @Override
     public void onImageDownloaded(Bitmap image) {
-        //TODO set the bitmap to the view
+
+    }
+
+    private void startImageRoller() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(4000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                int x = 2;
+                while (spin){
+                    if (!wallScroller.canScrollHorizontally(x)){
+                        x = -x;
+                    }
+                    final int finalX = x;
+                    wallScroller.scrollBy(finalX, 0);
+
+                    try {
+                        Thread.sleep(80);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 }

@@ -47,11 +47,6 @@ public class ResultsFragment extends Fragment implements QueryProcessor.PlacesLi
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_results, container, false);
 
-
-        // TODO: Create a RecyclerView
-        // TODO: Create a ResultsRecyclerAdapter
-        // TODO: Create a RecyclerView.ViewHolder / use Place objects /
-
         placesList = new ArrayList<CustomPlace>();
         recView = (RecyclerView) rootView.findViewById(R.id.recycler_view_results_fragment);
         recAdapter = new ResultsRecyclerAdapter(getActivity(), placesList);
@@ -64,7 +59,7 @@ public class ResultsFragment extends Fragment implements QueryProcessor.PlacesLi
          */
         if (rListener.getCurrentSearchResults() == null || rListener.getCurrentSearchResults().isEmpty()) {
             // Initiates a query to Google, which dynamically callbacks to fill the recAdapter list with elements
-            QueryProcessor.getInstance().fillResultsList(this, rListener.getCurrentLocation(), rListener.getQueryType());
+            QueryProcessor.getInstance().fillResultsList(this, rListener.getCurrentLocation(), rListener.getQueryType(), rListener.isSortPopular());
             rListener.setCurrentSearchResults(placesList);
         }
         else {
@@ -97,6 +92,7 @@ public class ResultsFragment extends Fragment implements QueryProcessor.PlacesLi
         CustomPlace getCurrentDetailPlace();
         void setCurrentSearchResults(ArrayList<CustomPlace> currentResults);
         ArrayList<CustomPlace> getCurrentSearchResults();
+        Boolean isSortPopular();
     }
 
 

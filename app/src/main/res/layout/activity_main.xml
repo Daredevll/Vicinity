@@ -23,11 +23,10 @@
 
 
     <!--The Nav Drawer-->
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/nav_drawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
         android:divider="#ffffffff"
@@ -35,10 +34,12 @@
         android:background="@drawable/layout_shape">
 
         <LinearLayout
+            android:id="@+id/nav_drawer_user_info_container"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
-            android:background="@drawable/button_shape_light">
+            android:background="@drawable/button_shape_light"
+            android:layout_alignParentTop="true">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -70,17 +71,19 @@
                 android:text="Sign Out"/>
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_centerVertical="true"
             android:layout_marginTop="60dp">
 
             <TextView
                 android:id="@+id/nav_go_home"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:textSize="40sp"
+                android:textSize="30sp"
                 android:background="@drawable/button_shape_light"
                 android:text="HOME"
                 android:gravity="center"
@@ -91,34 +94,10 @@
                 android:id="@+id/nav_exit"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:textSize="40sp"
+                android:textSize="30sp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_shape_light"
                 android:text="EXIT"
-                android:gravity="center"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:id="@+id/nav_register_business"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:textSize="30sp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_shape_light"
-                android:text="CLAIM PLACE"
-                android:gravity="center"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:id="@+id/nav_my_places"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:textSize="30sp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/button_shape_light"
-                android:text="MY PLACES"
                 android:gravity="center"
                 android:textStyle="bold"
                 />
@@ -135,8 +114,32 @@
                 android:textStyle="bold"
                 />
 
+            <TextView
+                android:id="@+id/nav_my_places"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textSize="30sp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape_light"
+                android:text="MY PLACES"
+                android:gravity="center"
+                android:textStyle="bold"
+                />
+
         </LinearLayout>
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/nav_register_business"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="30sp"
+            android:background="@drawable/button_shape_light"
+            android:text="CLAIM PLACE"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_alignParentBottom="true"
+            />
+
+    </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>

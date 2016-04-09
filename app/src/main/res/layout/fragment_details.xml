@@ -7,19 +7,27 @@
     <!-- TODO: Update blank fragment layout -->
 
 
-    <ImageView
-        android:id="@+id/details_photo"
+    <HorizontalScrollView
+        android:id="@+id/details_photo_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/default_photo_detail"
-        android:adjustViewBounds="true"
+        android:layout_height="240dp"
         android:layout_marginTop="20dp"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:id="@+id/details_photo_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_alignBottom="@+id/details_photo"
+        android:layout_alignBottom="@+id/details_photo_scroll_view"
         android:background="@drawable/black_gradient">
 
         <TextView
@@ -118,7 +126,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/details_photo"
+        android:layout_below="@+id/details_photo_scroll_view"
         android:layout_alignParentBottom="true"
         android:background="@drawable/black_gradient"
         android:scaleY="-1">
@@ -133,7 +141,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_toLeftOf="@+id/details_working_time"
-        android:layout_below="@+id/details_photo"
+        android:layout_below="@+id/details_photo_scroll_view"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -173,6 +181,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/details_ETA"
         android:layout_above="@+id/details_interact_layout"
+        android:layout_marginTop="5dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 

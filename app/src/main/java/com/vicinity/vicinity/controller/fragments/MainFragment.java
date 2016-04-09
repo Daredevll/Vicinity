@@ -1,18 +1,20 @@
 package com.vicinity.vicinity.controller.fragments;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.vicinity.vicinity.R;
@@ -31,7 +33,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
 
     private AddressResultReceiver mResultReceiver;
 
+    View.OnClickListener sortingListener;
+
     private EditText addressField;
+
+    Button sortPopular, sortNearest;
 
     private ImageView restaurant;
     private ImageView bar;
@@ -76,11 +82,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
             Log.e("service", "Receiver in Fragment reached");
             if (resultCode == Constants.SUCCESS_RESULT){
                 Log.e("service", "ResultCode is success");
-                receivedAddress = resultData.getString(Constants.RESULT_DATA_KEY);
+                receivedAddress = resultData.getString(Constants.RESULT_DATA_KEY).replace("\n", " ");
 
                 Log.e("service", "received address is" + receivedAddress);
                 mListener.setReadableAddress(receivedAddress);
-                addressField.setHint(receivedAddress.replace("\n", " "));
+                addressField.setHint(receivedAddress);
             }
         }
     }
@@ -101,9 +107,43 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_main, container, false);
 
+
         mResultReceiver = new AddressResultReceiver(new Handler());
 
+        sortingListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.main_fragment_sort_filter_nearest:
+                        ((Button) v).setTextColor(0xFFFFFFFF);
+                        sortPopular.setTextColor(0x6EFFFFFF);
+                        mListener.setSortPopular(false);
+                        break;
+                    case R.id.main_fragment_sort_filter_popular:
+                        ((Button) v).setTextColor(0xFFFFFFFF);
+                        sortNearest.setTextColor(0x6EFFFFFF);
+                        mListener.setSortPopular(true);
+                        break;
+                }
+            }
+        };
+
         addressField = (EditText) layout.findViewById(R.id.city_input);
+
+        sortNearest = (Button) layout.findViewById(R.id.main_fragment_sort_filter_nearest);
+        sortPopular = (Button) layout.findViewById(R.id.main_fragment_sort_filter_popular);
+
+        sortPopular.setOnClickListener(sortingListener);
+        sortNearest.setOnClickListener(sortingListener);
+
+
+        // Checks the current sorting setting and loads the same
+        if (mListener.isSortPopular() == null || mListener.isSortPopular()){
+            sortPopular.callOnClick();
+        }
+        else {
+            sortNearest.callOnClick();
+        }
 
         restaurant = (ImageView) layout.findViewById(R.id.restaurant_image_view);
         bar = (ImageView) layout.findViewById(R.id.bar_image_view);
@@ -125,6 +165,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
         gym.setOnClickListener(this);
         pool.setOnClickListener(this);
         movies.setOnClickListener(this);
+
+
 
 
 
@@ -155,6 +197,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
      */
     @Override
     public void onClick(View v) {
+        if (mListener.getCurrentLocation() == null && addressField.getText().toString().isEmpty()){
+            Toast.makeText(getActivity(), "Location not detected yet, please wait", Toast.LENGTH_SHORT).show();
+            return;
+        }
         switch (v.getId()){
             case R.id.restaurant_image_view:
                 mListener.startResultsFragment(Constants.TYPE_RESTAURANT);
@@ -234,6 +280,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
         void startResultsFragment(String queryType);
         void setReadableAddress(String address);
         String getReadableAddress();
+        Boolean isSortPopular();
+        void setSortPopular(Boolean popular);
     }
 
 }

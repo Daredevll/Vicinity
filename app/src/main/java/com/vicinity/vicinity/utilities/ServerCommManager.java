@@ -1,7 +1,9 @@
 package com.vicinity.vicinity.utilities;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,11 +37,11 @@ public class ServerCommManager {
 
 
 
-    public void onSendGeneratedCode(final String accId, final String code){
-        new AsyncTask<Void, Void, Void>(){
+    public void onSendGeneratedCode(final Context context, final String accId, final String code){
+        new AsyncTask<Void, Void, Boolean>(){
 
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Boolean doInBackground(Void... params) {
                 String jsonString;
                 URL url = null;
                 HttpURLConnection con = null;
@@ -56,10 +58,12 @@ public class ServerCommManager {
                     con = (HttpURLConnection) url.openConnection();
 
                     con.setDoOutput(true);
-
                     con.getOutputStream().write(jsonString.getBytes());
-
                     con.getInputStream();
+
+                    if (con.getResponseCode() != Constants.STATUS_CODE_SUCCESS){
+                        return false;
+                    }
 
                     Log.e("Request", "Sending Generated Code From User successfully");
 
@@ -70,12 +74,30 @@ public class ServerCommManager {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                return null;
+                return true;
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
-                // TODO: Replace hard-coded msg with status message received as a response from the server!!!
+            protected void onPostExecute(Boolean verifySuccess) {
+                if (verifySuccess){
+                    Toast.makeText(context, "Successful Verification", Toast.LENGTH_SHORT).show();
+                    DummyModelClass.LoginManager.getInstance().signOutAccount(context);
+                    Toast.makeText(context, "Your app will close in a second", Toast.LENGTH_SHORT).show();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.exit(0);
+                        }
+                    }).start();
+                }
+                else {
+                    Toast.makeText(context, "Invalid code", Toast.LENGTH_SHORT).show();
+                }
             }
 
         }.execute();
@@ -108,6 +130,7 @@ public class ServerCommManager {
 
                     jsonString = outgoing.toString();
 
+                    Log.e("DEBUG", "Json for registering business: " + jsonString);
 
                     url = new URL(Constants.POST_REGISTER_NEW_BUSINESS_URL);
                     con = (HttpURLConnection) url.openConnection();

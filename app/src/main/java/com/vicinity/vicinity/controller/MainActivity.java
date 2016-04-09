@@ -3,7 +3,6 @@ package com.vicinity.vicinity.controller;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -12,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
@@ -49,6 +48,7 @@ import java.util.Scanner;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainFragmentListener, LocationRequester,
         GoogleApiClient.ConnectionCallbacks, ResultsFragment.ResultsAndDetailsFragmentListener {
 
+
     @Override
     public void onConnected(Bundle bundle) {
         Log.e("service", "apiClient connected in MainActivity");
@@ -67,11 +67,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String loggedUserId;
     boolean loggedUserTypeBusiness;
 
+
+    private Boolean popular;
+
     ArrayList<CustomPlace> currentSearchResults;
     CustomPlace currentPlaceDetails;
 
     DrawerLayout navLayout;
-    LinearLayout navDrawer;
+    RelativeLayout navDrawer;
     Button signOut;
 
     CharSequence selectedAddress;
@@ -79,9 +82,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     MainFragment mainFragment;
 
     TextView drawerHome, drawerExit, drawerRegBusiness;
+    TextView drawerMyPlaces, drawerVerifyPlace;
 
-    ArrayList<TextView> drawerElements;
-    Fragment containerFragment;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -107,22 +109,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             String ids = placesIds.substring(0, placesIds.length()-1);
             serviceIntent.putExtra(Constants.RESERVATION_LISTENER_EXTRA_PLACE_ID, ids);
+            startService(serviceIntent);
         }
-        else {
-            serviceIntent = new Intent(this, AnswerListenerService.class);
-            serviceIntent.putExtra(Constants.ANSWER_LISTENER_EXTRA_USER_ID, loggedUserId);
-        }
+        serviceIntent = new Intent(this, AnswerListenerService.class);
+        serviceIntent.putExtra(Constants.ANSWER_LISTENER_EXTRA_USER_ID, loggedUserId);
+
         startService(serviceIntent);
 
         navLayout = (DrawerLayout) findViewById(R.id.root_layout);
-        navDrawer = (LinearLayout) findViewById(R.id.nav_drawer);
+        navDrawer = (RelativeLayout) findViewById(R.id.nav_drawer);
         navLayout.setBackgroundResource(AppearanceManager.getBackgroundID());
-        drawerElements = new ArrayList<>();
         drawerHome = (TextView) findViewById(R.id.nav_go_home);
         drawerExit = (TextView) findViewById(R.id.nav_exit);
         drawerRegBusiness = (TextView) findViewById(R.id.nav_register_business);
-        drawerElements.add(drawerHome);
-        drawerElements.add(drawerExit);
+        drawerMyPlaces = (TextView) findViewById(R.id.nav_my_places);
+        drawerVerifyPlace = (TextView) findViewById(R.id.nav_verify_place);
+
+        if (DummyModelClass.LoginManager.getInstance().isLoggedUserTypeBusiness(this)){
+            drawerMyPlaces.setVisibility(View.VISIBLE);
+        }
+        else {
+            drawerMyPlaces.setVisibility(View.VISIBLE);
+        }
+
 
         DrawerLayout.DrawerListener dListener = new DrawerLayout.DrawerListener() {
             @Override
@@ -161,18 +170,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         drawerHome.setOnClickListener(this);
         drawerExit.setOnClickListener(this);
-        drawerRegBusiness.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), RegBusinessActivity.class);
-                intent.putExtra("PLACE_ID", currentPlaceDetails.getPlaceId());
-                intent.putExtra("ACC_ID", DummyModelClass.LoginManager.getInstance().getLoggedUserId(getApplicationContext()));
-                intent.putExtra("PLACE_LOC_PHONE", currentPlaceDetails.getLocalPhoneNumber());
-                intent.putExtra("PLACE_NAME", currentPlaceDetails.getName());
-                intent.putExtra("PLACE_ADDRESS", currentPlaceDetails.getVicinity());
-                startActivity(intent);
-            }
-        });
+        drawerRegBusiness.setOnClickListener(this);
+        drawerVerifyPlace.setOnClickListener(this);
+        drawerMyPlaces.setOnClickListener(this);
 
 
         ((TextView) findViewById(R.id.nav_logged_user_name)).setText(DummyModelClass.LoginManager.getInstance().getLoggedUsername(this));
@@ -213,27 +213,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-//    /* Overrides the back button press action to forbid the user to go back to the Intro Activity after entering */
-//    @Override
-//    public void onBackPressed() {
-//
-//    }
-
-    private void setDrawerElementActive(TextView view, int colorSelected, int colorDefault) {
-        for (TextView tv : drawerElements) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                tv.setTextColor(getColor(colorDefault));
-            } else {
-                tv.setTextColor(getResources().getColor(colorDefault));
-            }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            view.setTextColor(getColor(colorSelected));
-        } else {
-            view.setTextColor(getResources().getColor(colorSelected));
-        }
-    }
-
     /* Implements the behavior of the Nav drawer buttons */
     @Override
     public void onClick(View v) {
@@ -242,10 +221,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //TODO: Close app
                 break;
             case R.id.nav_go_home:
-                //TODO: Set home Fragment
+                for (int i = getSupportFragmentManager().getBackStackEntryCount(); i > 1; i--){
+                    onBackPressed();
+                }
+                break;
+            case R.id.nav_register_business:
+                Intent intent = new Intent(getApplicationContext(), RegBusinessActivity.class);
+                intent.putExtra(Constants.REGISTER_BUSINESS_ACTIVITY_VERIFY_BOOLEAN_EXTRA, false);
+                intent.putExtra("PLACE_ID", currentPlaceDetails.getPlaceId());
+                intent.putExtra("ACC_ID", DummyModelClass.LoginManager.getInstance().getLoggedUserId(getApplicationContext()));
+                intent.putExtra("PLACE_LOC_PHONE", currentPlaceDetails.getInternationalPhoneNumber());
+                intent.putExtra("PLACE_NAME", currentPlaceDetails.getName());
+                intent.putExtra("PLACE_ADDRESS", currentPlaceDetails.getVicinity());
+                startActivity(intent);
+                break;
+            case R.id.nav_verify_place:
+                Intent verifyIntent = new Intent(getApplicationContext(), RegBusinessActivity.class);
+                verifyIntent.putExtra(Constants.REGISTER_BUSINESS_ACTIVITY_VERIFY_BOOLEAN_EXTRA, true);
+                verifyIntent.putExtra("ACC_ID", DummyModelClass.LoginManager.getInstance().getLoggedUserId(this));
+                startActivity(verifyIntent);
+                break;
+            case R.id.nav_my_places:
+                // TODO: Make something thats yet to be done wtf...
                 break;
         }
-        setDrawerElementActive((TextView) v, R.color.transparentWhite, R.color.colorWhite);
     }
 
     @Override
@@ -316,6 +315,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return this.currentSearchResults;
     }
 
+    @Override
+    public Boolean isSortPopular() {
+        return this.popular;
+    }
+
+
+    public void setSortPopular(Boolean popular) {
+        this.popular = popular;
+    }
 
     private class PlaceDetailAsyncFetcher extends AsyncTask<CustomPlace, Void, CustomPlace>{
 
@@ -323,13 +331,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected CustomPlace doInBackground(CustomPlace... params) {
             String urlLink = "https://maps.googleapis.com/maps/api/place/details/json?placeid=PLACE_ID&key=BROWSER_KEY";
             CustomPlace cp = params[0];
-            // TODO: Fetch the place details by ID
 
             //PLACE'S DETAILS FIELDS:
 
-            String localPhoneNumber;
-            String internationalPhoneNumber;
-            String website;
+            String localPhoneNumber = null;
+            String internationalPhoneNumber = null;
+            String website = null;
             String utcOffset;
 
             // REVIEW'S FIELDS:
@@ -337,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             double  reviewRating;
             String reviewAuthorName;
             String reviewLanguage;
-            String reviewProfilePhotoUrl;
+            String reviewProfilePhotoUrl = null;
             String reviewComment;
             long   reviewTime;
 
@@ -364,21 +371,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 root = new JSONObject(sb.toString());
                 resultObject = root.getJSONObject("result");
-                Log.e("DETAILSLOG", "Root Json Fetched");
+                System.out.println(root.toString());
 
-                localPhoneNumber = resultObject.getString("formatted_phone_number");
-                internationalPhoneNumber = resultObject.getString("international_phone_number");
-                website = resultObject.getString("website");
+                if (resultObject.has("formatted_phone_number")){
+                    localPhoneNumber = resultObject.getString("formatted_phone_number");
+                }
+                if (resultObject.has("international_phone_number")){
+                    internationalPhoneNumber = resultObject.getString("international_phone_number");
+                }
+                if (resultObject.has("website")){
+                    website = resultObject.getString("website");
+                }
+                else {
+                    website = null;
+                }
+
+                /*
+                    Fetches photos references
+                 */
+                if (resultObject.has("photos")) {
+                    ArrayList<String> photosRefs = new ArrayList<>();
+                    JSONArray photos = resultObject.getJSONArray("photos");
+                    for (int z = 0; z < photos.length(); z++){
+                        JSONObject photo = photos.getJSONObject(z);
+                        photosRefs.add(photo.getString("photo_reference"));
+                    }
+                    cp.addPhotosRefs(photosRefs);
+                }
+
+
                 utcOffset = resultObject.getString("utc_offset");
 
                 JSONArray reviewsArr = resultObject.getJSONArray("reviews");
 
+
+
+
+                /*
+                    Fetches the reviews
+                 */
                 for (int idx = 0; idx < reviewsArr.length(); idx++){
                     JSONObject singleRev = reviewsArr.getJSONObject(idx);
 
                     reviewAuthorName = singleRev.getString("author_name");
                     reviewLanguage = singleRev.getString("language");
-                    reviewProfilePhotoUrl = singleRev.getString("profile_photo_url");
+                    if (singleRev.has("profile_photo_url")) {
+                        reviewProfilePhotoUrl = singleRev.getString("profile_photo_url");
+                    }
+                    else {
+                        reviewProfilePhotoUrl = null;
+                    }
                     reviewRating = singleRev.getDouble("rating");
                     reviewComment = singleRev.getString("text");
                     reviewTime = singleRev.getLong("time");
@@ -387,9 +429,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     r.setLanguage(reviewLanguage);
                     r.setComment(reviewComment);
-                    r.setProfilePhotoUrl(reviewProfilePhotoUrl);
+                    if (reviewProfilePhotoUrl != null) {
+                        r.setProfilePhotoUrl(reviewProfilePhotoUrl);
+                    }
                     reviewsList.add(r);
                 }
+
+
+
+
 
 
                 cp.addDetails(localPhoneNumber, internationalPhoneNumber, website, utcOffset, reviewsList);
@@ -428,6 +476,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             if (count == 2) {
                 currentSearchResults.clear();
+            }
+            else if (count == 3){
+                currentPlaceDetails = null;
+                ((DetailsFragment) getSupportFragmentManager().getFragments()).spin = false;
             }
             getSupportFragmentManager().popBackStack();
         }

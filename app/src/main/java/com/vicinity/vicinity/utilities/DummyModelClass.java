@@ -129,9 +129,9 @@ public class DummyModelClass {
             clearSharedPrefs(context);
             this.googleSignInAccount = null;
             setPrefsLogged(context, false);
-            File f = new File(Environment.getExternalStorageDirectory() + "/vicinityBusinessOwned");
-            if (f.exists()){
-                f.delete();
+            File bOwned = new File(Environment.getExternalStorageDirectory() + "/vicinityBusinessOwned");
+            if (bOwned.exists()){
+                bOwned.delete();
             }
         }
 

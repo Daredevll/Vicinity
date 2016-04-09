@@ -19,6 +19,8 @@ public class ReviewsViewHolder extends RecyclerView.ViewHolder{
     private TextView comment;
     private TextView time;
 
+    private boolean expanded;
+
 
     public ReviewsViewHolder(View itemView) {
         super(itemView);
@@ -28,8 +30,16 @@ public class ReviewsViewHolder extends RecyclerView.ViewHolder{
         setAvatar((ImageView) itemView.findViewById(R.id.review_row_avatar));
         setComment((TextView) itemView.findViewById(R.id.review_comment_text));
         setTime((TextView) itemView.findViewById(R.id.review_comment_time));
+        expanded = false;
     }
 
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
 
     public RatingBar getRating() {
         return rating;

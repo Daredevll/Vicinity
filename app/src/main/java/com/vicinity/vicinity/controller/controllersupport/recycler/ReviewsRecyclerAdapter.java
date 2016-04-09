@@ -29,8 +29,7 @@ public class ReviewsRecyclerAdapter extends RecyclerView.Adapter<ReviewsViewHold
     public ReviewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View row = inflater.inflate(R.layout.reviews_rec_row, parent, false);
-        ReviewsViewHolder holder = new ReviewsViewHolder(row);
-        // TODO: Implement onClickListener for the reviews to expand...
+        final ReviewsViewHolder holder = new ReviewsViewHolder(row);
         return holder;
     }
 
@@ -40,9 +39,32 @@ public class ReviewsRecyclerAdapter extends RecyclerView.Adapter<ReviewsViewHold
 
         holder.getRating().setRating((float) r.getRating());
         holder.getAuthorName().setText(r.getAuthorName());
-        holder.getAvatar().setImageResource(R.drawable.ic_person_white_48dp);  //TODO: Set real profile pictures if available
+        if (r.getAvatar() != null){
+            holder.getAvatar().setImageBitmap(r.getAvatar());
+        }
+        else {
+            holder.getAvatar().setImageResource(R.drawable.ic_person_white_48dp);
+        }
         holder.getComment().setText(r.getComment());
-        holder.getTime().setText("21:12:12\n14:31");    //TODO: Parse from currentTimeMilis to readable DateTime
+        String months;
+        String days;
+        long passedSeconds = (System.currentTimeMillis()/1000) - r.getTime();
+        long passedDays = passedSeconds/86400;
+        if (passedDays > 30){
+            months = String.valueOf(passedDays/30) + " months and ";
+            if (passedDays%30 != 0) {
+                days = String.valueOf(passedDays % 30) + " days";
+            }
+            else {
+                days = "";
+                months = months.replace(" and ", "");
+            }
+        }
+        else {
+            days = String.valueOf(passedDays + " days");
+            months = "";
+        }
+        holder.getTime().setText(months + days + " ago");
     }
 
     @Override

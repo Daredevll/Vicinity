@@ -32,13 +32,13 @@
         android:id="@+id/business_reg_after_instructions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
         android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="16dp"
-        android:text="Your application was sent successfully. An SMS with auto-generated verification code will be sent on the phone number, registered with the selected business. To verify your connection to the selected business you must input the received code in the field below and click 'SEND CODE'. The pending application would stay open a limited period of time. When that period expires you would no longer be able to use the received code. If you have not received an SMS within 12 hours, please try registering the business again. Thank you for chosing 'Vicinity'\Note that after clicking 'SEND CODE"/>
+        android:text="Your submission was sent successfully. An SMS with auto-generated verification code will be sent on the phone number, registered with the selected business. To verify your connection to the selected business you must input the received code in the field below and click 'SEND CODE'. The received code would be valid for 6 hours since now. If you have not received an SMS within that period, please try registering the business again. Thank you for chosing 'Vicinity'\n\n Please note that in order for the application to keep working properly, 3 seconds after clicking 'SEND CODE' you will be Signed Out and the application will close. Then You can continue using it by simply opening it and Signing In again"/>
 
     <EditText
         android:id="@+id/business_reg_input_code"
@@ -50,36 +50,37 @@
         android:hint="Enter code"
         android:textAlignment="center"
         android:inputType="numberSigned"
-        android:layout_below="@+id/business_reg_agree_check"
+        android:layout_above="@+id/business_reg_send_button"
         android:layout_centerHorizontal="true"/>
 
     <CheckBox
         android:id="@+id/business_reg_agree_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/business_reg_terms"
+        android:layout_above="@+id/business_reg_input_code"
         android:layout_marginTop="140dp"
         android:text="agree and continue"
         android:layout_centerHorizontal="true"/>
 
     <Button
-    android:id="@+id/business_reg_send_button"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@+id/business_reg_input_code"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="10dp"
-    android:text="send"
-    android:background="@drawable/button_shape_dark"/>
+        android:id="@+id/business_reg_send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="send" android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/button_shape_dark"/>
 
     <Button
         android:id="@+id/business_reg_send_code_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/business_reg_input_code"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="send code"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/button_shape_dark"/>
 
 

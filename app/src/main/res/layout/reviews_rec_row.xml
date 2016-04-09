@@ -12,6 +12,9 @@
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:adjustViewBounds="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
         android:src="@drawable/ic_person_white_48dp"/>
 
     <TextView
@@ -21,6 +24,7 @@
         android:layout_toRightOf="@+id/review_row_avatar"
         android:layout_toLeftOf="@+id/review_row_ratingbar"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
         android:layout_above="@+id/review_comment_text"
         android:textAlignment="gravity"
         android:gravity="center_vertical|left"
@@ -41,10 +45,12 @@
         android:id="@+id/review_comment_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="It was very fun going out there lorem ipsum, dipsum, pipsum..."
-        android:layout_alignBottom="@+id/review_comment_time"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:text="going outun going out there lorem ipsum, dipsum, pipsum...tout there lorem ipsum, dipsum, pipsum...t was very fun going out there lorem ipsum, dipsum, pipsum..."
+        android:layout_toRightOf="@+id/review_row_avatar"
         android:layout_below="@+id/review_row_ratingbar"
-        android:layout_toRightOf="@+id/review_row_avatar"/>
+        android:layout_marginTop="3dp"/>
 
     <TextView
         android:id="@+id/review_comment_time"

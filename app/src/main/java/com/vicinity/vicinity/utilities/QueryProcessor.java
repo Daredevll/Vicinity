@@ -1,5 +1,6 @@
 package com.vicinity.vicinity.utilities;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -56,20 +57,24 @@ public class QueryProcessor {
 
 
 
-    public void fillResultsList(PlacesListRequester customer, Location location, String type){
+    public void fillResultsList(PlacesListRequester customer, Location location, String type, boolean isSortPopular){
         this.listCustomer = customer;
         this.customerLocation = location;
         retrievedPlaces = new ArrayList<CustomPlace>();
         String fullURI;
         String locationString = "location=" + location.getLatitude() + "," + location.getLongitude();
+        String rankBy = "&rankby=distance";
         String radius = "&radius=3000";
         String placeType = "&type=" + type;
         String key = "&key=" + Constants.BROWSER_API_KEY;
 
         // TODO: Remove this dummy url after test
-        fullURI = BASE_URL+locationString+radius+placeType+key;
-//        fullURI = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=hotel&key=AIzaSyDHvkAJQni2X0Qdv6n9JYNEz-l7W6t5-WU";
-
+        if (isSortPopular) {
+            fullURI = BASE_URL + locationString + radius + placeType + key;
+        }
+        else {
+            fullURI = BASE_URL + locationString + rankBy + placeType + key;
+        }
 
         Log.e("URL", "sending request as: " + fullURI); // fullURI is OK!
         new AsyncResultsFiller().execute(fullURI);
@@ -84,6 +89,7 @@ public class QueryProcessor {
 
     public class CustomPlace{
 
+
         public class Review{
 
             double rating;
@@ -92,6 +98,7 @@ public class QueryProcessor {
             String profilePhotoUrl;
             String comment;
             long time;
+            Bitmap avatar;
 
             public Review(String authorName, double rating, long time){
                 this.authorName = authorName;
@@ -104,7 +111,14 @@ public class QueryProcessor {
             }
 
             public void setProfilePhotoUrl(String profilePhotoUrl) {
+                if (!profilePhotoUrl.isEmpty()){
+                    GooglePictureDownloader.getInstance().setBitmap(profilePhotoUrl, this);
+                }
                 this.profilePhotoUrl = profilePhotoUrl;
+            }
+
+            public Bitmap getAvatar() {
+                return avatar;
             }
 
             public void setComment(String comment) {
@@ -134,9 +148,39 @@ public class QueryProcessor {
             public long getTime() {
                 return time;
             }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+
+                Review review = (Review) o;
+
+                if (Double.compare(review.rating, rating) != 0) return false;
+                if (time != review.time) return false;
+                return authorName.equals(review.authorName);
+
+            }
+
+            @Override
+            public int hashCode() {
+                int result;
+                long temp;
+                temp = Double.doubleToLongBits(rating);
+                result = (int) (temp ^ (temp >>> 32));
+                result = 31 * result + authorName.hashCode();
+                result = 31 * result + (int) (time ^ (time >>> 32));
+                return result;
+            }
+
+            public void setBmp(Bitmap bmp){
+                this.avatar = bmp;
+            }
         }
 
         ArrayList<Review> reviews;
+
+        ArrayList<String > photosRefs;
 
         double longitude;
         double latitude;
@@ -205,7 +249,17 @@ public class QueryProcessor {
             if (reviews == null){
                 reviews = new ArrayList<Review>();
             }
-            reviews.add(review);
+            if (!reviews.contains(review)) {
+                reviews.add(review);
+            }
+        }
+
+        public void addPhotosRefs(ArrayList<String> photosRefs) {
+            this.photosRefs = photosRefs;
+        }
+
+        public ArrayList<String> getPhotosRefs(){
+            return this.photosRefs;
         }
 
         public ArrayList<Review> getReviews(){
@@ -291,6 +345,7 @@ public class QueryProcessor {
         public String getUtcOffset() {
             return utcOffset;
         }
+
     }
 
     class AsyncResultsFiller extends AsyncTask<String, CustomPlace, ArrayList<CustomPlace>>{
@@ -365,7 +420,7 @@ public class QueryProcessor {
                     JSONArray typesArr = singleResult.getJSONArray("types");
                     types = new String[typesArr.length()];
                     for (int t = 0; t < typesArr.length(); t++){
-                        types[t] = typesArr.getString(t);
+                        types[t] = typesArr.getString(t).replace("_", " ");
                     }
 
                     vicinity = singleResult.getString("vicinity");
