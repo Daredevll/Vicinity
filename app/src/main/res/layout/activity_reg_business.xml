@@ -50,36 +50,38 @@
         android:hint="Enter code"
         android:textAlignment="center"
         android:inputType="numberSigned"
-        android:layout_below="@+id/business_reg_agree_check"
+        android:layout_above="@+id/business_reg_send_button"
         android:layout_centerHorizontal="true"/>
 
     <CheckBox
         android:id="@+id/business_reg_agree_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/business_reg_terms"
+        android:layout_above="@+id/business_reg_input_code"
         android:layout_marginTop="140dp"
         android:text="agree and continue"
         android:layout_centerHorizontal="true"/>
 
     <Button
-    android:id="@+id/business_reg_send_button"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@+id/business_reg_input_code"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="10dp"
-    android:text="send"
-    android:background="@drawable/button_shape_dark"/>
+        android:id="@+id/business_reg_send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="send"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/button_shape_dark"/>
 
     <Button
         android:id="@+id/business_reg_send_code_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/business_reg_input_code"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="send code"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/button_shape_dark"/>
 
 
