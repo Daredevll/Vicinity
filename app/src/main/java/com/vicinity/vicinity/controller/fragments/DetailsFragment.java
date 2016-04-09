@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -131,6 +133,8 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
             photoWall.addView(imgV);
         }
 
+        FrameLayout mapReviewsLayout = (FrameLayout) root.findViewById(R.id.details_map_reviews_frame);
+
         ratingNumber.setText(String.valueOf(currentPlace.getRating()));
         ratingBar.setRating(currentPlace.getRating());
         name.setText(currentPlace.getName());
@@ -161,6 +165,14 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
             }
         });
 
+        final GestureDetector gestureDetector = new GestureDetector(getActivity().getApplicationContext(), new MyGestureDetector());
+        View.OnTouchListener gestureListener = new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+
+        mapReviewsLayout.setOnTouchListener(gestureListener);
 
         reserve.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,6 +225,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
             ReviewsFragment rf = new ReviewsFragment();
             ft.replace(R.id.details_map_reviews_frame, rf);
         }
+
         ft.commit();
         reviewsActive = !reviewsActive;
 
@@ -275,5 +288,36 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
                 }
             }
         }).start();
+    }
+
+
+    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+        private static final int SWIPE_MIN_DISTANCE = 120;
+        private static final int SWIPE_MAX_OFF_PATH = 250;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                return false;
+            // right to left swipe
+            if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                //Left
+                switchFragments();
+            }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                //Right
+                switchFragments();
+            }
+
+            return false;
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
     }
 }
