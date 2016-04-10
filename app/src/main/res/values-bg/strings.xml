@@ -19,7 +19,7 @@
     <string name="exit">ИЗХОД</string>
     <string name="verify_place">ПОТВИРДИ МЯСТО</string>
     <string name="my_places">МОИТЕ МЕСТА</string>
-    <string name="claim_places">CLAIM PLACE</string>
+    <string name="claim_places">ЗАЯВИ МЯСТО</string>
     <string name="no_new_notifications">Нямате нови известия...</string>
     <string name="dismiss">игнорирай</string>
     <string name="information_gathered">Събрахме всичката необходима информация, за да продължим с регистрацията на мястото, което току що разгледахте, и да го свържем към вашия профил. Натискайки \'РЕГИСТРИРАЙ\', потвърждавате, че сте собственик или законен представител на избрания бизнес и се съгласявате с общите условия за ползване на приложението.</string>
@@ -34,10 +34,10 @@
     <string name="no_comments">Няма налични коментари...</string>
     <string name="detecting_location">Търсим местоположението Ви...</string>
     <string name="nearest">близост</string>
-    <string name="sort">популярност</string>
-    <string name="popular">най-популярните</string>
+    <string name="sort">сортирай</string>
+    <string name="popular">популярност</string>
     <string name="enter_name">въведи име</string>
-    <string name="go">продължи</string>
+    <string name="go">търси</string>
     <string name="open">Отворено</string>
     <string name="website">website</string>
     <string name="dial">Набери</string>
@@ -45,7 +45,7 @@
     <string name="on">На</string>
     <string name="at">Във</string>
     <string name="table_for">Маса за</string>
-    <string name="leave_comment_for_customer">Оставете комента за клиента</string>
+    <string name="leave_comment_for_customer">Оставете коментар за клиента</string>
     <string name="decline">Откажи</string>
     <string name="confirm">Потвърди</string>
     <string name="bar">бар</string>
@@ -53,13 +53,13 @@
     <string name="confirm_capitals">Потвърдите</string>
     <string name="this_reservation">резервацията?</string>
     <string name="cancel">Откажи</string>
-    <string name="conf">CONF</string>
+    <string name="conf">ПОТВЪРДИ</string>
     <string name="leave_comment_reservation">оставете коментар за резервацията</string>
     <string name="proceed">Продължи</string>
     <string name="set_date">задай дата</string>
     <string name="set_time">задай час</string>
     <string name="no_date_set">не е зададена дата</string>
-    <string name="no_time_set">не е зададен часt</string>
+    <string name="no_time_set">не е зададен час</string>
     <string name="table_four_question_mark">маса за?</string>
     <string name="new_reservation_for">Нова резервация за \'</string>
     <string name="set_people_at_least_one">Трябва да има поне един човек</string>
@@ -68,10 +68,15 @@
     <string name="could_not_connect_google">Не можем да се свържем с Гугъл</string>
     <string name="welcome_back">"Добре дошъл отново "</string>
     <string name="comment">"Коментар: "</string>
-    <string name="person_persons">"брой хора"</string>
+    <string name="person_persons">" места"</string>
     <string name="reservation_declined">Резервацията е отказана</string>
     <string name="closed">Затворено</string>
     <string name="successful_verification">Успешна верификация</string>
     <string name="your_app_will_close">Приложението Ви ще се затвоти всеки момент</string>
     <string name="invalid_code">Невалиден код</string>
+    <string name="has_not_set_website">" Все още няма обявен уеб сайт"</string>
+    <string name="location_not_detected_yet">Местоположението Ви все още не е засечено, моля почакайте</string>
+    <string name="or_chose_type">..или избери тип</string>
+    <string name="unable_to_detecd_location">Unable to detect your location, please enter the name of your city manually</string>
+    <string name="enable_gps">Enable your GPS for better positioning</string>
 </resources>

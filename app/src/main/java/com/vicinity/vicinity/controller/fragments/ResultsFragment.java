@@ -59,8 +59,12 @@ public class ResultsFragment extends Fragment implements QueryProcessor.PlacesLi
          */
         if (rListener.getCurrentSearchResults() == null || rListener.getCurrentSearchResults().isEmpty()) {
             // Initiates a query to Google, which dynamically callbacks to fill the recAdapter list with elements
-            QueryProcessor.getInstance().fillResultsList(this, rListener.getCurrentLocation(), rListener.getQueryType(), rListener.isSortPopular());
-            rListener.setCurrentSearchResults(placesList);
+            if(rListener.searchByName()){
+                QueryProcessor.getInstance().fillResultsList(this, rListener.getCurrentLocation(), rListener.getPlaceName());
+            } else {
+                QueryProcessor.getInstance().fillResultsList(this, rListener.getCurrentLocation(), rListener.getQueryType(), rListener.isSortPopular());
+                rListener.setCurrentSearchResults(placesList);
+            }
         }
         else {
             placesList.addAll(rListener.getCurrentSearchResults());
@@ -93,6 +97,8 @@ public class ResultsFragment extends Fragment implements QueryProcessor.PlacesLi
         void setCurrentSearchResults(ArrayList<CustomPlace> currentResults);
         ArrayList<CustomPlace> getCurrentSearchResults();
         Boolean isSortPopular();
+        boolean searchByName();
+        String getPlaceName();
     }
 
 

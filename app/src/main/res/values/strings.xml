@@ -73,5 +73,10 @@
     <string name="successful_verification">Successful Verification</string>
     <string name="your_app_will_close">Your app will close in a second</string>
     <string name="invalid_code">Invalid code</string>
+    <string name="has_not_set_website">" has not set its Website yet"</string>
+    <string name="location_not_detected_yet">Location not detected yet, please wait</string>
+    <string name="or_chose_type">..or chose a type</string>
+    <string name="unable_to_detecd_location">Unable to detect your location, please enter the name of your city manually</string>
+    <string name="enable_gps">Enable your GPS for better positioning</string>
 
 </resources>

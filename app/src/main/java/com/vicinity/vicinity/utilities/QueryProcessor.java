@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.location.places.Place;
+import com.vicinity.vicinity.controller.fragments.ResultsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,7 +56,24 @@ public class QueryProcessor {
         return instance;
     }
 
+    public void fillResultsList(ResultsFragment customer, Location location, String placeName) {
+        this.listCustomer = customer;
+        this.customerLocation = location;
+        retrievedPlaces = new ArrayList<CustomPlace>();
+        //restaurants+in+Sydney&key=
 
+        String fullURI;
+        placeName = placeName.replaceAll(" ", "%20");
+        String locationString = "&location=" + location.getLatitude() + "," + location.getLongitude();
+        String radius = "&radius=3000";
+        String key = "&key=" + Constants.BROWSER_API_KEY;
+
+        fullURI = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + placeName + locationString + radius +  key;
+
+
+        Log.e("pp", "sending request as: " + fullURI); // fullURI is OK!
+        new AsyncResultsFiller().execute(fullURI);
+    }
 
     public void fillResultsList(PlacesListRequester customer, Location location, String type, boolean isSortPopular){
         this.listCustomer = customer;
@@ -423,7 +441,13 @@ public class QueryProcessor {
                         types[t] = typesArr.getString(t).replace("_", " ");
                     }
 
-                    vicinity = singleResult.getString("vicinity");
+                    if (singleResult.has("vicinity")) {
+                        vicinity = singleResult.getString("vicinity");
+                    } else if (singleResult.has("formatted_address")){
+                        vicinity = singleResult.getString("formatted_address");
+                    } else {
+                        vicinity = "";
+                    }
 
                     /*
                             Some additional data that is not always present so it should be validated before fetched:
@@ -458,17 +482,20 @@ public class QueryProcessor {
                     // Adds the place directly to the list to be returned and calls listCustomer.update with the new list
                     publishProgress(cp);
 
-
+                    Log.e("pp", "reading results done");
                     // TODO: Create CustomPlace object with fetched params
                     // TODO: call listCustomer.update here / executed on the UI Thread! /
                 }
 
             } catch (MalformedURLException e) {
                 Log.e("JSON", "Malformed URL!!!");
+                Log.e("pp", e.getMessage());
             } catch (IOException e) {
                 Log.e("JSON", "IOException!!!");
+                Log.e("pp", e.getMessage());
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.e("pp", e.getMessage());
             }
 
 

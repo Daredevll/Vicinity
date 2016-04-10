@@ -168,8 +168,8 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
             Button no = (Button) v.findViewById(R.id.dialog_confirm_button_NO);
             TextView actionTv = (TextView) v.findViewById(R.id.dialog_confirm_action_type_tv);
 
-            yes.setText(isConfirm?"Confirm":"Decline");
-            actionTv.setText(isConfirm?"CONFIRM":"DECLINE");
+            yes.setText(isConfirm ? getContext().getString(R.string.confirm) : getString(R.string.decline));
+            actionTv.setText(isConfirm ? getString(R.string.confirm): getString(R.string.decline) );
 
 
             no.setOnClickListener(new View.OnClickListener() {

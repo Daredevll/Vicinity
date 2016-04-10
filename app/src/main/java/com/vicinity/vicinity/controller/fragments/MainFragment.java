@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -22,20 +23,22 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.AutocompletePredictionBuffer;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.utilities.Constants;
 import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
 import com.vicinity.vicinity.utilities.location.FetchAddressIntentService;
 import com.vicinity.vicinity.utilities.location.LocationDetectionHelper;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MainFragment extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks{
 
@@ -49,7 +52,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
 
     View.OnClickListener sortingListener;
 
-    private EditText addressField;
+    private AutoCompleteTextView addressField;
+    private final ArrayList<String> entries = new ArrayList<>();
 
     Button sortPopular, sortNearest;
 
@@ -142,9 +146,109 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
             }
         };
 
-        addressField = (EditText) layout.findViewById(R.id.city_input);
+        addressField = (AutoCompleteTextView) layout.findViewById(R.id.city_input);
 
-        
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, entries);
+        addressField.setAdapter(adapter);
+
+        addressField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                new PlacesTask().execute(s.toString());
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.e("pp", "after text changed");
+
+            }
+        });
+
+        addressField.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selected = entries.get(position);
+                Log.e("pp", selected);
+
+                new AsyncTask<String, Void, Location>() {
+                    @Override
+                    protected Location doInBackground(String... params) {
+                        Log.e("pp", "bkg " + params[0]);
+                        String place = params[0].replaceAll(" ", "%20");
+                        String path = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + place + "&key=" + Constants.BROWSER_API_KEY;
+                        URL url = null;
+                        HttpURLConnection connection = null;
+                        Scanner scanner = null;
+                        StringBuilder builder = new StringBuilder();
+
+                        try {
+                            url = new URL(path);
+                            connection = (HttpURLConnection) url.openConnection();
+                            scanner = new Scanner(connection.getInputStream());
+                            while (scanner.hasNextLine()) {
+                                builder.append(scanner.nextLine());
+                            }
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            Log.e("pp", "before JSON creation");
+                            Log.e("pp", builder.toString());
+                            JSONObject jObject = new JSONObject(builder.toString());
+                            Log.e("pp", "JSON created");
+                            Log.e("pp", jObject.getString("status"));
+                            if (jObject.getString("status").equalsIgnoreCase("OK")) {
+                                JSONArray jsonArray = jObject.getJSONArray("results");
+                                Log.e("pp", jsonArray.length() + "");
+                                if (jsonArray.length() > 0) {
+                                    JSONObject city = jsonArray.getJSONObject(0);
+
+                                    Location location = new Location("");
+                                    location.setLatitude(city.getJSONObject("geometry").getJSONObject("location").getDouble("lat"));
+                                    location.setLongitude(city.getJSONObject("geometry").getJSONObject("location").getDouble("lng"));
+
+                                    Log.e("pp", city.getJSONObject("geometry").getJSONObject("location").getDouble("lat") + "");
+                                    Log.e("pp", city.getJSONObject("geometry").getJSONObject("location").getDouble("lng") + "");
+
+                                    return location;
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Location latLng) {
+                        super.onPostExecute(latLng);
+
+                        mListener.setLocation(latLng);
+                    }
+                }.execute(selected);
+            }
+        });
+
+        final EditText placeName = (EditText) layout.findViewById(R.id.place_name_input);
+        Button goButton = (Button) layout.findViewById(R.id.fragment_main_go_button);
+
+        goButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.startResultsFragment(placeName.getText().toString(), true);
+            }
+        });
+
         sortNearest = (Button) layout.findViewById(R.id.main_fragment_sort_filter_nearest);
         sortPopular = (Button) layout.findViewById(R.id.main_fragment_sort_filter_popular);
 
@@ -181,10 +285,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
         pool.setOnClickListener(this);
         movies.setOnClickListener(this);
 
-
-
-
-
         return layout;
     }
 
@@ -213,36 +313,36 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
     @Override
     public void onClick(View v) {
         if (mListener.getCurrentLocation() == null && addressField.getText().toString().isEmpty()){
-            Toast.makeText(getActivity(), "Location not detected yet, please wait", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.location_not_detected_yet, Toast.LENGTH_SHORT).show();
             return;
         }
         switch (v.getId()){
             case R.id.restaurant_image_view:
-                mListener.startResultsFragment(Constants.TYPE_RESTAURANT);
+                mListener.startResultsFragment(Constants.TYPE_RESTAURANT, false);
                 break;
             case R.id.bar_image_view:
-                mListener.startResultsFragment(Constants.TYPE_BAR);
+                mListener.startResultsFragment(Constants.TYPE_BAR, false);
                 break;
             case R.id.cafe_image_view:
-                mListener.startResultsFragment(Constants.TYPE_CAFE);
+                mListener.startResultsFragment(Constants.TYPE_CAFE, false);
                 break;
             case R.id.hotel_image_view:
-                mListener.startResultsFragment(Constants.TYPE_HOTEL);
+                mListener.startResultsFragment(Constants.TYPE_HOTEL, false);
                 break;
             case R.id.casino_image_view:
-                mListener.startResultsFragment(Constants.TYPE_CASINO);
+                mListener.startResultsFragment(Constants.TYPE_CASINO, false);
                 break;
             case R.id.delivery_image_view:
-                mListener.startResultsFragment(Constants.TYPE_DELIVERY);
+                mListener.startResultsFragment(Constants.TYPE_DELIVERY, false);
                 break;
             case R.id.fitness_image_view:
-                mListener.startResultsFragment(Constants.TYPE_FITNESS);
+                mListener.startResultsFragment(Constants.TYPE_FITNESS, false);
                 break;
             case R.id.pool_image_view:
-                mListener.startResultsFragment(Constants.TYPE_POOL);
+                mListener.startResultsFragment(Constants.TYPE_POOL, false);
                 break;
             case R.id.movie_image_view:
-                mListener.startResultsFragment(Constants.TYPE_MOVIE);
+                mListener.startResultsFragment(Constants.TYPE_MOVIE, false);
                 break;
         }
     }
@@ -292,11 +392,72 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
     public interface MainFragmentListener {
         Location getCurrentLocation();
         GoogleApiClient getGoogleApiClient();
-        void startResultsFragment(String queryType);
+        void startResultsFragment(String queryType, boolean isNameSearch);
         void setReadableAddress(String address);
         String getReadableAddress();
         Boolean isSortPopular();
         void setSortPopular(Boolean popular);
+        void setLocation(Location location);
+    }
+
+    private class PlacesTask extends AsyncTask<String, Void, ArrayList<String>> {
+
+
+        @Override
+        protected ArrayList<String> doInBackground(String... params) {
+            Log.e("pp", "doInBackground");
+
+            ArrayList<String> predictions = new ArrayList<>();
+
+            String path = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + params[0] + "&types=%28cities%29&key=" + Constants.BROWSER_API_KEY;
+            URL url = null;
+            HttpURLConnection connection = null;
+            Scanner scanner = null;
+            StringBuilder builder = new StringBuilder();
+
+            try {
+                url = new URL(path);
+                connection = (HttpURLConnection) url.openConnection();
+                scanner = new Scanner(connection.getInputStream());
+                while (scanner.hasNextLine()){
+                    builder.append(scanner.nextLine());
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                JSONObject jObject = new JSONObject(builder.toString());
+
+                if (jObject.getString("status").equalsIgnoreCase("OK")){
+                    JSONArray jsonArray = jObject.getJSONArray("predictions");
+
+                    for (int i = 0; i < jsonArray.length(); i++){
+                        JSONObject city = jsonArray.getJSONObject(i);
+
+                        predictions.add(city.getString("description"));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return predictions;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> s) {
+            super.onPostExecute(s);
+            Log.e("pp", "onPostExecute");
+
+            entries.clear();
+            entries.addAll(s);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, entries);
+            addressField.setAdapter(adapter);
+        }
     }
 
 }

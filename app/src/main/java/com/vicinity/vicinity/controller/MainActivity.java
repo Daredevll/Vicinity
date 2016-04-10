@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         GoogleApiClient.ConnectionCallbacks, ResultsFragment.ResultsAndDetailsFragmentListener {
 
 
+    private boolean searchByName;
+    private String placeName;
+
     @Override
     public void onConnected(Bundle bundle) {
         Log.e("service", "apiClient connected in MainActivity");
@@ -255,6 +258,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public void setLocation(Location location) {
+        this.currentLocation = location;
+    }
+
+    @Override
     public Location getCurrentLocation() {
         return currentLocation;
     }
@@ -280,7 +288,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void startResultsFragment(String queryType) {
+    public void startResultsFragment(String queryType, boolean isNameSearch) {
+        this.searchByName = isNameSearch;
+        if (isNameSearch){
+            this.placeName = queryType;
+        }
+
         this.queryType = queryType;
         ResultsFragment rf = new ResultsFragment();
         replaceFragment(rf, true);
@@ -318,6 +331,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public Boolean isSortPopular() {
         return this.popular;
+    }
+
+    @Override
+    public boolean searchByName() {
+        return this.searchByName;
+    }
+
+    @Override
+    public String getPlaceName() {
+        return this.placeName;
     }
 
 

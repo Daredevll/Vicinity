@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
+import com.vicinity.vicinity.R;
+
 /**
  * Created by Jovch on 27-Mar-16.
  * To instantiate the CustomLocationListener, you must provide a LocationDetectionHelper - the class which instantiates the LocationManager as well
@@ -64,7 +66,7 @@ public class CustomLocationListener implements LocationListener {
         if (provider.equals(LocationManager.GPS_PROVIDER)) {
             gpsReminderCounter = ++gpsReminderCounter%GPS_REMINDER_FREQUENCY;
             if (gpsReminderCounter == 1) {
-                Toast.makeText((Activity) activity, "Enable your GPS for better positioning", Toast.LENGTH_SHORT).show();
+                Toast.makeText((Activity) activity, R.string.enable_gps, Toast.LENGTH_SHORT).show();
             }
         }
         if (ActivityCompat.checkSelfPermission((Activity) activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission((Activity) activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -81,7 +83,7 @@ public class CustomLocationListener implements LocationListener {
             locationManager.requestLocationUpdates(provider.equals(LocationManager.GPS_PROVIDER) ? LocationManager.NETWORK_PROVIDER : LocationManager.GPS_PROVIDER, 0, 0, this);
         }
         catch (IllegalArgumentException e){
-            Toast.makeText((Activity) activity, "Unable to detect your location, please enter the name of your city manually", Toast.LENGTH_SHORT).show();
+            Toast.makeText((Activity) activity, R.string.unable_to_detecd_location, Toast.LENGTH_SHORT).show();
         }
     }
 
