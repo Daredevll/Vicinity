@@ -1,5 +1,6 @@
 package com.vicinity.vicinity.controller.controllersupport.recycler;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ public class ResultsViewHolder extends RecyclerView.ViewHolder {
     private RatingBar rating;
     private TextView type;
     private TextView ratingText;
+    private Context context;
 
 
     public ResultsViewHolder(View itemView) {
@@ -37,6 +39,7 @@ public class ResultsViewHolder extends RecyclerView.ViewHolder {
         type = (TextView) itemView.findViewById(R.id.row_type_tv);
         ratingText = (TextView) itemView.findViewById(R.id.row_rating_tv);
 
+        this.context = itemView.getContext();
     }
 
 
@@ -74,5 +77,9 @@ public class ResultsViewHolder extends RecyclerView.ViewHolder {
 
     public TextView getDistance() {
         return distance;
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

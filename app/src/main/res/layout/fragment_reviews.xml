@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:textSize="25sp"
         android:layout_margin="20dp"
-        android:text="No Comments are currently available..."
+        android:text="@string/no_comments"
         android:textAlignment="center"
         android:layout_centerVertical="true"
         android:visibility="gone"/>

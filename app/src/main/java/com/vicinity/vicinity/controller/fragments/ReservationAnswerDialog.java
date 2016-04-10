@@ -88,7 +88,7 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
         decline = (Button) v.findViewById(R.id.dialog_answer_deny_button);
         confirm = (Button) v.findViewById(R.id.dialog_answer_confirm_button);
 
-        name.setText("New reservation for '" + placeName +"'");
+        name.setText(getString(R.string.new_reservation_for) + placeName +"'");
         dateTv.setText(date);
         timeTv.setText(time);
         people.setText(String.valueOf(peopleCount));

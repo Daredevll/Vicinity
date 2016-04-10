@@ -3,25 +3,39 @@ package com.vicinity.vicinity.controller.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.AutocompletePredictionBuffer;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.utilities.Constants;
 import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
 import com.vicinity.vicinity.utilities.location.FetchAddressIntentService;
 import com.vicinity.vicinity.utilities.location.LocationDetectionHelper;
+
+import java.util.ArrayList;
 
 public class MainFragment extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks{
 
@@ -130,6 +144,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
 
         addressField = (EditText) layout.findViewById(R.id.city_input);
 
+        
         sortNearest = (Button) layout.findViewById(R.id.main_fragment_sort_filter_nearest);
         sortPopular = (Button) layout.findViewById(R.id.main_fragment_sort_filter_popular);
 
@@ -184,7 +199,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
             addressField.setHint(mListener.getReadableAddress());
         }
         else {
-            addressField.setHint("Detecting current location...");
+            addressField.setHint(getString(R.string.detecting_location));
         }
 
     }

@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.vicinity.vicinity.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,9 +82,9 @@ public class ServerCommManager {
             @Override
             protected void onPostExecute(Boolean verifySuccess) {
                 if (verifySuccess){
-                    Toast.makeText(context, "Successful Verification", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.successful_verification, Toast.LENGTH_SHORT).show();
                     DummyModelClass.LoginManager.getInstance().signOutAccount(context);
-                    Toast.makeText(context, "Your app will close in a second", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.your_app_will_close, Toast.LENGTH_SHORT).show();
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -96,7 +98,7 @@ public class ServerCommManager {
                     }).start();
                 }
                 else {
-                    Toast.makeText(context, "Invalid code", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.invalid_code, Toast.LENGTH_SHORT).show();
                 }
             }
 

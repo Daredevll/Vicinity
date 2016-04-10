@@ -22,7 +22,7 @@
         android:id="@+id/notification_activity_no_new"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No new notifications..."
+        android:text="@string/no_new_notifications"
         android:textSize="22sp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="100dp"
@@ -32,7 +32,7 @@
         android:id="@+id/notifications_dismiss_activity_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="dismiss"
+        android:text="@string/dismiss"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/button_shape_dark"/>

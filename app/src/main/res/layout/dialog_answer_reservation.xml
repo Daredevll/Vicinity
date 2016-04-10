@@ -49,7 +49,7 @@
                 android:layout_weight="2"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:text="On"/>
+                android:text="@string/on"/>
 
             <TextView
                 android:id="@+id/dialog_answer_date_tv"
@@ -85,7 +85,7 @@
                 android:layout_weight="2"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:text="At"/>
+                android:text="@string/at"/>
 
 
             <TextView
@@ -121,7 +121,7 @@
                 android:layout_weight="2"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:text="Table for"/>
+                android:text="@string/table_for"/>
 
 
             <TextView
@@ -161,7 +161,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:hint="Leave a comment for the customer"
+            android:hint="@string/leave_comment_for_customer"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:textSize="14sp"
@@ -185,7 +185,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
-                android:text="Decline"
+                android:text="@string/decline"
                 android:background="@drawable/button_shape_dark" />
 
             <Button
@@ -194,7 +194,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
-                android:text="Confirm"
+                android:text="@string/confirm"
                 android:background="@drawable/button_shape_dark"/>
 
 

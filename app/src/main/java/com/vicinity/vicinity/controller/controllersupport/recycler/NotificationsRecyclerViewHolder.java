@@ -1,5 +1,6 @@
 package com.vicinity.vicinity.controller.controllersupport.recycler;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +23,7 @@ public class NotificationsRecyclerViewHolder extends RecyclerView.ViewHolder{
     private Button answer;
     private Space buttonSpace;
 
-
+    private Context context;
 
     public NotificationsRecyclerViewHolder(View itemView) {
         super(itemView);
@@ -36,6 +37,7 @@ public class NotificationsRecyclerViewHolder extends RecyclerView.ViewHolder{
         dismiss = (Button) itemView.findViewById(R.id.notification_row_button_dismiss);
         answer = (Button) itemView.findViewById(R.id.notification_row_button_answer);
         buttonSpace = (Space) itemView.findViewById(R.id.notification_row_interbutton_space);
+        this.context = itemView.getContext();
     }
 
 
@@ -69,5 +71,9 @@ public class NotificationsRecyclerViewHolder extends RecyclerView.ViewHolder{
 
     public Space getButtonSpace() {
         return buttonSpace;
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

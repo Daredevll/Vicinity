@@ -121,14 +121,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             ServerCommManager.getInstance().onLoginUser(this, acc.getId());
         }
         else {
-            Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, R.string.log_in_failed, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         if (!connectionResult.isSuccess()) {
-            Toast.makeText(this, "Could not connect to Google", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.could_not_connect_google, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
      */
     private void switchBoxes(boolean loggedIn){
         if (loggedIn){
-            userWelcomeText.setText("Welcome back " + DummyModelClass.LoginManager.getInstance().getLoggedUsername(this));
+            userWelcomeText.setText(getString(R.string.welcome_back) + DummyModelClass.LoginManager.getInstance().getLoggedUsername(this));
             userWelcomeBox.setVisibility(View.VISIBLE);
             signIn.setVisibility(View.INVISIBLE);
         }

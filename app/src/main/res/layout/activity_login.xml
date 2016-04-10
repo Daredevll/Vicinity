@@ -21,7 +21,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Anything..."
+        android:text="@string/anything"
         android:id="@+id/textView2"
         android:textSize="20sp"
         android:layout_below="@+id/textView4"
@@ -30,7 +30,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Anywhere..."
+        android:text="@string/anywhere"
         android:id="@+id/textView3"
         android:textSize="20sp"
         android:layout_alignParentTop="true"
@@ -40,7 +40,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Anytime..."
+        android:text="@string/anytime"
         android:id="@+id/textView4"
         android:textSize="20sp"
         android:layout_below="@+id/textView3"
@@ -52,7 +52,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="...is in your"
+        android:text="@string/is_in_your"
         android:id="@+id/textView5"
         android:textSize="20sp"
         android:layout_above="@+id/textView6"
@@ -61,7 +61,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="V i c i n i t y"
+        android:text="@string/vicinity"
         android:id="@+id/textView6"
         android:textSize="40sp"
         android:textStyle="bold|italic"
@@ -79,7 +79,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="welcome"
+        android:text="@string/welcome"
         android:textSize="20sp"
         android:textStyle="bold"
         android:id="@+id/user_welcome_text"/>
@@ -87,7 +87,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tap the screen to proceed..."
+        android:text="@string/tap_the_creen"
         android:id="@+id/proceed_text"
         android:textSize="20sp"
         android:layout_below="@+id/user_welcome_text" />
