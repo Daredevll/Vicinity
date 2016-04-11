@@ -141,13 +141,13 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
         name.setText(currentPlace.getName());
         address.setText(currentPlace.getVicinity());
         distanceAndEta.setText(currentPlace.getDistance() + "     " + currentPlace.getEstimateTime());
-        openNow.setText(currentPlace.isOpenNow() ? "Open" : "Closed");
+        openNow.setText(currentPlace.isOpenNow() ? getContext().getString(R.string.open) : getContext().getString(R.string.closed));
 
         website.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentPlace.getWebsite() == null || currentPlace.getWebsite().isEmpty()){
-                    Toast.makeText(getActivity(), currentPlace.getName() + " has not set its Website yet", Toast.LENGTH_SHORT).show();
+                if (currentPlace.getWebsite() == null || currentPlace.getWebsite().isEmpty()) {
+                    Toast.makeText(getActivity(), currentPlace.getName() + getContext().getString(R.string.has_not_set_website), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String url = currentPlace.getWebsite();

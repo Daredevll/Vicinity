@@ -109,7 +109,7 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
 
         getDialog().getWindow().setBackgroundDrawableResource(R.drawable.button_shape_light);
         Blurry.with(getActivity()).radius(25).sampling(2).onto(((Blurable) getActivity()).getRootView());
-        getDialog().getWindow().setTitle("New reservation for '" + placeName + "'");
+        getDialog().getWindow().setTitle(getString(R.string.reservation_answer_dialog_new_reservation_for) + placeName + "'");
 
         setCancelable(false);
         return v;
@@ -183,8 +183,8 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
             Button no = (Button) v.findViewById(R.id.dialog_confirm_button_NO);
             TextView actionTv = (TextView) v.findViewById(R.id.dialog_confirm_action_type_tv);
 
-            yes.setText(isConfirm?"Confirm":"Decline");
-            actionTv.setText(isConfirm?"CONFIRM":"DECLINE");
+            yes.setText(isConfirm ? getContext().getString(R.string.confirm) : getString(R.string.decline));
+            actionTv.setText(isConfirm ? getContext().getString(R.string.confirm) : getString(R.string.decline));
 
 
             no.setOnClickListener(new View.OnClickListener() {

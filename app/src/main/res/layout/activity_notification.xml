@@ -27,7 +27,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="latest"
+            android:text="@string/notifications_activity_sort_latest"
             android:background="@drawable/button_shape_dark"/>
 
         <Button
@@ -36,7 +36,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="biggest"
+            android:text="@string/notifications_activity_sort_most_people"
             android:background="@drawable/button_shape_dark"/>
 
         <Button
@@ -45,7 +45,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="soonest"
+            android:text="@string/notifications_activity_sort_soonest"
             android:background="@drawable/button_shape_dark"/>
 
     </LinearLayout>
@@ -63,7 +63,7 @@
         android:id="@+id/notification_activity_no_new"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No new notifications..."
+        android:text="@string/no_new_notifications"
         android:textSize="22sp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="100dp"
@@ -86,7 +86,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="exit"
+            android:text="@string/notifications_activity_exit"
             android:background="@drawable/button_shape_dark"/>
 
         <Button
@@ -95,7 +95,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="home"
+            android:text="@string/notifications_activity_home"
             android:background="@drawable/button_shape_dark"/>
 
     </LinearLayout>

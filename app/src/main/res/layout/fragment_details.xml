@@ -169,7 +169,7 @@
         android:id="@+id/details_open"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open"
+        android:text="@string/open"
         android:textSize="15sp"
         android:layout_marginRight="10dp"
         android:layout_alignBottom="@+id/details_ETA"
@@ -200,7 +200,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="website"
+            android:text="@string/website"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:background="@drawable/button_shape_dark"/>
@@ -212,7 +212,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:text="Dial"
+            android:text="@string/dial"
             android:background="@drawable/button_shape_dark"
             android:id="@+id/details_dial_button" />
 
@@ -222,7 +222,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:text="reserve"
+            android:text="@string/reserve"
             android:background="@drawable/button_shape_dark"
             android:id="@+id/details_reserve_button" />
     </LinearLayout>

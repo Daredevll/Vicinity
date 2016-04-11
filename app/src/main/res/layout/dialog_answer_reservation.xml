@@ -34,7 +34,7 @@
                 android:layout_weight="2"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:text="On"/>
+                android:text="@string/on"/>
 
             <TextView
                 android:id="@+id/dialog_answer_date_tv"
@@ -70,7 +70,7 @@
                 android:layout_weight="2"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:text="At"/>
+                android:text="@string/at"/>
 
 
             <TextView
@@ -106,7 +106,7 @@
                 android:layout_weight="2"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:text="Table for"/>
+                android:text="@string/table_for"/>
 
 
             <TextView
@@ -146,7 +146,7 @@
             android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:hint="Leave a comment for the customer"
+            android:hint="@string/leave_comment_for_customer"
             android:textSize="14sp"
             android:layout_below="@+id/dialog_answer_comment_tv"
             android:layout_centerHorizontal="true"
@@ -169,7 +169,7 @@
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
                 android:background="@drawable/button_shape_dark"
-                android:text="decline"/>
+                android:text="@string/decline"/>
 
             <Button
                 android:id="@+id/dialog_answer_later_button"
@@ -177,14 +177,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button_shape_dark"
-                android:text="later"/>
+                android:text="@string/dialog_answer_later_button_string"/>
 
             <Button
                 android:id="@+id/dialog_answer_confirm_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="confirm"
+                android:text="@string/confirm"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/button_shape_dark"/>
 

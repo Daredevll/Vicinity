@@ -44,11 +44,13 @@ public class ResultsRecyclerAdapter extends RecyclerView.Adapter<ResultsViewHold
     @Override
     public void onBindViewHolder(ResultsViewHolder holder, int position) {
         CustomPlace p = places.get(position);
+        Context context = holder.getContext();
+
 //        holder.getPic().setImageResource(R.drawable.def_place);
         holder.getName().setText(p.getName());
         holder.getAddress().setText(p.getVicinity());
         holder.getRating().setRating(p.getRating());
-        holder.getOpenNow().setText(p.isOpenNow()?"Open":"Closed");
+        holder.getOpenNow().setText(p.isOpenNow() ?context.getString(R.string.open) : context.getString(R.string.closed));
         holder.getEstimatedTime().setText(p.getEstimateTime());
         holder.getDistance().setText(p.getDistance());
         holder.getType().setText(p.getTypes()[0]);

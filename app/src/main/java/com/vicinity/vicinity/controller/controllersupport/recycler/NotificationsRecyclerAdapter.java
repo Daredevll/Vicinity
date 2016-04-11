@@ -41,12 +41,13 @@ public class NotificationsRecyclerAdapter extends RecyclerView.Adapter<Notificat
     @Override
     public void onBindViewHolder(NotificationsRecyclerViewHolder holder, int position) {
         final CustomNotificationElement element = notifications.get(position);
+        Context context = holder.getContext();
 
         holder.getName().setText(element.getPlaceName());
         holder.getDateTime().setText(element.getDate() + "  -  " + element.getTime());
-        holder.getPeople().setText(element.getPeopleCount() + " person/s/");
-        holder.getConfirm().setText(element.isConfirmed() ? "Reservation Confirmed" : "Reservation Declined");
-        holder.getComment().setText("Comment: " + element.getComment());
+        holder.getPeople().setText(element.getPeopleCount() + context.getString(R.string.person_persons));
+        holder.getConfirm().setText(element.isConfirmed() ? context.getString(R.string.reservation_confirmed) : context.getString(R.string.reservation_declined));
+        holder.getComment().setText(context.getText(R.string.comment) + element.getComment());
         holder.getDismiss().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

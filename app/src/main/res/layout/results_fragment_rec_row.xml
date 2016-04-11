@@ -54,7 +54,7 @@
         android:id="@+id/row_open_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open"
+        android:text="@string/open"
         android:layout_above="@+id/row_eta_tv"
         android:layout_alignParentRight="true" />
 
@@ -62,7 +62,7 @@
         android:id="@+id/row_type_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="bar"
+        android:text="@string/bar"
         android:layout_alignParentRight="true"
         android:layout_above="@+id/row_open_tv"/>
 

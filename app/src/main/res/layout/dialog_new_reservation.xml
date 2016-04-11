@@ -18,7 +18,7 @@
             android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:hint="Would you like to leave a comment?"
+            android:hint="@string/leave_comment_reservation"
             android:layout_below="@+id/dialog_reservation_people_selector"
             android:layout_marginTop="30dp"
             android:textSize="14sp"
@@ -42,7 +42,7 @@
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
                 android:background="@drawable/button_shape_dark"
-                android:text="Proceed"/>
+                android:text="@string/proceed"/>
 
             <Button
                 android:id="@+id/dialog_reserve_cancel"
@@ -51,7 +51,7 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/button_shape_dark"
-                android:text="cancel" />
+                android:text="@string/cancel" />
         </LinearLayout>
 
         <LinearLayout
@@ -79,7 +79,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="2"
                 android:layout_height="30dp"
-                android:text="set date"
+                android:text="@string/set_date"
                 android:background="@drawable/button_shape_dark" />
 
 
@@ -111,7 +111,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="2"
                 android:layout_height="30dp"
-                android:text="set time"
+                android:text="@string/set_time"
                 android:background="@drawable/button_shape_dark"/>
 
 

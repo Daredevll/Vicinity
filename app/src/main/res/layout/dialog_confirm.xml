@@ -25,7 +25,7 @@
                 android:id="@+id/r_u_sure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Are you sure you want to"
+                android:text="@string/are_you_sure"
                 android:textSize="17dp"
                 android:textAlignment="center"
                 android:layout_centerHorizontal="true"/>
@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="this reservation?"
+                android:text="@string/this_reservation"
                 android:textSize="17dp"
                 android:textAlignment="center"
                 android:layout_centerHorizontal="true"
@@ -74,7 +74,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_shape_dark"
                 android:layout_marginRight="5dp"
-                android:text="Cancel" />
+                android:text="@string/cancel" />
 
             <Button
                 android:id="@+id/dialog_confirm_button_YES"
@@ -83,7 +83,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_shape_dark"
                 android:layout_marginLeft="5dp"
-                android:text="CONF" />
+                android:text="@string/dialog_confirm_decide_confirm" />
         </LinearLayout>
 
 

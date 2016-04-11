@@ -136,7 +136,7 @@ public class ReservationRequestDialog extends DialogFragment implements Blurable
                 }
                 comment = commentEdit.getText().toString();
                 if (people < 1){
-                    Toast.makeText(getActivity(), "You must set people to at least one", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.set_people_at_least_one, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (datePick.getText().equals("...") || timePick.getText().equals("...")){
@@ -328,7 +328,7 @@ public class ReservationRequestDialog extends DialogFragment implements Blurable
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             if (dateBeforeToday(year, month, day)){
-                Toast.makeText(getActivity(), "Can't go back in time, sorry... :(", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.can_not_go_back_in_time, Toast.LENGTH_SHORT).show();
             }
             else {
                 dateTv.setText(day + "." + (month + 1) + "." + year);
