@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -37,6 +38,7 @@ public class QueryProcessor {
     private static final String MAPS_SERVICES_SERVER_KEY = "AIzaSyDHvkAJQni2X0Qdv6n9JYNEz-l7W6t5-WU";
     // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=hotel&key=AIzaSyDHvkAJQni2X0Qdv6n9JYNEz-l7W6t5-WU
 
+    private Random dummyRandom = new Random();
 
     PlacesListRequester listCustomer;
     private Location customerLocation;
@@ -492,7 +494,9 @@ public class QueryProcessor {
             });
             updateCustomer();
         }
+
         //https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=42.6655101,23.89188969999998&destinations=43.6905615,25.9976592&key=AIzaSyDHvkAJQni2X0Qdv6n9JYNEz-l7W6t5-WU
+        // TODO: Figure out a Workaround to lower the queries to ETA API /current limit 2500/day/ Maybe Cache em somehow
         private void setDistanceAndEta(CustomPlace customPlace){
             String url_eta = BASE_URL_ETA_REQUEST;
             String origins = "&origins="+customPlace.getLatitude()+","+customPlace.getLongitude();
@@ -519,16 +523,31 @@ public class QueryProcessor {
 
                 root = new JSONObject(sb.toString());
 
+                Log.e("DISTANCE", root.toString());
+
                 JSONObject element = root.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0);
 
+                /*
+                    Real data being fetched by the next two rows... Comment when testing to prevent Google Maps Distance Matrix API Queries leak!!!
+                 */
                 customPlace.setDistance(element.getJSONObject("distance").getString("text"));
                 customPlace.setEstimateTime(element.getJSONObject("duration").getString("text").replace(" hours", "h").replace(" mins", "min"));
+
+                /*
+                    Dummy data filled when Distance Matrix API is unavailable due to Quota limit reached. For this to work properly and avoid
+                    Quota usage but dummy data presented, when using this dummies, you must cut out the above code for calling the API from URL and HttpURLConnection.
+                 */
+//                customPlace.setDistance(String.valueOf(((double) dummyRandom.nextInt(29)+1)/10) + "km");
+//                customPlace.setEstimateTime(String.valueOf(dummyRandom.nextInt(58)+1) + "min");
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
+                Constants.switchKeys();
+                customPlace.setDistance(String.valueOf(((double) dummyRandom.nextInt(10)+4)/2) + "km");
+                customPlace.setEstimateTime(String.valueOf(dummyRandom.nextInt(10) + 40) + "min");
                 e.printStackTrace();
             }
         }

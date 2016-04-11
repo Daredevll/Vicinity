@@ -52,6 +52,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
     private ResultsAndDetailsFragmentListener dListener;
     private GoogleMap map;
 
+    private boolean wasMapVisible;
     public boolean spin;
 
 
@@ -161,7 +162,9 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
         dial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switchFragments();
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse(currentPlace.getInternationalPhoneNumber()));
+                startActivity(intent);
             }
         });
 
@@ -177,6 +180,10 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
         reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!reviewsActive){
+                    wasMapVisible = true;
+                    switchFragments();
+                }
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
 
@@ -288,6 +295,13 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
                 }
             }
         }).start();
+    }
+
+    public void reverseFrags(){
+        if (wasMapVisible){
+            switchFragments();
+            wasMapVisible = !wasMapVisible;
+        }
     }
 
 

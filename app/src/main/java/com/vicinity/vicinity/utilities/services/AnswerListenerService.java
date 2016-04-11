@@ -82,35 +82,37 @@ public class AnswerListenerService extends Service {
      * Creates and shows a Notification in the Notification Drawer of the User's device
      */
     private void createNotification() {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_event_note_white_48dp)
-                                // TODO: Set the content title to "Reservation Approved/Declined" based on isConfirmed return
                         .setContentTitle("Reservation Answer!")
                         .setContentText("A business has answered to your reservation request")
                         .setAutoCancel(true);
-// Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, NotificationActivity.class);
 
+
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, NotificationActivity.class);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
+        resultIntent.putExtra(Constants.NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA, false);
+
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack for the Intent (but not the Intent itself)
+
+
+        // Adds the back stack for the Intent (but not the Intent itself)
         stackBuilder.addParentStack(NotificationActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
+
+
+        // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-// mId allows you to update the notification later on.
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // mId allows you to update the notification later on.
         mNotificationManager.notify(ANSWER_NOTIFICATION_ID, mBuilder.build());
     }
 
@@ -133,6 +135,13 @@ public class AnswerListenerService extends Service {
         if (!f.exists()){
             try {
                 f.createNewFile();
+                notifs = new ArrayList<CustomNotificationElement>();
+                FileOutputStream fos = new FileOutputStream(f);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(notifs);
+                fos.close();
+                oos.close();
+                Log.e("File", "New file created for caching client notifs, empty list written to new file.");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -140,15 +149,13 @@ public class AnswerListenerService extends Service {
 
         try {
             FileInputStream fis = new FileInputStream(f);
-            if (fis.read() != -1){
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                notifs = (ArrayList<CustomNotificationElement>) ois.readObject();
-                Log.e("Request", "Notifs arl Cache loaded from file");
-                ois.close();
-            }
-            else {
-                notifs = new ArrayList<CustomNotificationElement>();
-            }
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            notifs = (ArrayList<CustomNotificationElement>) ois.readObject();
+            Log.e("DEBUG", "Client Notifs arl Cache loaded from file");
+
+            ois.close();
+            fis.close();
+
 
             JSONArray notifsArray = new JSONArray(respondBody);
 

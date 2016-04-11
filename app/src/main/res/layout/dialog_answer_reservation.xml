@@ -1,42 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/dialog_reserve_root"
-        android:layout_width="340dp"
-        android:layout_height="400dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/button_shape_dark">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
-
-        <TextView
-            android:id="@+id/dialog_answer_place_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textAlignment="center"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_centerHorizontal="true"
-            android:text="New reservation for 'Happy-Bar'"
-            android:layout_alignParentTop="true"/>
 
 
         <LinearLayout
             android:id="@+id/dialog_answer_date_holder"
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="45dp"
+            android:layout_alignLeft="@+id/dialog_answer_business_comment_edit"
+            android:layout_alignRight="@+id/dialog_answer_business_comment_edit"
+            android:layout_marginTop="30dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:layout_centerHorizontal="true"
@@ -67,14 +52,14 @@
         <LinearLayout
             android:id="@+id/dialog_answer_time_holder"
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_alignLeft="@+id/dialog_answer_business_comment_edit"
+            android:layout_alignRight="@+id/dialog_answer_business_comment_edit"
             android:layout_marginTop="10dp"
+            android:layout_below="@+id/dialog_answer_date_holder"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:layout_below="@+id/dialog_answer_date_holder"
             android:layout_centerHorizontal="true"
             android:gravity="center_horizontal"
             android:background="@drawable/button_shape_dark">
@@ -103,15 +88,15 @@
         <LinearLayout
             android:id="@+id/dialog_answer_people_count_holder"
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_below="@+id/dialog_answer_time_holder"
-            android:layout_centerHorizontal="true"
+            android:layout_alignLeft="@+id/dialog_answer_business_comment_edit"
+            android:layout_alignRight="@+id/dialog_answer_business_comment_edit"
             android:layout_marginTop="10dp"
+            android:layout_below="@+id/dialog_answer_time_holder"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
+            android:layout_centerHorizontal="true"
             android:gravity="center_horizontal"
             android:background="@drawable/button_shape_dark">
 
@@ -143,27 +128,25 @@
 
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/dialog_answer_business_comment_edit"
+            android:layout_alignRight="@+id/dialog_answer_business_comment_edit"
+            android:layout_marginTop="20dp"
             android:text="We&apos;d like a table for 4 people next to a window, with 2 high-chairs"
             android:id="@+id/dialog_answer_comment_tv"
             android:textAlignment="center"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:textSize="14sp"
             android:layout_below="@+id/dialog_answer_people_count_holder"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="25dp" />
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"/>
 
         <EditText
             android:id="@+id/dialog_answer_business_comment_edit"
-            android:layout_width="match_parent"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:hint="Leave a comment for the customer"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:textSize="14sp"
             android:layout_below="@+id/dialog_answer_comment_tv"
             android:layout_centerHorizontal="true"
@@ -171,13 +154,13 @@
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/dialog_answer_business_comment_edit"
+            android:layout_alignRight="@+id/dialog_answer_business_comment_edit"
+            android:layout_below="@+id/dialog_answer_business_comment_edit"
             android:layout_centerHorizontal="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginTop="20dp">
 
             <Button
                 android:id="@+id/dialog_answer_deny_button"
@@ -185,16 +168,24 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
-                android:text="Decline"
-                android:background="@drawable/button_shape_dark" />
+                android:background="@drawable/button_shape_dark"
+                android:text="decline"/>
+
+            <Button
+                android:id="@+id/dialog_answer_later_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_shape_dark"
+                android:text="later"/>
 
             <Button
                 android:id="@+id/dialog_answer_confirm_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="confirm"
                 android:layout_marginLeft="10dp"
-                android:text="Confirm"
                 android:background="@drawable/button_shape_dark"/>
 
 

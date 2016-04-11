@@ -307,10 +307,13 @@ public class ServerCommManager {
                 JSONObject response = null;
 
                 try{
+                    Log.e("DEBUG", "onLoginUser entering first try{} in doInBackground: ");
                     url = new URL(Constants.GET_LOGIN_REQUEST_URL.replace("USER_ID", userId));
                     con = (HttpURLConnection) url.openConnection();
-                    
+
+                    Log.e("DEBUG", "onLoginUser response code: " + String.valueOf(con.getResponseCode()));
                     if (con.getResponseCode() != Constants.STATUS_CODE_SUCCESS){
+                        Log.e("DEBUG", "onLoginUser response code: " + String.valueOf(con.getResponseCode()));
                         return null;
                     }
 
@@ -341,6 +344,7 @@ public class ServerCommManager {
             protected void onPostExecute(JSONObject responseJson) {
                 try {
                     if (responseJson == null){
+                        Log.e("DEBUG", "onLoginUser server respones = null");
                         context.handleLoginResponse(Constants.STATUS_CODE_NOT_FOUND, false, null);
                     }
                     else {

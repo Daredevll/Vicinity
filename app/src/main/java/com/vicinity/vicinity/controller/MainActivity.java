@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ import com.vicinity.vicinity.utilities.DummyModelClass;
 import com.vicinity.vicinity.utilities.QueryProcessor;
 import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
 import com.vicinity.vicinity.utilities.ShortPlace;
+import com.vicinity.vicinity.utilities.interfaces.Blurable;
 import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
 import com.vicinity.vicinity.utilities.services.AnswerListenerService;
 import com.vicinity.vicinity.utilities.services.ReservationListenerService;
@@ -45,7 +47,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainFragmentListener, LocationRequester,
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, MainFragmentListener, LocationRequester, Blurable,
         GoogleApiClient.ConnectionCallbacks, ResultsFragment.ResultsAndDetailsFragmentListener {
 
 
@@ -479,10 +481,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             else if (count == 3){
                 currentPlaceDetails = null;
-                ((DetailsFragment) getSupportFragmentManager().getFragments()).spin = false;
+                ((DetailsFragment) getSupportFragmentManager().getFragments().get(2)).spin = false;
             }
             getSupportFragmentManager().popBackStack();
         }
 
     }
+
+    @Override
+    public ViewGroup getRootView(){
+        return navLayout;
+    }
+
 }

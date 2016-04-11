@@ -18,8 +18,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC0Y8kXYwz7rIyE5CstbZt9Zq4bDjj7mAg" />
 
-        <activity android:name=".controller.IntroActivity" />
-
         <service
             android:name=".utilities.location.FetchAddressIntentService"
             android:exported="false" />

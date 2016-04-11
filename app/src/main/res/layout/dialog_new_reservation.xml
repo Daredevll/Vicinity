@@ -1,42 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/dialog_reserve_root"
-        android:layout_width="340dp"
-        android:layout_height="400dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/button_shape_dark">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
 
         <EditText
             android:id="@+id/dialog_reserve_comment"
-            android:layout_width="match_parent"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_centerHorizontal="true"
             android:textAlignment="center"
-            android:hint="Leave a comment for the reservation"
-            android:layout_above="@+id/linearLayout"
+            android:hint="Would you like to leave a comment?"
+            android:layout_below="@+id/dialog_reservation_people_selector"
+            android:layout_marginTop="30dp"
             android:textSize="14sp"
-            android:layout_marginBottom="31dp" />
+            android:layout_centerHorizontal="true"/>
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/dialog_reserve_comment"
+            android:layout_alignRight="@+id/dialog_reserve_comment"
+            android:layout_below="@+id/dialog_reserve_comment"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:id="@+id/linearLayout">
+            android:layout_marginTop="20dp">
 
             <Button
                 android:id="@+id/dialog_reserve_proceed"
@@ -57,64 +54,111 @@
                 android:text="cancel" />
         </LinearLayout>
 
-        <Button
+        <LinearLayout
+            android:id="@+id/date_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="set date"
-            android:id="@+id/dialog_reserve_set_date_button"
-            android:layout_alignParentTop="true"
-            android:layout_alignLeft="@+id/dialog_reserve_set_time_button"
-            android:layout_alignStart="@+id/dialog_reserve_set_time_button"
-            android:background="@drawable/button_shape_dark"
-            android:layout_marginTop="10dp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="set time"
-            android:id="@+id/dialog_reserve_set_time_button"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/button_shape_dark"
-            android:layout_below="@+id/dialog_reserve_set_date_button"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <TextView
-            android:id="@+id/dialog_reserve_date_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="no date set"
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:layout_toLeftOf="@+id/dialog_reserve_set_date_button"
-            android:layout_above="@+id/dialog_reserve_set_time_button"
             android:layout_alignLeft="@+id/dialog_reserve_comment"
-            android:layout_alignStart="@+id/dialog_reserve_comment" />
+            android:layout_alignRight="@+id/dialog_reserve_comment"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_centerHorizontal="true">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="no time set"
-            android:textSize="20sp"
-            android:textAlignment="center"
-            android:layout_toLeftOf="@+id/dialog_reserve_set_time_button"
-            android:id="@+id/dialog_reserve_time_tv"
-            android:layout_alignLeft="@+id/dialog_reserve_date_tv"
-            android:layout_alignBottom="@+id/dialog_reserve_set_time_button"/>
 
-        <EditText
-            android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/dialog_reserve_date_tv"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:text="..."
+                android:textSize="20sp"
+                android:textAlignment="center"/>
+
+            <Button
+                android:id="@+id/dialog_reserve_set_date_button"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:text="set date"
+                android:background="@drawable/button_shape_dark" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/time_holder"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/dialog_reserve_people_number"
-            android:hint="table for?"
-            android:textAlignment="center"
-            android:layout_below="@+id/dialog_reserve_set_time_button"
-            android:layout_marginTop="60dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignLeft="@+id/dialog_reserve_comment"
+            android:layout_alignRight="@+id/dialog_reserve_comment"
+            android:layout_below="@+id/date_holder"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:text="..."
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:id="@+id/dialog_reserve_time_tv"/>
+
+            <Button
+                android:id="@+id/dialog_reserve_set_time_button"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="30dp"
+                android:text="set time"
+                android:background="@drawable/button_shape_dark"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dialog_reservation_people_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/time_holder"
+            android:layout_marginTop="40dp"
+            android:layout_alignLeft="@+id/dialog_reserve_comment"
+            android:layout_alignRight="@+id/dialog_reserve_comment"
+            android:gravity="center"
+            android:layout_centerHorizontal="true">
+
+
+            <Button
+                android:id="@+id/dialog_reservation_people_decrement_button"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="30dp"
+                android:text="@string/people_less"
+                android:background="@drawable/button_shape_dark" />
+
+            <TextView
+                android:id="@+id/dialog_reserve_people_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:layout_marginLeft="30dp"
+                android:textAlignment="center"
+                android:text="..."
+                android:textSize="30dp"/>
+
+            <Button
+                android:id="@+id/dialog_reservation_people_increment_button"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="30dp"
+                android:text="@string/people_more"
+                android:background="@drawable/button_shape_dark" />
+
+
+        </LinearLayout>
+
 
 
     </RelativeLayout>

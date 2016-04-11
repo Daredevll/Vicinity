@@ -16,6 +16,9 @@ import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.NotificationActivity;
 import com.vicinity.vicinity.utilities.CustomNotificationElement;
 import com.vicinity.vicinity.utilities.ServerCommManager;
+import com.vicinity.vicinity.utilities.interfaces.Blurable;
+
+import jp.wasabeef.blurry.Blurry;
 
 /**
  * Created by Jovch on 08-Apr-16.
@@ -37,9 +40,9 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
 
     // VIEWS AND CONTAINERS:
 
-    TextView name, dateTv, timeTv, people, customerComment;
+    TextView dateTv, timeTv, people, customerComment;
     static EditText placeComment;
-    Button decline, confirm;
+    Button decline, confirm, later;
 
    public static ReservationAnswerDialog newInstance(CustomNotificationElement n){
         ReservationAnswerDialog dialog = new ReservationAnswerDialog();
@@ -79,7 +82,6 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.dialog_answer_reservation, container, false);
 
-        name = (TextView) v.findViewById(R.id.dialog_answer_place_name);
         dateTv = (TextView) v.findViewById(R.id.dialog_answer_date_tv);
         timeTv = (TextView) v.findViewById(R.id.dialog_answer_time_tv);
         people = (TextView) v.findViewById(R.id.dialog_answer_people_count);
@@ -87,8 +89,8 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
         placeComment = (EditText) v.findViewById(R.id.dialog_answer_business_comment_edit);
         decline = (Button) v.findViewById(R.id.dialog_answer_deny_button);
         confirm = (Button) v.findViewById(R.id.dialog_answer_confirm_button);
+        later = (Button) v.findViewById(R.id.dialog_answer_later_button);
 
-        name.setText("New reservation for '" + placeName +"'");
         dateTv.setText(date);
         timeTv.setText(time);
         people.setText(String.valueOf(peopleCount));
@@ -97,6 +99,19 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
         confirm.setOnClickListener(this);
         decline.setOnClickListener(this);
 
+        later.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Blurry.delete(((Blurable) getActivity()).getRootView());
+                dismiss();
+            }
+        });
+
+        getDialog().getWindow().setBackgroundDrawableResource(R.drawable.button_shape_light);
+        Blurry.with(getActivity()).radius(25).sampling(2).onto(((Blurable) getActivity()).getRootView());
+        getDialog().getWindow().setTitle("New reservation for '" + placeName + "'");
+
+        setCancelable(false);
         return v;
     }
 
@@ -111,7 +126,7 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.addToBackStack(null);
 
-        ConfirmDialog cd = ConfirmDialog.newInstance(this, confirm);
+        ConfirmAnswerDialog cd = ConfirmAnswerDialog.newInstance(this, confirm);
         cd.show(ft, "RESERVEDIALOG");
     }
 
@@ -132,14 +147,14 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
 
 
 
-    public static class ConfirmDialog extends android.support.v4.app.DialogFragment{
+    public static class ConfirmAnswerDialog extends android.support.v4.app.DialogFragment{
 
         private boolean isConfirm;
         private String placeCom;
         private static DialogFragment parentFr;
 
-        public static ConfirmDialog newInstance(DialogFragment parent, boolean isConfirm){
-            ConfirmDialog confirmDialog = new ConfirmDialog();
+        public static ConfirmAnswerDialog newInstance(DialogFragment parent, boolean isConfirm){
+            ConfirmAnswerDialog confirmDialog = new ConfirmAnswerDialog();
 
             parentFr = parent;
             Bundle args = new Bundle();
@@ -185,10 +200,14 @@ public class ReservationAnswerDialog extends android.support.v4.app.DialogFragme
                     ServerCommManager.getInstance().onPostReservationAnswer(customerId, restaurantId, peopleCount, placeCom, time, date, isConfirm, placeName);
                     ((NotificationActivity) getActivity()).removeNotification(cne);
                     dismiss();
+                    Blurry.delete(((Blurable) getActivity()).getRootView());
                     parentFr.dismiss();
                 }
             });
 
+            getDialog().getWindow().setBackgroundDrawableResource(R.drawable.button_shape_light_solid);
+
+            setCancelable(false);
             return v;
         }
 

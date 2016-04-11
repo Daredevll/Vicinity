@@ -1,13 +1,23 @@
 package com.vicinity.vicinity.utilities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.vicinity.vicinity.R;
+
 /**
  * Created by Jovch on 27-Mar-16.
  */
 public final class Constants {
     public static final String S_PREFS_NOTIFICATION_JSON_ARRAY = "uasd8uasdjas89dja89sdjasda89";
 
+    private static Context context;
 
-    public static final String BROWSER_API_KEY = "AIzaSyCnNU--KrYAW2QARuei9p1mIDExPQwPcs4";
+    private static int currentKey = 0;
+
+    private static final String[] BROWSER_API_KEYS = {"AIzaSyCnNU--KrYAW2QARuei9p1mIDExPQwPcs4", "AIzaSyC0uDL8Wipm51bzRuOZ3iy9ou1r01URm8A"};
+    public static final String BROWSER_API_KEY = BROWSER_API_KEYS[currentKey];
+
 
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;
@@ -52,4 +62,51 @@ public final class Constants {
 
     public static final String PREFS_USER_TYPE = "SHARED_PREFS_USER_TYPE_FIELD";
     public static final String REGISTER_BUSINESS_ACTIVITY_VERIFY_BOOLEAN_EXTRA = "register business activity goes directly to verify or not";
+    public static final String NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA = "tag for setting and getting acc type on notification click";
+
+    public static void switchKeys(){
+        currentKey = ++currentKey%BROWSER_API_KEYS.length;
+
+        SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sPref.edit();
+        editor.putInt("CURRENT_API_KEY", currentKey);
+        editor.commit();
+    }
+
+    public static void initialize(Context contextIn) {
+        context = contextIn;
+        SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sPref.edit();
+        if ((sPref.getInt("CURRENT_API_KEY", -1) == -1)){
+            editor.putInt("CURRENT_API_KEY", 0);
+        }
+        editor.commit();
+        currentKey = sPref.getInt("CURRENT_API_KEY", 0);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

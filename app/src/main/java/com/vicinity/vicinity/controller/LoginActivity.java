@@ -50,6 +50,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+        /*
+            Initializes the Constants Class with properties saved in the Prefs, needed for the normal operation of the Class
+         */
+        Constants.initialize(this);
+
         rootView = (RelativeLayout) findViewById(R.id.intro_root_layout);
         rootView.setBackgroundResource(AppearanceManager.getBackgroundID());
 
@@ -86,6 +92,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         switchBoxes(DummyModelClass.LoginManager.getInstance().isUserLoggedIn(this));
 
         if (DummyModelClass.LoginManager.getInstance().isUserLoggedIn(this)){
+            Log.e("DEBUG", "logged user found, onLoginUser called");
             ServerCommManager.getInstance().onLoginUser(this, DummyModelClass.LoginManager.getInstance().getLoggedUserId(this));
         }
 

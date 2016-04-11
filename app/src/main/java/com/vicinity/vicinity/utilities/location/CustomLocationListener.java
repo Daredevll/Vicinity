@@ -66,6 +66,10 @@ public class CustomLocationListener implements LocationListener {
             if (gpsReminderCounter == 1) {
                 Toast.makeText((Activity) activity, "Enable your GPS for better positioning", Toast.LENGTH_SHORT).show();
             }
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+        }
+        else {
+            Toast.makeText((Activity) activity, "We can't detect your location, sorry", Toast.LENGTH_SHORT).show();
         }
         if (ActivityCompat.checkSelfPermission((Activity) activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission((Activity) activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -76,12 +80,6 @@ public class CustomLocationListener implements LocationListener {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             return;
-        }
-        try {
-            locationManager.requestLocationUpdates(provider.equals(LocationManager.GPS_PROVIDER) ? LocationManager.NETWORK_PROVIDER : LocationManager.GPS_PROVIDER, 0, 0, this);
-        }
-        catch (IllegalArgumentException e){
-            Toast.makeText((Activity) activity, "Unable to detect your location, please enter the name of your city manually", Toast.LENGTH_SHORT).show();
         }
     }
 

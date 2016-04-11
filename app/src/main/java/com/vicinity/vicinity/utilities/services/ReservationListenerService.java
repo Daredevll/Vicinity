@@ -104,28 +104,28 @@ public class ReservationListenerService extends Service {
                         .setContentTitle("Reservation Received!")
                         .setContentText("A customer made sent a reservation request!")
                         .setAutoCancel(true);
-// Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, NotificationActivity.class);
 
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, NotificationActivity.class);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
+        resultIntent.putExtra(Constants.NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA, true);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack for the Intent (but not the Intent itself)
+
+        // Adds the back stack for the Intent (but not the Intent itself)
         stackBuilder.addParentStack(NotificationActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
+
+        // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-// mId allows you to update the notification later on.
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // mId allows you to update the notification later on.
         mNotificationManager.notify(RESERVATION_NOTIFICATION_ID, mBuilder.build());
     }
 
@@ -150,7 +150,7 @@ public class ReservationListenerService extends Service {
                 oos.writeObject(notifs);
                 fos.close();
                 oos.close();
-                Log.e("File", "New file created, empty list written to new file.");
+                Log.e("File", "New file created for caching business notifs, empty list written to new file.");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -160,7 +160,7 @@ public class ReservationListenerService extends Service {
             FileInputStream fis = new FileInputStream(f);
             ObjectInputStream ois = new ObjectInputStream(fis);
             notifs = (ArrayList<CustomNotificationElement>) ois.readObject();
-            Log.e("Request", "Notifs arl Cache loaded from file");
+            Log.e("DEBUG", "Business Notifs arl Cache loaded from file");
 
             ois.close();
             fis.close();
@@ -228,8 +228,6 @@ public class ReservationListenerService extends Service {
 
         try{
             url = new URL(Constants.GET_RESERVATION_REQUEST_URL.replace("PLACE_ID", placeId));
-
-
             con = (HttpURLConnection) url.openConnection();
 
             Log.e("Request", "Request for new reservations sent from inGetReservationRequest()");

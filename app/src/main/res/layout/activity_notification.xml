@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notification_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -10,11 +11,51 @@
     tools:context="com.vicinity.vicinity.controller.NotificationActivity"
     android:background="@drawable/bg_night_blurred">
 
+    <LinearLayout
+        android:id="@+id/notification_activity_selectors_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:padding="5dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/notifications_activity_sort_biggest"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="latest"
+            android:background="@drawable/button_shape_dark"/>
+
+        <Button
+            android:id="@+id/notifications_activity_sort_soonest"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="biggest"
+            android:background="@drawable/button_shape_dark"/>
+
+        <Button
+            android:id="@+id/notifications_activity_sort_latest"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="soonest"
+            android:background="@drawable/button_shape_dark"/>
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/notifications_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/notifications_dismiss_activity_button">
+        android:layout_below="@+id/notification_activity_selectors_box"
+        android:layout_above="@+id/notification_activity_buttons_box">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -28,13 +69,36 @@
         android:layout_marginTop="100dp"
         android:layout_centerHorizontal="true"/>
 
-    <Button
-        android:id="@+id/notifications_dismiss_activity_button"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:id="@+id/notification_activity_buttons_box"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="dismiss"
+        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/button_shape_dark"/>
+        android:padding="5dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/notifications_activity_exit_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="exit"
+            android:background="@drawable/button_shape_dark"/>
+
+        <Button
+            android:id="@+id/notifications_activity_home_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="home"
+            android:background="@drawable/button_shape_dark"/>
+
+    </LinearLayout>
+
 
 </RelativeLayout>

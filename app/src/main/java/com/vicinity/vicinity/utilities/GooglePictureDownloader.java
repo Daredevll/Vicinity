@@ -1,8 +1,11 @@
 package com.vicinity.vicinity.utilities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
@@ -125,10 +128,20 @@ public class GooglePictureDownloader {
      * @param photoReference
      * @param frame
      */
-    public void setImage(Activity caller, String photoReference, final ImageView frame){
+    public void setImage(Activity caller, String photoReference, final ImageView frame, boolean onWiFi){
+        int wid;
+        int hei;
+        if (onWiFi){
+            wid = MAX_WIDTH_LARGE;
+            hei = MAX_HEIGHT_LARGE;
+        }
+        else {
+            wid = MAX_WIDTH_SMALL;
+            hei = MAX_HEIGHT_SMALL;
+        }
         String urlPath = "https://maps.googleapis.com/maps/api/place/photo?" +
-                "maxwidth=" + MAX_WIDTH_LARGE +
-                "&maxheight=" + MAX_HEIGHT_LARGE +
+                "maxwidth=" + wid +
+                "&maxheight=" + hei +
                 "&photoreference=" + photoReference +
                 "&key=" + Constants.BROWSER_API_KEY;
 
@@ -201,8 +214,15 @@ public class GooglePictureDownloader {
             @Override
             protected Void doInBackground(Void... params) {
 
+                /*
+                        Checks if Wi-Fi is connected to decide whether to download large or small photos
+                 */
+                ConnectivityManager connManager = (ConnectivityManager) caller.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo wiFiInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+
                 for (int idx = 0; idx < references.size(); idx++){
-                    setImage(caller, references.get(idx), frames.get(idx));
+                    setImage(caller, references.get(idx), frames.get(idx), wiFiInfo.isConnected());
                 }
 
                 return null;
