@@ -89,5 +89,10 @@
     <string name="notifications_activity_exit">exit</string>
     <string name="notifications_activity_home">home</string>
     <string name="reservation_answer_dialog_new_reservation_for">New reservation for \'</string>
+    <string name="reservation_sent">Reservation request sent</string>
+    <string name="you_must_set_at_least">You must set people to at least one</string>
+    <string name="pleace_select_time">Please, select time and date</string>
+    <string name="confirm_polite">CONFIRM</string>
+    <string name="no_results">No results found!</string>
 
 </resources>

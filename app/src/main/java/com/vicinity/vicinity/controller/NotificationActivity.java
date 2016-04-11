@@ -150,17 +150,6 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         return list;
     }
 
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public void triggerAnswer(CustomNotificationElement notificationToBeAnswered) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

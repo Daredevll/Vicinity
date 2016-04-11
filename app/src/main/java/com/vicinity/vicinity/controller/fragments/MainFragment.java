@@ -160,8 +160,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                new PlacesTask().execute(s.toString());
-
+                if (s.toString().length() > 2) {
+                    new PlacesTask().execute(s.toString());
+                }
             }
 
             @Override

@@ -16,7 +16,7 @@
         android:id="@+id/results_fragment_no_results"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No results found!"
+        android:text="@string/no_results"
         android:layout_marginTop="100dp"
         android:textSize="35dp"
         android:textAlignment="center"

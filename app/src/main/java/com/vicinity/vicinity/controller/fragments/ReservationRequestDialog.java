@@ -131,7 +131,7 @@ public class ReservationRequestDialog extends DialogFragment implements Blurable
                     people = Integer.valueOf(peoplePick.getText().toString());
                 }
                 catch (NumberFormatException e){
-                    Toast.makeText(getActivity(), "You must set people to at least one", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.you_must_set_at_least, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 comment = commentEdit.getText().toString();
@@ -140,7 +140,7 @@ public class ReservationRequestDialog extends DialogFragment implements Blurable
                     return;
                 }
                 if (dateTv.getText().equals("...") || timeTv.getText().equals("...")){
-                    Toast.makeText(getActivity(), "Please, select time and date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.pleace_select_time, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 openConfirmDialog();
@@ -261,7 +261,7 @@ public class ReservationRequestDialog extends DialogFragment implements Blurable
                     dismiss();
                     parentFr.dismiss();
                     Blurry.delete(((Blurable) getActivity()).getRootView());
-                    Toast.makeText(getActivity(), "Reservation request sent", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.reservation_sent, Toast.LENGTH_SHORT).show();
                 }
             });
 
