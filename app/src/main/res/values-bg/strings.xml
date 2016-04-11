@@ -36,7 +36,7 @@
     <string name="nearest">близост</string>
     <string name="sort">сортирай</string>
     <string name="popular">популярност</string>
-    <string name="enter_name">въведи име</string>
+    <string name="enter_name">задай име на място</string>
     <string name="go">търси</string>
     <string name="open">Отворено</string>
     <string name="website">website</string>
@@ -76,7 +76,7 @@
     <string name="invalid_code">Невалиден код</string>
     <string name="has_not_set_website">" Все още няма обявен уеб сайт"</string>
     <string name="location_not_detected_yet">Местоположението Ви все още не е засечено, моля почакайте</string>
-    <string name="or_chose_type">..или избери тип</string>
+    <string name="or_chose_type">или търси по категория</string>
     <string name="unable_to_detecd_location">В момента не можем да засечем Вашата позиция, моля, въведете местност/град в полето по-горе за да продължите</string>
     <string name="enable_gps">Включете Вашия GPS за по-добро позициониране</string>
     <string name="dialog_answer_later_button_string">по-късно</string>

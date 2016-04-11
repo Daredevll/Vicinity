@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private boolean searchByName;
-    private String placeName;
+    private String cityName;
+    private String searchedPlaceName;
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -65,7 +66,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
     Location currentLocation;
+    Location detectedLocation;
+    Location cityLocation;
+
     String readableAddress;
     String queryType;
 
@@ -254,14 +259,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void receiveLocation(Location location) {
-        this.currentLocation = location;
+        this.detectedLocation = location;
         mainFragment.setAddress();
-        Log.e("Location", "location obtained: " + currentLocation.getLatitude() + ", " + currentLocation.getLongitude() + " accuracy: " + currentLocation.getAccuracy());
+        Log.e("Location", "location obtained: " + detectedLocation.getLatitude() + ", " + detectedLocation.getLongitude() + " accuracy: " + detectedLocation.getAccuracy());
     }
 
     @Override
-    public void setLocation(Location location) {
-        this.currentLocation = location;
+    public void setDetectedLocation(Location location) {
+        this.detectedLocation = location;
+    }
+
+    @Override
+    public void setCityLocation(Location cityLocation) {
+        this.cityLocation = cityLocation;
+    }
+
+    @Override
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     @Override
@@ -290,13 +305,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void startResultsFragment(String queryType, boolean isNameSearch) {
-        this.searchByName = isNameSearch;
-        if (isNameSearch){
-            this.placeName = queryType;
-        }
-
+    public void startResultsFragment(String queryType, String placeName, boolean isNameSearch) {
         this.queryType = queryType;
+        this.searchedPlaceName = placeName;
+        this.searchByName = isNameSearch;
+
         ResultsFragment rf = new ResultsFragment();
         replaceFragment(rf, true);
     }
@@ -341,8 +354,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public String getPlaceName() {
-        return this.placeName;
+    public String getCityName() {
+        return this.cityName;
+    }
+
+    @Override
+    public String getSearchedPlaceName() {
+        return this.searchedPlaceName;
+    }
+
+    @Override
+    public void setCurrentLocation(Location loc) {
+        this.currentLocation = loc;
+    }
+
+    @Override
+    public Location getDetectedLocation() {
+        return this.detectedLocation;
+    }
+
+    @Override
+    public Location getCityLocation() {
+        return this.cityLocation;
     }
 
 
@@ -385,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             JSONObject resultObject = null;
 
             try{
-                url = new URL(urlLink.replace("PLACE_ID", cp.getPlaceId()).replace("BROWSER_KEY", Constants.BROWSER_API_KEY));
+                url = new URL(urlLink.replace("PLACE_ID", cp.getPlaceId()).replace("BROWSER_KEY", Constants.getBrowserApiKey()));
                 connection = (HttpURLConnection) url.openConnection();
                 sc = new Scanner(connection.getInputStream());
                 sb = new StringBuffer();
@@ -501,6 +534,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             if (count == 2) {
                 currentSearchResults.clear();
+                currentLocation = null;
             }
             else if (count == 3){
                 currentPlaceDetails = null;

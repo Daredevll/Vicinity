@@ -2,6 +2,7 @@ package com.vicinity.vicinity.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.vicinity.vicinity.R;
 
@@ -15,8 +16,7 @@ public final class Constants {
 
     private static int currentKey = 0;
 
-    private static final String[] BROWSER_API_KEYS = {"AIzaSyCnNU--KrYAW2QARuei9p1mIDExPQwPcs4", "AIzaSyC0uDL8Wipm51bzRuOZ3iy9ou1r01URm8A"};
-    public static final String BROWSER_API_KEY = BROWSER_API_KEYS[currentKey];
+    private static final String[] BROWSER_API_KEYS = {"AIzaSyCnNU--KrYAW2QARuei9p1mIDExPQwPcs4", "AIzaSyC0uDL8Wipm51bzRuOZ3iy9ou1r01URm8A", "AIzaSyD2Y3r7nmfqonC60cF5rdaUh-ZCZhUcSRY", "AIzaSyAO9zQIK4--1fc6QmZ2yCrRkzSE0_Rnp-A"};
 
 
     public static final int SUCCESS_RESULT = 0;
@@ -67,10 +67,12 @@ public final class Constants {
     public static void switchKeys(){
         currentKey = ++currentKey%BROWSER_API_KEYS.length;
 
+        Log.e("CONSTANTS", "==========     currentKey changed! New index: " + currentKey + "     ==========");
         SharedPreferences sPref = context.getSharedPreferences(context.getString(R.string.prefs_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sPref.edit();
         editor.putInt("CURRENT_API_KEY", currentKey);
         editor.commit();
+        Log.e("CONSTANTS", "==========     What went to prefs: " + sPref.getInt("CURRENT_API_KEY", -1) + "     ==========");
     }
 
     public static void initialize(Context contextIn) {
@@ -82,6 +84,11 @@ public final class Constants {
         }
         editor.commit();
         currentKey = sPref.getInt("CURRENT_API_KEY", 0);
+        Log.e("CONSTANTS", "==========     currentKey index is: " + currentKey + "     ==========");
+    }
+
+    public static String getBrowserApiKey(){
+        return BROWSER_API_KEYS[currentKey];
     }
 }
 

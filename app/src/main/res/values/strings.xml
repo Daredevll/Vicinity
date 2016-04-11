@@ -37,7 +37,7 @@
     <string name="nearest">nearest</string>
     <string name="sort">sort</string>
     <string name="popular">most popular</string>
-    <string name="enter_name">enter name</string>
+    <string name="enter_name">set place name</string>
     <string name="go">go</string>
     <string name="open">Open</string>
     <string name="website">website</string>
@@ -79,7 +79,7 @@
     <string name="invalid_code">Invalid code</string>
     <string name="has_not_set_website">" has not set its Website yet"</string>
     <string name="location_not_detected_yet">Location not detected yet, please wait</string>
-    <string name="or_chose_type">..or chose a type</string>
+    <string name="or_chose_type">OR SEARCH BY CATEGORY</string>
     <string name="unable_to_detecd_location">Unable to detect your location, please enter the name of your city manually</string>
     <string name="enable_gps">Enable your GPS for better positioning</string>
     <string name="dialog_answer_later_button_string">later</string>

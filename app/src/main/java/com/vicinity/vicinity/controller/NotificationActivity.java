@@ -65,10 +65,12 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         toggles.add(biggestToggleButton);
         toggles.add(soonestToggleButton);
 
+        businessNotification = getIntent().getBooleanExtra(Constants.NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA, false);
+        Log.e("DEBUG", "The notification activity recieved the intent, the availaiblity of BOOL EXTRA IS: " + getIntent().hasExtra(Constants.NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA));
+
         latestToggleButton.setOnClickListener(this);
         biggestToggleButton.setOnClickListener(this);
         soonestToggleButton.setOnClickListener(this);
-
 
         recyclerView = (RecyclerView) findViewById(R.id.notifications_recycler_view);
         listEmpty = (TextView) findViewById(R.id.notification_activity_no_new);
@@ -77,9 +79,6 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         adapter = new NotificationsRecyclerAdapter(this, notificationsList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        businessNotification = getIntent().getBooleanExtra(Constants.NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA, false);
-
-        Log.e("DEBUG", "The notification activity recieved the intent, the availaiblity of BOOL EXTRA IS: " + getIntent().hasExtra(Constants.NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA));
 
 
 

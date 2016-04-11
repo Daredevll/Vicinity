@@ -163,7 +163,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse(currentPlace.getInternationalPhoneNumber()));
+                intent.setData(Uri.parse("tel:"+currentPlace.getInternationalPhoneNumber()));
                 startActivity(intent);
             }
         });
@@ -180,7 +180,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
         reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!reviewsActive){
+                if (!reviewsActive) {
                     wasMapVisible = true;
                     switchFragments();
                 }
@@ -189,8 +189,8 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
 
                 ReservationRequestDialog rrd = ReservationRequestDialog.newInstance(DummyModelClass.LoginManager.getInstance()
                                 .getLoggedUserId(getActivity()),
-                                    dListener.getCurrentDetailPlace().getPlaceId(),
-                                    dListener.getCurrentDetailPlace().getName());
+                        dListener.getCurrentDetailPlace().getPlaceId(),
+                        dListener.getCurrentDetailPlace().getName());
 
                 rrd.show(ft, "RESERVEDIALOG");
 
@@ -198,9 +198,25 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
             }
         });
 
-        // TODO: Add gesture to switch between Map/Reviews
-
         return root;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1500);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                reviewsActive = false;
+                switchFragments();
+            }
+        }).start();
     }
 
     private void hangPhotos(ArrayList<String> photosRefs) {
@@ -224,6 +240,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
 
     private void switchFragments() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.fade_in_slow, R.anim.fade_out_slow);
         if (reviewsActive) {
             SupportMapFragment mf = SupportMapFragment.newInstance();
             ft.replace(R.id.details_map_reviews_frame, mf);

@@ -139,7 +139,7 @@ public class ReservationRequestDialog extends DialogFragment implements Blurable
                     Toast.makeText(getActivity(), R.string.set_people_at_least_one, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (datePick.getText().equals("...") || timePick.getText().equals("...")){
+                if (dateTv.getText().equals("...") || timeTv.getText().equals("...")){
                     Toast.makeText(getActivity(), "Please, select time and date", Toast.LENGTH_SHORT).show();
                     return;
                 }

@@ -59,7 +59,7 @@ public class GooglePictureDownloader {
                 "maxwidth=" + MAX_WIDTH_LARGE +
                 "&maxheight=" + MAX_HEIGHT_LARGE +
                 "&photoreference=" + photoReference +
-                "&key=" + Constants.BROWSER_API_KEY;
+                "&key=" + Constants.getBrowserApiKey();
 
         URL url = null;
         try {
@@ -94,7 +94,7 @@ public class GooglePictureDownloader {
                 "maxwidth=" + MAX_WIDTH_LARGE +
                 "&maxheight=" + MAX_HEIGHT_LARGE +
                 "&photoreference=" + photoReference +
-                "&key=" + Constants.BROWSER_API_KEY;
+                "&key=" + Constants.getBrowserApiKey();
 
         URL url = null;
         try {
@@ -143,7 +143,7 @@ public class GooglePictureDownloader {
                 "maxwidth=" + wid +
                 "&maxheight=" + hei +
                 "&photoreference=" + photoReference +
-                "&key=" + Constants.BROWSER_API_KEY;
+                "&key=" + Constants.getBrowserApiKey();
 
         URL url = null;
         try {

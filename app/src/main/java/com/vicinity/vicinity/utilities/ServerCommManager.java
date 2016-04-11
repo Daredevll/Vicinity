@@ -114,7 +114,7 @@ public class ServerCommManager {
      * @param placeId
      * @param placeLocalPhone
      */
-    public void onPostRegisterBusiness(final String accId, final String placeId, final String placeLocalPhone, final String placeName, final String placeAddress){
+    public void onPostRegisterBusiness(final Context context, final String accId, final String placeId, final String placeLocalPhone, final String placeName, final String placeAddress){
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -141,6 +141,11 @@ public class ServerCommManager {
                     con.setChunkedStreamingMode(0);
 
                     con.getOutputStream().write(jsonString.getBytes());
+
+                    if (con.getResponseCode() != Constants.STATUS_CODE_SUCCESS){
+                        Log.e("VALIDATION", "Server returned != 200, business already claimed");
+                        Toast.makeText(context, "It appears that '" + placeName + "' is already registered in our database", Toast.LENGTH_SHORT).show();
+                    }
 
                     con.getInputStream();
                     Log.e("Request", "Request for registering new business sent successfully");

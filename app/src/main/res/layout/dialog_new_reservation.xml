@@ -36,22 +36,23 @@
             android:layout_marginTop="20dp">
 
             <Button
-                android:id="@+id/dialog_reserve_proceed"
+                android:id="@+id/dialog_reserve_cancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
                 android:background="@drawable/button_shape_dark"
-                android:text="@string/proceed"/>
+                android:text="@string/cancel" />
 
             <Button
-                android:id="@+id/dialog_reserve_cancel"
+                android:id="@+id/dialog_reserve_proceed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/button_shape_dark"
-                android:text="@string/cancel" />
+                android:text="@string/proceed"/>
+
         </LinearLayout>
 
         <LinearLayout

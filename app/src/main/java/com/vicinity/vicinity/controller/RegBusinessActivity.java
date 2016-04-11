@@ -62,7 +62,7 @@ public class RegBusinessActivity extends AppCompatActivity {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ServerCommManager.getInstance().onPostRegisterBusiness(accId, placeId, placeLocPhone, placeName, placeAddress);
+                ServerCommManager.getInstance().onPostRegisterBusiness(getApplicationContext(), accId, placeId, placeLocPhone, placeName, placeAddress);
                 Log.e("Request", "Place business Registration method invoked");
                 setVisibilities(true);
             }

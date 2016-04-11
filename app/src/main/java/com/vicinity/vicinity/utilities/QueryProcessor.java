@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.location.places.Place;
-import com.vicinity.vicinity.controller.fragments.ResultsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,12 +36,18 @@ public class QueryProcessor {
 
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
     private static final String MAPS_SERVICES_SERVER_KEY = "AIzaSyDHvkAJQni2X0Qdv6n9JYNEz-l7W6t5-WU";
+    private static final String BASE_URL_NAME_SEARCH = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=";
+
+
+
     // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=hotel&key=AIzaSyDHvkAJQni2X0Qdv6n9JYNEz-l7W6t5-WU
 
     private Random dummyRandom = new Random();
 
     PlacesListRequester listCustomer;
     private Location customerLocation;
+    private boolean searchingByName;
+    private String placeName;
     ArrayList<CustomPlace> retrievedPlaces;
 
     // TODO: make a request with the given Location and Type criteria
@@ -50,6 +55,8 @@ public class QueryProcessor {
     // TODO: Fill the list with objects, generated while decoding the JSON, optionally call listCustomer.update(retrievedPlaces) with every iteration for a smoother effect, but no sorting
 
     private static QueryProcessor instance;
+    private String placeType;
+    private boolean sortPopular;
 
     public static QueryProcessor getInstance(){
         if (instance == null){
@@ -58,42 +65,66 @@ public class QueryProcessor {
         return instance;
     }
 
-    public void fillResultsList(ResultsFragment customer, Location location, String placeName) {
+//    public void fillResultsList(ResultsFragment customer, Location location, String placeName) {
+//        this.searchingByName = true;
+//        this.placeName = placeName;
+//        this.listCustomer = customer;
+//        this.customerLocation = location;
+//        retrievedPlaces = new ArrayList<CustomPlace>();
+//        //restaurants+in+Sydney&key=
+//
+//        String fullURI;
+//        placeName = placeName.replaceAll(" ", "%20");
+//        String locationString = "&location=" + location.getLatitude() + "," + location.getLongitude();
+//        String radius = "&radius=3000";
+//        String key = "&key=" + Constants.BROWSER_API_KEY;
+//
+//        fullURI = BASE_URL_NAME_SEARCH + placeName + locationString + radius +  key;
+//
+//
+//        Log.e("pp", "sending request as: " + fullURI); // fullURI is OK!
+//        new AsyncResultsFiller().execute(fullURI);
+//    }
+
+    public void fillResultsList(PlacesListRequester customer, Location location, String type, String searchedPlaceName, boolean isSortPopular, boolean searchingByName){
+        this.searchingByName = searchingByName;
         this.listCustomer = customer;
         this.customerLocation = location;
+        this.placeType = type;
         retrievedPlaces = new ArrayList<CustomPlace>();
-        //restaurants+in+Sydney&key=
+        this.placeName = searchedPlaceName;
+        this.sortPopular = isSortPopular;
+
 
         String fullURI;
-        placeName = placeName.replaceAll(" ", "%20");
         String locationString = "&location=" + location.getLatitude() + "," + location.getLongitude();
-        String radius = "&radius=3000";
-        String key = "&key=" + Constants.BROWSER_API_KEY;
-
-        fullURI = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + placeName + locationString + radius +  key;
-
-
-        Log.e("pp", "sending request as: " + fullURI); // fullURI is OK!
-        new AsyncResultsFiller().execute(fullURI);
-    }
-
-    public void fillResultsList(PlacesListRequester customer, Location location, String type, boolean isSortPopular){
-        this.listCustomer = customer;
-        this.customerLocation = location;
-        retrievedPlaces = new ArrayList<CustomPlace>();
-        String fullURI;
-        String locationString = "location=" + location.getLatitude() + "," + location.getLongitude();
         String rankBy = "&rankby=distance";
         String radius = "&radius=3000";
         String placeType = "&type=" + type;
-        String key = "&key=" + Constants.BROWSER_API_KEY;
+        String nameOfPlace = ("&name=" + placeName).replace(" ", "%20");
+        String key = "&key=" + Constants.getBrowserApiKey();
 
-        // TODO: Remove this dummy url after test
-        if (isSortPopular) {
-            fullURI = BASE_URL + locationString + radius + placeType + key;
+        if (searchingByName && type.isEmpty()){
+            //https://maps.googleapis.com/maps/api/place/textsearch/json?query=&location=42.6650237,23.2701468&radius=3000&key=AIzaSyD2Y3r7nmfqonC60cF5rdaUh-ZCZhUcSRY
+            fullURI = BASE_URL_NAME_SEARCH + placeName + locationString + radius + key;
+            Log.e("DEBUG", "=====================  (searchingByName && type.isEmpty())  ==============================");
+            Log.e("DEBUG", " FULL URL LOOKS LIKE: " + fullURI);
+        }
+        else if (searchingByName && !type.isEmpty()){
+            //https://maps.googleapis.com/maps/api/place/nearbysearch/json?&location=42.6650282,23.2701288&radius=3000&type=restaurant&name=Happy&key=AIzaSyD2Y3r7nmfqonC60cF5rdaUh-ZCZhUcSRY
+            fullURI = BASE_URL + locationString + radius + placeType + nameOfPlace + key;
+            Log.e("DEBUG", "=====================  (searchingByName && !type.isEmpty())  ==============================");
+            Log.e("DEBUG", " FULL URL LOOKS LIKE: " + fullURI);
         }
         else {
-            fullURI = BASE_URL + locationString + rankBy + placeType + key;
+            fullURI = BASE_URL + locationString + radius + placeType + key;
+            Log.e("DEBUG", "=====================  NOT SEARCHING BY NAME  ==============================");
+            Log.e("DEBUG", " FULL URL LOOKS LIKE: " + fullURI);
+        }
+
+        // SETS THE SEARCH BASED OT USER PREFERENCES /RELEVANCE OR DISTANCE
+        if (!isSortPopular && !type.isEmpty()) {
+            fullURI = fullURI.replace(radius, rankBy);
         }
 
         Log.e("URL", "sending request as: " + fullURI); // fullURI is OK!
@@ -414,6 +445,14 @@ public class QueryProcessor {
                 root = new JSONObject(sb.toString());
 
                 Log.e("URL", root.getString("status"));
+                Log.e("URL", "STATUS CODE:"  + String.valueOf(connection.getResponseCode()));
+
+                if (root.getString("status").equals("OVER_QUERY_LIMIT")){
+                    Log.e("DEBUG", "==========     Status code != OK, switching keys...     ==========");
+                    Constants.switchKeys();
+                    fillResultsList(listCustomer, customerLocation, placeType, placeName, sortPopular, searchingByName);
+                    return null;
+                }
 
 
 
@@ -422,7 +461,6 @@ public class QueryProcessor {
 
                 Log.e("JSON", "" + resultsArray.length());
 
-                // TODO: Implement NextPageToken to be able to request more than 20 results
 
 
                 for (int i = 0; i < resultsArray.length(); i++){
@@ -513,6 +551,9 @@ public class QueryProcessor {
 
         @Override
         protected void onPostExecute(ArrayList<CustomPlace> workingList) {
+            if (workingList == null){
+                return;
+            }
             Collections.sort(retrievedPlaces, new Comparator<CustomPlace>() {
                 @Override
                 public int compare(CustomPlace lhs, CustomPlace rhs) {
@@ -528,7 +569,7 @@ public class QueryProcessor {
             String url_eta = BASE_URL_ETA_REQUEST;
             String origins = "&origins="+customPlace.getLatitude()+","+customPlace.getLongitude();
             String destinations = "&destinations="+customerLocation.getLatitude()+","+customerLocation.getLongitude();
-            String key = "&key="+ Constants.BROWSER_API_KEY;
+            String key = "&key="+ Constants.getBrowserApiKey();
 
             String etaURL = url_eta+origins+destinations+key;
 
@@ -573,6 +614,7 @@ public class QueryProcessor {
                 e.printStackTrace();
             } catch (JSONException e) {
                 Constants.switchKeys();
+                Log.e("DEBUG", "ETA GOT SCREWED...");
                 customPlace.setDistance(String.valueOf(((double) dummyRandom.nextInt(10)+4)/2) + "km");
                 customPlace.setEstimateTime(String.valueOf(dummyRandom.nextInt(10) + 40) + "min");
                 e.printStackTrace();

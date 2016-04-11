@@ -1,7 +1,7 @@
 package com.vicinity.secretarysms;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
@@ -67,7 +67,10 @@ public class MainActivity extends AppCompatActivity {
             url = new URL("http://vicinity-vicinity.rhcloud.com/SMSServlet");
             con = (HttpURLConnection) url.openConnection();
 
-
+            if (con.getResponseCode() != 200){
+                Log.e("Secretary: ", "No new pending SMS Queries");
+                return;
+            }
             sb = new StringBuffer();
             sc = new Scanner(con.getInputStream());
 
@@ -76,15 +79,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (sb.length() == 0){
-                Log.e("SMS", "No new SMS querries.. sleeping");
+                Log.e("Secretary: ", "Empty Query, sleeping...");
                 return;
             }
 
             JSONObject smsQ = new JSONObject(sb.toString());
-
             String phoneNumber = smsQ.getString("place_phone_loc");
             String code = smsQ.getString("generated_code");
 
+
+            // Invokes the method sending SMS on positive reply
             sendSms(phoneNumber, code);
 
 
@@ -103,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.e("SMS", "Sending sms to " + number + " with code " + code);
-                String text = "Hello, your place-activation code is: " + code;
+                String text = "Greetings from 'Vicinity'!\nCongratulations on deciding to join our happy family!\nYour activation code is: " + code;
 
                 try {
                     SmsManager sManager = SmsManager.getDefault();

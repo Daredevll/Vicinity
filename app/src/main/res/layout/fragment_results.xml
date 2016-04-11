@@ -1,8 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.vicinity.vicinity.controller.fragments.ResultsFragment">
 
 
@@ -11,8 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-
     </android.support.v7.widget.RecyclerView>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/results_fragment_no_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No results found!"
+        android:layout_marginTop="100dp"
+        android:textSize="35dp"
+        android:textAlignment="center"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

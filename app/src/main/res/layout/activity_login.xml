@@ -18,36 +18,42 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/anything"
-        android:id="@+id/textView2"
-        android:textSize="20sp"
-        android:layout_below="@+id/textView4"
-        android:layout_centerHorizontal="true" />
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/anywhere"
         android:id="@+id/textView3"
-        android:textSize="20sp"
+        android:textSize="30sp"
+        android:textStyle="italic"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/anytime"
+        android:textStyle="italic"
         android:id="@+id/textView4"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:layout_below="@+id/textView3"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="60dp"
-        android:layout_marginStart="60dp" />
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/anything"
+        android:textStyle="italic"
+        android:id="@+id/textView2"
+        android:textSize="30sp"
+        android:layout_below="@+id/textView4"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,18 +61,21 @@
         android:text="@string/is_in_your"
         android:id="@+id/textView5"
         android:textSize="20sp"
-        android:layout_above="@+id/textView6"
-        android:layout_alignLeft="@+id/textView6"/>
+        android:textStyle="italic"
+        android:layout_below="@+id/textView2"
+        android:layout_alignLeft="@+id/textView6"
+        android:layout_marginTop="50dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/vicinity"
         android:id="@+id/textView6"
-        android:textSize="40sp"
+        android:textSize="60sp"
         android:textStyle="bold|italic"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_alignTop="@+id/textView5"
+        android:layout_marginTop="6dp"/>
 
     <LinearLayout
         android:id="@+id/welcome_box"

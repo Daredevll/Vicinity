@@ -66,6 +66,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
     private ImageView gym;
     private ImageView pool;
     private ImageView movies;
+    private EditText placeName;
 
     private String receivedAddress;
 
@@ -134,12 +135,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
                 switch (v.getId()) {
                     case R.id.main_fragment_sort_filter_nearest:
                         ((Button) v).setTextColor(0xFFFFFFFF);
-                        sortPopular.setTextColor(0x6EFFFFFF);
+                        sortPopular.setTextColor(0x4AFFFFFF);
                         mListener.setSortPopular(false);
                         break;
                     case R.id.main_fragment_sort_filter_popular:
                         ((Button) v).setTextColor(0xFFFFFFFF);
-                        sortNearest.setTextColor(0x6EFFFFFF);
+                        sortNearest.setTextColor(0x4AFFFFFF);
                         mListener.setSortPopular(true);
                         break;
                 }
@@ -175,13 +176,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selected = entries.get(position);
                 Log.e("pp", selected);
-
+                mListener.setCityLocation(null);
                 new AsyncTask<String, Void, Location>() {
                     @Override
                     protected Location doInBackground(String... params) {
                         Log.e("pp", "bkg " + params[0]);
                         String place = params[0].replaceAll(" ", "%20");
-                        String path = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + place + "&key=" + Constants.BROWSER_API_KEY;
+                        String path = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + place + "&key=" + Constants.getBrowserApiKey();
                         URL url = null;
                         HttpURLConnection connection = null;
                         Scanner scanner = null;
@@ -233,19 +234,26 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
                     protected void onPostExecute(Location latLng) {
                         super.onPostExecute(latLng);
 
-                        mListener.setLocation(latLng);
+                        mListener.setCityLocation(latLng);
                     }
                 }.execute(selected);
             }
         });
 
-        final EditText placeName = (EditText) layout.findViewById(R.id.place_name_input);
+        placeName = (EditText) layout.findViewById(R.id.place_name_input);
         Button goButton = (Button) layout.findViewById(R.id.fragment_main_go_button);
 
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.startResultsFragment(placeName.getText().toString(), true);
+                // Validate if place name is inputted
+                if (placeName.getText().toString().isEmpty()){
+                    Toast.makeText(getActivity(), "If you haven't set a name categories below", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                mListener.setCityName(addressField.getText().toString());
+                Log.e("DEBUG", "SETTING CITY NAME AS : " + addressField.getText().toString());
+                mListener.startResultsFragment("", placeName.getText().toString(), true);
             }
         });
 
@@ -312,37 +320,42 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
      */
     @Override
     public void onClick(View v) {
-        if (mListener.getCurrentLocation() == null && addressField.getText().toString().isEmpty()){
+        if (mListener.getDetectedLocation() == null && addressField.getText().toString().isEmpty()){
             Toast.makeText(getActivity(), R.string.location_not_detected_yet, Toast.LENGTH_SHORT).show();
             return;
         }
+
+        String name = placeName.getText().toString();
+        boolean searchByName = !name.isEmpty();
+        mListener.setCityName(addressField.getText().toString());
+        Log.e("DEBUG", "SETTING CITY NAME AS : " + addressField.getText().toString());
         switch (v.getId()){
             case R.id.restaurant_image_view:
-                mListener.startResultsFragment(Constants.TYPE_RESTAURANT, false);
+                mListener.startResultsFragment(Constants.TYPE_RESTAURANT, name, searchByName);
                 break;
             case R.id.bar_image_view:
-                mListener.startResultsFragment(Constants.TYPE_BAR, false);
+                mListener.startResultsFragment(Constants.TYPE_BAR, name, searchByName);
                 break;
             case R.id.cafe_image_view:
-                mListener.startResultsFragment(Constants.TYPE_CAFE, false);
+                mListener.startResultsFragment(Constants.TYPE_CAFE, name, searchByName);
                 break;
             case R.id.hotel_image_view:
-                mListener.startResultsFragment(Constants.TYPE_HOTEL, false);
+                mListener.startResultsFragment(Constants.TYPE_HOTEL, name, searchByName);
                 break;
             case R.id.casino_image_view:
-                mListener.startResultsFragment(Constants.TYPE_CASINO, false);
+                mListener.startResultsFragment(Constants.TYPE_CASINO, name, searchByName);
                 break;
             case R.id.delivery_image_view:
-                mListener.startResultsFragment(Constants.TYPE_DELIVERY, false);
+                mListener.startResultsFragment(Constants.TYPE_DELIVERY, name, searchByName);
                 break;
             case R.id.fitness_image_view:
-                mListener.startResultsFragment(Constants.TYPE_FITNESS, false);
+                mListener.startResultsFragment(Constants.TYPE_FITNESS, name, searchByName);
                 break;
             case R.id.pool_image_view:
-                mListener.startResultsFragment(Constants.TYPE_POOL, false);
+                mListener.startResultsFragment(Constants.TYPE_POOL, name, searchByName);
                 break;
             case R.id.movie_image_view:
-                mListener.startResultsFragment(Constants.TYPE_MOVIE, false);
+                mListener.startResultsFragment(Constants.TYPE_MOVIE, name, searchByName);
                 break;
         }
     }
@@ -361,7 +374,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
             Log.e("service", "Intent ...1");
             intent.putExtra(Constants.RECEIVER, mResultReceiver);
             Log.e("service", "Intent ...2");
-            intent.putExtra(Constants.LOCATION_DATA_EXTRA, mListener.getCurrentLocation());
+            intent.putExtra(Constants.LOCATION_DATA_EXTRA, mListener.getDetectedLocation());
             Log.e("service", "Intent ...3");
             getActivity().startService(intent);
         }
@@ -370,15 +383,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
             mGoogleApiClient.connect();
         }
     }
-
-
-    // TODO: Get device location or user input for a location
-        // TODO: Check if user has inputted a city, if not - get location
-        // TODO: Call location manager
-        // TODO: Create a Location object, pass it the retrieved coordinates for location or City if chosen
-
-
-    // TODO: Pass the location and Place type data to the next Fragment
 
 
     /**
@@ -392,12 +396,16 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
     public interface MainFragmentListener {
         Location getCurrentLocation();
         GoogleApiClient getGoogleApiClient();
-        void startResultsFragment(String queryType, boolean isNameSearch);
+        void startResultsFragment(String queryType, String name, boolean isNameSearch);
         void setReadableAddress(String address);
         String getReadableAddress();
         Boolean isSortPopular();
         void setSortPopular(Boolean popular);
-        void setLocation(Location location);
+        void setDetectedLocation(Location location);
+        void setCityLocation(Location cityLocation);
+        Location getDetectedLocation();
+
+        void setCityName(String cityName);
     }
 
     private class PlacesTask extends AsyncTask<String, Void, ArrayList<String>> {
@@ -409,7 +417,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
 
             ArrayList<String> predictions = new ArrayList<>();
 
-            String path = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + params[0] + "&types=%28cities%29&key=" + Constants.BROWSER_API_KEY;
+            String path = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + params[0].replace(" ", "%20") + "&types=%28cities%29&key=" + Constants.getBrowserApiKey();
             URL url = null;
             HttpURLConnection connection = null;
             Scanner scanner = null;
@@ -439,6 +447,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
 
                         predictions.add(city.getString("description"));
                     }
+                }
+                else {
+                    Constants.switchKeys();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
