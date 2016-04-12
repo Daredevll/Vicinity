@@ -18,7 +18,7 @@
     <string name="home">НАЧАЛО</string>
     <string name="exit">ИЗХОД</string>
     <string name="verify_place">ПОТВИРДИ МЯСТО</string>
-    <string name="my_places">МОИТЕ МЕСТА</string>
+    <string name="my_places">РЕЗЕРВАЦИИ</string>
     <string name="claim_places">ЗАЯВИ МЯСТО</string>
     <string name="no_new_notifications">Нямате нови известия...</string>
     <string name="dismiss">игнорирай</string>
@@ -72,7 +72,7 @@
     <string name="reservation_declined">Резервацията е отказана</string>
     <string name="closed">Затворено</string>
     <string name="successful_verification">Успешна верификация</string>
-    <string name="your_app_will_close">Приложението Ви ще се затвоти всеки момент</string>
+    <string name="your_app_will_close">Приложението ще се затвори всеки момент</string>
     <string name="invalid_code">Невалиден код</string>
     <string name="has_not_set_website">" Все още няма обявен уеб сайт"</string>
     <string name="location_not_detected_yet">Местоположението Ви все още не е засечено, моля почакайте</string>
@@ -80,15 +80,11 @@
     <string name="unable_to_detecd_location">В момента не можем да засечем Вашата позиция, моля, въведете местност/град в полето по-горе за да продължите</string>
     <string name="enable_gps">Включете Вашия GPS за по-добро позициониране</string>
     <string name="dialog_answer_later_button_string">по-късно</string>
-    <string name="notifications_activity_sort_latest">последни</string>
-    <string name="notifications_activity_sort_most_people">най-големи</string>
-    <string name="notifications_activity_sort_soonest">начало</string>
-    <string name="notifications_activity_exit">изход</string>
-    <string name="notifications_activity_home">начало</string>
-    <string name="reservation_answer_dialog_new_reservation_for">Нова резервация за \'</string>
-    <string name="reservation_sent">Резервацията е изпратена</string>
-    <string name="you_must_set_at_least">Трябва да има поне един човек</string>
-    <string name="pleace_select_time">Мола, изберете дата и час</string>
-    <string name="confirm_polite">Потвърдите</string>
-    <string name="no_results">Няма намерени резултати!</string>
+    <string name="notifications_activity_sort_latest">latest</string>
+    <string name="notifications_activity_sort_most_people">biggest</string>
+    <string name="notifications_activity_sort_soonest">home</string>
+    <string name="notifications_activity_exit">exit</string>
+    <string name="notifications_activity_home">home</string>
+    <string name="reservation_answer_dialog_new_reservation_for">New reservation for \'</string>
+    <string name="nav_my_pendings">ОЧАКВАТ ОТГОВОР</string>
 </resources>

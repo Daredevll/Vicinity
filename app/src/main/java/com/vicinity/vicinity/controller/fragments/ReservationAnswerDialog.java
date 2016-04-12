@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.NotificationActivity;
 import com.vicinity.vicinity.utilities.CustomNotificationElement;
-import com.vicinity.vicinity.utilities.ServerCommManager;
+import com.vicinity.vicinity.utilities.commmanagers.ServerCommManager;
 import com.vicinity.vicinity.utilities.interfaces.Blurable;
 
 import jp.wasabeef.blurry.Blurry;

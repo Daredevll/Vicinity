@@ -67,6 +67,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
         businessNotification = getIntent().getBooleanExtra(Constants.NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA, false);
         Log.e("DEBUG", "The notification activity recieved the intent, the availaiblity of BOOL EXTRA IS: " + getIntent().hasExtra(Constants.NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA));
+        Log.e("DEBUG", "==========      The value of getIntent().getBooleanExtra() itself is: " + businessNotification);
 
         latestToggleButton.setOnClickListener(this);
         biggestToggleButton.setOnClickListener(this);
@@ -149,6 +150,17 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         }
         return list;
     }
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public void triggerAnswer(CustomNotificationElement notificationToBeAnswered) {

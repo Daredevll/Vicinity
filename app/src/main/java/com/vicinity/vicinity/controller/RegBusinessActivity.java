@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.utilities.Constants;
-import com.vicinity.vicinity.utilities.ServerCommManager;
+import com.vicinity.vicinity.utilities.commmanagers.ServerCommManager;
 
-public class RegBusinessActivity extends AppCompatActivity {
+public class RegBusinessActivity extends AppCompatActivity implements ServerCommManager.Registrator{
 
     Button buttonSend, buttonSendCode;
     CheckBox agree;
@@ -62,9 +62,10 @@ public class RegBusinessActivity extends AppCompatActivity {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ServerCommManager.getInstance().onPostRegisterBusiness(getApplicationContext(), accId, placeId, placeLocPhone, placeName, placeAddress);
+                ServerCommManager.getInstance().onPostRegisterBusiness(RegBusinessActivity.this, accId, placeId, placeLocPhone, placeName, placeAddress);
                 Log.e("Request", "Place business Registration method invoked");
-                setVisibilities(true);
+                v.setVisibility(View.INVISIBLE);
+                agree.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -82,14 +83,16 @@ public class RegBusinessActivity extends AppCompatActivity {
         buttonSendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ServerCommManager.getInstance().onSendGeneratedCode(getApplicationContext(), accId, codeForm.getText().toString());
-                codeForm.setText("");
+                Log.e("DEBUG", "==============================                    Calling server to receive code               ==========================");
+                ServerCommManager.getInstance().onSendGeneratedCode(RegBusinessActivity.this, accId, codeForm.getText().toString());
+                codeForm.setFocusable(false);
+                v.setVisibility(View.INVISIBLE);
             }
         });
 
     }
 
-    private void setVisibilities(boolean postSent){
+    public void setVisibilities(boolean postSent){
         if (postSent){
             postSendText.setVisibility(View.VISIBLE);
             buttonSendCode.setVisibility(View.VISIBLE);
@@ -108,5 +111,33 @@ public class RegBusinessActivity extends AppCompatActivity {
             agree.setVisibility(View.VISIBLE);
             buttonSend.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void goBack() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onBackPressed();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    @Override
+    public void resetCodeForm() {
+        codeForm.setText("");
+        codeForm.setFocusableInTouchMode(true);
+        codeForm.requestFocus();
+        buttonSendCode.setVisibility(View.VISIBLE);
     }
 }

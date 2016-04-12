@@ -68,6 +68,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
     private ImageView movies;
     private EditText placeName;
 
+
     private String receivedAddress;
 
     @Override
@@ -160,9 +161,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().length() > 2) {
-                    new PlacesTask().execute(s.toString());
-                }
+                new PlacesTask().execute(s.toString());
+
             }
 
             @Override
@@ -249,7 +249,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
             public void onClick(View v) {
                 // Validate if place name is inputted
                 if (placeName.getText().toString().isEmpty()){
-                    Toast.makeText(getActivity(), "If you haven't set a name categories below", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "If you haven't set a name use the categories below", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 mListener.setCityName(addressField.getText().toString());
@@ -366,21 +366,27 @@ public class MainFragment extends Fragment implements View.OnClickListener, Goog
      * retrieve the Address formatted by the default Locale of the device
      */
     public void setAddress() {
+        Log.e("DEBUG", "===========================                     MainFragment.setAddress() in  called             ============================");
+        // TODO: Check what's going on with not setting location on restart
         if (!mListener.getReadableAddress().isEmpty()){
             addressField.setHint(mListener.getReadableAddress());
+            Log.e("DEBUG", "===========================                     current readable address: " + mListener.getReadableAddress() + "         ============================");
+            Log.e("DEBUG", "===========================                     current detected location: " + mListener.getDetectedLocation().toString() + "         ============================");
             return;
         }
         if (mGoogleApiClient.isConnected()) {
+            Log.e("DEBUG", "===========================               MainFragment: ApiClient is connected, starting intent to fetch address in  called        ======================");
             Intent intent = new Intent(getActivity(), FetchAddressIntentService.class);
             Log.e("service", "Intent ...1");
             intent.putExtra(Constants.RECEIVER, mResultReceiver);
             Log.e("service", "Intent ...2");
             intent.putExtra(Constants.LOCATION_DATA_EXTRA, mListener.getDetectedLocation());
+            Log.e("DEBUG", "======================                 detectedLocation is: " + (mListener.getDetectedLocation() == null?"NULL":"SET PROPERLY!") + "             ============================");
             Log.e("service", "Intent ...3");
             getActivity().startService(intent);
         }
         else {
-            Log.e("service", "new apiClient instantiated and .connect() called");
+            Log.e("service", "====================                 new apiClient instantiated and .connect() called");
             mGoogleApiClient.connect();
         }
     }

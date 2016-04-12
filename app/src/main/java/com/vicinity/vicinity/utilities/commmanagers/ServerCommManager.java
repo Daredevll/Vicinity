@@ -1,14 +1,14 @@
-package com.vicinity.vicinity.utilities;
+package com.vicinity.vicinity.utilities.commmanagers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.vicinity.vicinity.R;
-import com.vicinity.vicinity.controller.LoginActivity;
+import com.vicinity.vicinity.utilities.Constants;
+import com.vicinity.vicinity.utilities.ShortPlace;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,7 +89,7 @@ public class ServerCommManager {
                     Toast.makeText(context, R.string.successful_verification, Toast.LENGTH_SHORT).show();
                     Toast.makeText(context, R.string.your_app_will_close, Toast.LENGTH_SHORT).show();
 
-                    DummyModelClass.LoginManager.getInstance().signOutAccount(context);
+                    LocalCommManager.LoginManager.getInstance().signOutAccount(context);
 
                     new Thread(new Runnable() {
                         @Override
@@ -99,11 +99,9 @@ public class ServerCommManager {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            // Restart the app
-                            Intent intent = new Intent(((Activity) context), LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            ((Activity) context).startActivity(intent);
-                            ((Activity) context).finish();
+
+                            // Closes the app
+                            ((Activity) context).finishAffinity();
                         }
                     }).start();
                 }

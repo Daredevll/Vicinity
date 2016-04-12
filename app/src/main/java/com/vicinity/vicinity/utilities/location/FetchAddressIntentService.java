@@ -39,16 +39,15 @@ public class FetchAddressIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         String errorMessage = "";
-        Log.e("service", "service started");
+        Log.e("service", "=============================                           FetchAddressService started");
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        Log.e("service", "geocoder inited");
+        Log.e("service", "=============================                           geocoder inited from extra          ====================");
         mReceiver = intent.getParcelableExtra(Constants.RECEIVER);
-        Log.e("service", "mReceiver obtained");
+        Log.e("service", "=============================                           mReceiver obtained from extra       ====================");
         Location location = intent.getParcelableExtra(Constants.LOCATION_DATA_EXTRA);
-        Log.e("service", "location obtained");
+        Log.e("service", "=============================                           location obtained from extra        ====================");
         List<Address> addresses = null;
         try {
-            // TODO: Check whether the "Timed out" issue is ours of Google's problem
             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             Log.e("service", "addresses got from location");
 

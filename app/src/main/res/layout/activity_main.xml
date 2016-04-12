@@ -115,7 +115,7 @@
                 />
 
             <TextView
-                android:id="@+id/nav_my_places"
+                android:id="@+id/nav_my_reservations"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:textSize="30sp"
@@ -125,6 +125,19 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 />
+
+            <TextView
+                android:id="@+id/nav_my_pendings"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:textSize="30sp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_shape_light"
+                android:text="@string/nav_my_pendings"
+                android:gravity="center"
+                android:textStyle="bold"
+                />
+
 
         </LinearLayout>
 

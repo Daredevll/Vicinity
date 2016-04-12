@@ -112,6 +112,10 @@ public class DBPlaceDAO implements IPlacesDAO {
 
     }
 
+    @Override
+    public void updatePlace(Place oldPlace, Place newPlace) {
+
+    }
 //    String authorName;
 //    String text;
 //    double rating;

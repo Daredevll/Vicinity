@@ -34,9 +34,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.fragments.ResultsFragment.ResultsAndDetailsFragmentListener;
-import com.vicinity.vicinity.utilities.DummyModelClass;
-import com.vicinity.vicinity.utilities.GooglePictureDownloader;
-import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
+import com.vicinity.vicinity.utilities.commmanagers.GooglePictureDownloadManager;
+import com.vicinity.vicinity.utilities.commmanagers.LocalCommManager;
+import com.vicinity.vicinity.utilities.commmanagers.QueryProcessingManager.CustomPlace;
 
 import java.util.ArrayList;
 
@@ -46,7 +46,7 @@ import java.util.ArrayList;
  * {@link ResultsAndDetailsFragmentListener} interface
  * to handle interaction events.
  */
-public class DetailsFragment extends Fragment implements OnMapReadyCallback, GooglePictureDownloader.IDownloadImageListener {
+public class DetailsFragment extends Fragment implements OnMapReadyCallback, GooglePictureDownloadManager.IDownloadImageListener {
 
     private boolean reviewsActive;
     private ResultsAndDetailsFragmentListener dListener;
@@ -77,7 +77,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
 
     CustomPlace currentPlace;
 
-    GooglePictureDownloader pictureDownloader;
+    GooglePictureDownloadManager pictureDownloader;
 
     FrameLayout fragmentHolder;
 
@@ -187,7 +187,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
 
-                ReservationRequestDialog rrd = ReservationRequestDialog.newInstance(DummyModelClass.LoginManager.getInstance()
+                ReservationRequestDialog rrd = ReservationRequestDialog.newInstance(LocalCommManager.LoginManager.getInstance()
                                 .getLoggedUserId(getActivity()),
                         dListener.getCurrentDetailPlace().getPlaceId(),
                         dListener.getCurrentDetailPlace().getName());
@@ -208,7 +208,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
             @Override
             public void run() {
                 try {
-                    Thread.sleep(1500);
+                    Thread.sleep(500);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -229,7 +229,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
             photoWall.addView(imgV);
             frames.add(imgV);
         }
-        GooglePictureDownloader.getInstance().fillFramesWithPhotos(getActivity(), frames, photosRefs);
+        GooglePictureDownloadManager.getInstance().fillFramesWithPhotos(getActivity(), frames, photosRefs);
     }
 
     @Override

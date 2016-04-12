@@ -4,19 +4,83 @@
     android:layout_height="match_parent"
     tools:context="com.vicinity.vicinity.controller.fragments.ResultsFragment">
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_results_fragment"
+    <RelativeLayout
+        android:id="@+id/results_fragment_results_and_sort_holder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_results_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/results_fragment_sort_holder">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+            android:id="@+id/results_fragment_sort_holder"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <Button
+                android:id="@+id/results_fragment_sort_name_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="name"
+                android:background="@drawable/button_shape_dark"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"/>
+
+            <Button
+                android:id="@+id/results_fragment_sort_rating_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="rating"
+                android:background="@drawable/button_shape_dark"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"/>
+
+            <Button
+                android:id="@+id/results_fragment_sort_distance_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="distance"
+                android:background="@drawable/button_shape_dark"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"/>
+
+            <Button
+                android:id="@+id/results_fragment_sort_open_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="open"
+                android:background="@drawable/button_shape_dark"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+
 
     <TextView
         android:id="@+id/results_fragment_no_results"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/no_results"
+        android:text="No results found!"
         android:layout_marginTop="100dp"
         android:textSize="35dp"
         android:textAlignment="center"

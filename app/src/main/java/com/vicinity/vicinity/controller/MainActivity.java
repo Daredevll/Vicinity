@@ -27,9 +27,9 @@ import com.vicinity.vicinity.controller.fragments.MainFragment;
 import com.vicinity.vicinity.controller.fragments.MainFragment.MainFragmentListener;
 import com.vicinity.vicinity.controller.fragments.ResultsFragment;
 import com.vicinity.vicinity.utilities.Constants;
-import com.vicinity.vicinity.utilities.DummyModelClass;
-import com.vicinity.vicinity.utilities.QueryProcessor;
-import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
+import com.vicinity.vicinity.utilities.commmanagers.LocalCommManager;
+import com.vicinity.vicinity.utilities.commmanagers.QueryProcessingManager;
+import com.vicinity.vicinity.utilities.commmanagers.QueryProcessingManager.CustomPlace;
 import com.vicinity.vicinity.utilities.ShortPlace;
 import com.vicinity.vicinity.utilities.interfaces.Blurable;
 import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean searchByName;
     private String cityName;
     private String searchedPlaceName;
+    String searchFlag;
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     MainFragment mainFragment;
 
     TextView drawerHome, drawerExit, drawerRegBusiness;
-    TextView drawerMyPlaces, drawerVerifyPlace;
+    TextView drawerMyReservations, drawerVerifyPlace, drawerMyBusinessPending;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -106,15 +107,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loggedUserId = DummyModelClass.LoginManager.getInstance().getLoggedUserId(this);
-        loggedUserTypeBusiness = DummyModelClass.LoginManager.getInstance().isLoggedUserTypeBusiness(this);
+        loggedUserId = LocalCommManager.LoginManager.getInstance().getLoggedUserId(this);
+        loggedUserTypeBusiness = LocalCommManager.LoginManager.getInstance().isLoggedUserTypeBusiness(this);
         currentSearchResults = new ArrayList<CustomPlace>();
 
         Intent serviceIntent;
         if (loggedUserTypeBusiness){
             serviceIntent = new Intent(this, ReservationListenerService.class);
             StringBuffer placesIds = new StringBuffer();
-            for (ShortPlace p: DummyModelClass.LoginManager.getInstance().getBusinessUserOwnedPlaces()){
+            for (ShortPlace p: LocalCommManager.LoginManager.getInstance().getBusinessUserOwnedPlaces()){
                 placesIds.append(p.getId() + ",");
             }
             String ids = placesIds.substring(0, placesIds.length()-1);
@@ -132,14 +133,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerHome = (TextView) findViewById(R.id.nav_go_home);
         drawerExit = (TextView) findViewById(R.id.nav_exit);
         drawerRegBusiness = (TextView) findViewById(R.id.nav_register_business);
-        drawerMyPlaces = (TextView) findViewById(R.id.nav_my_places);
+        drawerMyReservations = (TextView) findViewById(R.id.nav_my_reservations);
+        drawerMyBusinessPending = (TextView) findViewById(R.id.nav_my_pendings);
         drawerVerifyPlace = (TextView) findViewById(R.id.nav_verify_place);
 
-        if (DummyModelClass.LoginManager.getInstance().isLoggedUserTypeBusiness(this)){
-            drawerMyPlaces.setVisibility(View.VISIBLE);
+
+        // TODO: Change this to show/hide 'Pendings'
+        if (LocalCommManager.LoginManager.getInstance().isLoggedUserTypeBusiness(this)){
+            drawerMyBusinessPending.setVisibility(View.VISIBLE);
         }
         else {
-            drawerMyPlaces.setVisibility(View.VISIBLE);
+            drawerMyBusinessPending.setVisibility(View.INVISIBLE);
         }
 
 
@@ -182,18 +186,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerExit.setOnClickListener(this);
         drawerRegBusiness.setOnClickListener(this);
         drawerVerifyPlace.setOnClickListener(this);
-        drawerMyPlaces.setOnClickListener(this);
+        drawerMyReservations.setOnClickListener(this);
+        drawerMyBusinessPending.setOnClickListener(this);
 
 
-        ((TextView) findViewById(R.id.nav_logged_user_name)).setText(DummyModelClass.LoginManager.getInstance().getLoggedUsername(this));
+        ((TextView) findViewById(R.id.nav_logged_user_name)).setText(LocalCommManager.LoginManager.getInstance().getLoggedUsername(this));
 
-        ((TextView) findViewById(R.id.nav_logged_user_email)).setText(DummyModelClass.LoginManager.getInstance().getLoggedEmail(this));
+        ((TextView) findViewById(R.id.nav_logged_user_email)).setText(LocalCommManager.LoginManager.getInstance().getLoggedEmail(this));
 
         signOut = (Button) findViewById(R.id.nav_sign_out);
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DummyModelClass.LoginManager.getInstance().signOutAccount(MainActivity.this);
+                LocalCommManager.LoginManager.getInstance().signOutAccount(MainActivity.this);
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
             }
         });
@@ -239,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(getApplicationContext(), RegBusinessActivity.class);
                 intent.putExtra(Constants.REGISTER_BUSINESS_ACTIVITY_VERIFY_BOOLEAN_EXTRA, false);
                 intent.putExtra("PLACE_ID", currentPlaceDetails.getPlaceId());
-                intent.putExtra("ACC_ID", DummyModelClass.LoginManager.getInstance().getLoggedUserId(getApplicationContext()));
+                intent.putExtra("ACC_ID", LocalCommManager.LoginManager.getInstance().getLoggedUserId(getApplicationContext()));
                 intent.putExtra("PLACE_LOC_PHONE", currentPlaceDetails.getInternationalPhoneNumber());
                 intent.putExtra("PLACE_NAME", currentPlaceDetails.getName());
                 intent.putExtra("PLACE_ADDRESS", currentPlaceDetails.getVicinity());
@@ -248,11 +253,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.nav_verify_place:
                 Intent verifyIntent = new Intent(getApplicationContext(), RegBusinessActivity.class);
                 verifyIntent.putExtra(Constants.REGISTER_BUSINESS_ACTIVITY_VERIFY_BOOLEAN_EXTRA, true);
-                verifyIntent.putExtra("ACC_ID", DummyModelClass.LoginManager.getInstance().getLoggedUserId(this));
+                verifyIntent.putExtra("ACC_ID", LocalCommManager.LoginManager.getInstance().getLoggedUserId(this));
                 startActivity(verifyIntent);
                 break;
-            case R.id.nav_my_places:
-                // TODO: Make something thats yet to be done wtf...
+            case R.id.nav_my_reservations:
+                Intent clientNotifs = new Intent(this, NotificationActivity.class);
+                clientNotifs.putExtra(Constants.NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA, false);
+                startActivity(clientNotifs);
+                break;
+            case R.id.nav_my_pendings:
+                Intent businessNotifs = new Intent(this, NotificationActivity.class);
+                businessNotifs.putExtra(Constants.NOTIFICATION_INTENT_BUSINESS_TYPE_EXTRA, true);
+                startActivity(businessNotifs);
                 break;
         }
     }
@@ -260,8 +272,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void receiveLocation(Location location) {
         this.detectedLocation = location;
+        Log.e("Location", "=====================                                             location obtained: " + detectedLocation.getLatitude() + ", " + detectedLocation.getLongitude() + " accuracy: " + detectedLocation.getAccuracy());
         mainFragment.setAddress();
-        Log.e("Location", "location obtained: " + detectedLocation.getLatitude() + ", " + detectedLocation.getLongitude() + " accuracy: " + detectedLocation.getAccuracy());
     }
 
     @Override
@@ -295,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * the DetailsFragment when on callBack with Place result.
      */
     @Override
-    public void startDetailsFragment(final QueryProcessor.CustomPlace place) {
+    public void startDetailsFragment(final QueryProcessingManager.CustomPlace place) {
         new PlaceDetailAsyncFetcher().execute(place);
     }
 
@@ -520,6 +532,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public String getSearchFlag(){
+        return this.searchFlag;
+    }
+
+    public void setSearchFlag(String flag){
+        this.searchFlag = flag;
+    }
+
     /*
         Implements logic to prohibit the "backing" from the main fragment of the main activity and also clears the saved
         searches if went back to main fragment
@@ -534,6 +554,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             if (count == 2) {
                 currentSearchResults.clear();
+                searchFlag = null;
                 currentLocation = null;
             }
             else if (count == 3){

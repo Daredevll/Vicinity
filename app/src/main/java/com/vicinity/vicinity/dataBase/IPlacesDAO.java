@@ -11,5 +11,7 @@ public interface IPlacesDAO {
 
     void deletePlace(Place place);
 
+    void updatePlace(Place oldPlace, Place newPlace);
+
     ArrayList<Place> getAllPlaces();
 }

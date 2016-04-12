@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.fragments.ResultsFragment;
-import com.vicinity.vicinity.utilities.QueryProcessor.CustomPlace;
+import com.vicinity.vicinity.utilities.commmanagers.QueryProcessingManager.CustomPlace;
 
 import java.util.ArrayList;
 
