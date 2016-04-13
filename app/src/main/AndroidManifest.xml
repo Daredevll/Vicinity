@@ -19,17 +19,19 @@
             android:value="AIzaSyC0Y8kXYwz7rIyE5CstbZt9Zq4bDjj7mAg" />
 
         <service
-            android:name=".utilities.location.FetchAddressIntentService"
+            android:name=".utilities.services.FetchAddressIntentService"
             android:exported="false" />
 
-        <activity android:name=".controller.LoginActivity">
+        <activity android:name=".controller.LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.MainActivity" />
+        <activity android:name=".controller.MainActivity"
+            android:screenOrientation="portrait"/>
         <!--
              ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -47,14 +49,16 @@
             android:name=".controller.NotificationActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
-            android:taskAffinity="" />
+            android:taskAffinity=""
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".utilities.services.ReservationListenerService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".controller.RegBusinessActivity"></activity>
+        <activity android:name=".controller.RegBusinessActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.vicinity.vicinity.utilities.location;
+package com.vicinity.vicinity.utilities.services;
 
 import android.app.IntentService;
 import android.content.Intent;

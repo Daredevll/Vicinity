@@ -28,8 +28,7 @@ import com.vicinity.vicinity.controller.fragments.MainFragment.MainFragmentListe
 import com.vicinity.vicinity.controller.fragments.ResultsFragment;
 import com.vicinity.vicinity.utilities.Constants;
 import com.vicinity.vicinity.utilities.commmanagers.LocalCommManager;
-import com.vicinity.vicinity.utilities.commmanagers.QueryProcessingManager;
-import com.vicinity.vicinity.utilities.commmanagers.QueryProcessingManager.CustomPlace;
+import com.vicinity.vicinity.utilities.CustomPlace;
 import com.vicinity.vicinity.utilities.ShortPlace;
 import com.vicinity.vicinity.utilities.interfaces.Blurable;
 import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
@@ -307,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * the DetailsFragment when on callBack with Place result.
      */
     @Override
-    public void startDetailsFragment(final QueryProcessingManager.CustomPlace place) {
+    public void startDetailsFragment(final CustomPlace place) {
         new PlaceDetailAsyncFetcher().execute(place);
     }
 

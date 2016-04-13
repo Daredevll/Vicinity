@@ -26,7 +26,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.utilities.Constants;
 import com.vicinity.vicinity.utilities.location.CustomLocationListener.LocationRequester;
-import com.vicinity.vicinity.utilities.location.FetchAddressIntentService;
+import com.vicinity.vicinity.utilities.services.FetchAddressIntentService;
 import com.vicinity.vicinity.utilities.location.LocationDetectionHelper;
 
 import org.json.JSONArray;

@@ -9,6 +9,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.utilities.Constants;
 import com.vicinity.vicinity.utilities.ShortPlace;
+import com.vicinity.vicinity.utilities.User;
 import com.vicinity.vicinity.utilities.exceptions.PrefsFieldNotFoundException;
 
 import java.io.File;
@@ -167,72 +168,5 @@ public class LocalCommManager {
            return this.currentBusinessOwnedPlaces;
         }
 
-        public static class User {
-
-            public User(GoogleSignInAccount account) {
-                this.googleAccTokenId = account.getIdToken();
-                this.googleAccId = account.getId();
-                this.googleName = account.getDisplayName();
-                this.googleEmail = account.getEmail();
-            }
-
-            final String googleAccTokenId;
-            final String googleAccId;
-            final String googleName;
-            String googleEmail;
-            boolean isBusiness;
-
-            public String getGoogleEmail() {
-                return googleEmail;
-            }
-
-            public String getGoogleAccTokenId() {
-                return googleAccTokenId;
-            }
-
-            public String getGoogleAccId() {
-                return googleAccId;
-            }
-
-            public String getGoogleName() {
-                return googleName;
-            }
-
-            public boolean isBusiness() {
-                return isBusiness;
-            }
-
-
-        }
-
-        public static class Personal extends User {
-
-            public Personal(GoogleSignInAccount account) {
-                super(account);
-            }
-
-        }
-
-        public static class Business extends User {
-
-            private ArrayList<String> ownedPlaces;
-            private boolean active;
-
-            public Business(GoogleSignInAccount account, boolean active) {
-                super(account);
-//            ownedPlaces = GetOwnedPlacesFromGoogle(account); //TODO: Figure out how to retreive claimed businesses by user ID from Google
-                this.active = active;
-                ownedPlaces = new ArrayList<>();
-            }
-
-            public ArrayList<String> getOwnedPlaces() {
-                return ownedPlaces;
-            }
-
-            public boolean isActive() {
-                return active;
-            }
-
-        }
     }
 }

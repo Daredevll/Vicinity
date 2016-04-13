@@ -151,6 +151,10 @@ public class ReservationRequestDialog extends DialogFragment implements Blurable
             @Override
             public void onClick(View v) {
                 Blurry.delete(((Blurable) getActivity()).getRootView());
+                //TODO: Somehow reset the map view on dismiss here!
+//                if (((DetailsFragment) getParentFragment()).wasMapVisible){
+//                    ((DetailsFragment) getParentFragment()).switchFragments();
+//                }
                 dismiss();
             }
         });

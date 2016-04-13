@@ -71,7 +71,7 @@ public class ServerCommManager {
 
                     con.getInputStream();
 
-                    Log.e("Request", "Sending Generated Code From User successfully");
+                    Log.e("Request", "Sending Generated Code From com.vicinity.vicinity.utilities.User successfully");
 
                 } catch (JSONException e) {
                     e.printStackTrace();

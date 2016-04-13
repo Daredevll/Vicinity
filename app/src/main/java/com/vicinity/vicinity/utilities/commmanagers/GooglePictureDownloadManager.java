@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.widget.ImageView;
 
 import com.vicinity.vicinity.utilities.Constants;
+import com.vicinity.vicinity.utilities.CustomPlace;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -174,7 +175,7 @@ public class GooglePictureDownloadManager {
      * Dowloads and sets a Picture from URL to a passed Bitmap
      * @param avatarURL
      */
-    public void setBitmap(String avatarURL, final QueryProcessingManager.CustomPlace.Review review){
+    public void setBitmap(String avatarURL, final CustomPlace.Review review){
         URL url = null;
         try {
             url = new URL(("http:" + avatarURL).replace("photo.jpg", "s800-w80-h80/"));
@@ -210,8 +211,8 @@ public class GooglePictureDownloadManager {
      * @param frames
      * @param references
      */
-    public void fillFramesWithPhotos(final Activity caller, final ArrayList<ImageView> frames, final ArrayList<String> references){
-        new AsyncTask<Void, Void, Void>(){
+    public AsyncTask<Void, Void, Void> fillFramesWithPhotos(final Activity caller, final ArrayList<ImageView> frames, final ArrayList<String> references){
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
 
             @Override
             protected Void doInBackground(Void... params) {
@@ -231,6 +232,6 @@ public class GooglePictureDownloadManager {
             }
         }.execute();
 
+        return task;
     }
-
 }

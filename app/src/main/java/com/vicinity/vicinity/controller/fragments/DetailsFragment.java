@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,7 +38,7 @@ import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.fragments.ResultsFragment.ResultsAndDetailsFragmentListener;
 import com.vicinity.vicinity.utilities.commmanagers.GooglePictureDownloadManager;
 import com.vicinity.vicinity.utilities.commmanagers.LocalCommManager;
-import com.vicinity.vicinity.utilities.commmanagers.QueryProcessingManager.CustomPlace;
+import com.vicinity.vicinity.utilities.CustomPlace;
 
 import java.util.ArrayList;
 
@@ -52,7 +54,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
     private ResultsAndDetailsFragmentListener dListener;
     private GoogleMap map;
 
-    private boolean wasMapVisible;
+    boolean wasMapVisible;
     public boolean spin;
 
 
@@ -71,6 +73,8 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
     TextView distanceAndEta;
     TextView workingTime;
     TextView openNow;
+
+    AsyncTask<Void, Void, Void> photoDownloaderTask;
 
     LinearLayout photoWall;
     HorizontalScrollView wallScroller;
@@ -182,6 +186,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
             public void onClick(View v) {
                 if (!reviewsActive) {
                     wasMapVisible = true;
+                    Log.e("DEBUG", "=====     wasMapVisible set to: " + wasMapVisible + "     =====");
                     switchFragments();
                 }
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -193,8 +198,6 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
                         dListener.getCurrentDetailPlace().getName());
 
                 rrd.show(ft, "RESERVEDIALOG");
-
-
             }
         });
 
@@ -229,7 +232,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
             photoWall.addView(imgV);
             frames.add(imgV);
         }
-        GooglePictureDownloadManager.getInstance().fillFramesWithPhotos(getActivity(), frames, photosRefs);
+        photoDownloaderTask = GooglePictureDownloadManager.getInstance().fillFramesWithPhotos(getActivity(), frames, photosRefs);
     }
 
     @Override
@@ -238,7 +241,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
         dListener = null;
     }
 
-    private void switchFragments() {
+    void switchFragments() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fade_in_slow, R.anim.fade_out_slow);
         if (reviewsActive) {
@@ -316,6 +319,7 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
 
     public void reverseFrags(){
         if (wasMapVisible){
+            Log.e("DEBUG", "==========          wasMapVisible got as TRUE          ==========");
             switchFragments();
             wasMapVisible = !wasMapVisible;
         }
@@ -350,5 +354,20 @@ public class DetailsFragment extends Fragment implements OnMapReadyCallback, Goo
         public boolean onDown(MotionEvent e) {
             return true;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (photoDownloaderTask != null){
+            photoDownloaderTask.cancel(true);
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        reverseFrags();
     }
 }

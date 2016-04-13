@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.vicinity.vicinity.R;
-import com.vicinity.vicinity.utilities.commmanagers.QueryProcessingManager.CustomPlace.Review;
+import com.vicinity.vicinity.utilities.CustomPlace.Review;
 
 import java.util.ArrayList;
 

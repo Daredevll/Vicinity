@@ -94,7 +94,7 @@ public class ReservationListenerService extends Service {
 
 
     /**
-     * Creates and shows a Notification in the Notification Drawer of the User's device
+     * Creates and shows a Notification in the Notification Drawer of the com.vicinity.vicinity.utilities.User's device
      */
     private void createNotification() {
         NotificationCompat.Builder mBuilder =

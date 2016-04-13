@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.vicinity.vicinity.R;
 import com.vicinity.vicinity.controller.controllersupport.recycler.ResultsRecyclerAdapter;
 import com.vicinity.vicinity.utilities.commmanagers.QueryProcessingManager;
-import com.vicinity.vicinity.utilities.commmanagers.QueryProcessingManager.CustomPlace;
+import com.vicinity.vicinity.utilities.CustomPlace;
 
 import java.util.ArrayList;
 import java.util.Collections;
