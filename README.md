@@ -1,2 +1,1 @@
-"# Vicinity" 
-http://pastebin.com/qh5EHgne
+'Vicinity' - The Place-finder app
